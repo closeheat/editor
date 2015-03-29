@@ -35,7 +35,11 @@ module.exports = App = React.createClass({
     });
   },
   render: function() {
-    return React.createElement("div", null, React.createElement(Browser, {
+    return React.createElement("div", {
+      "className": 'container'
+    }, React.createElement("div", {
+      "className": 'row'
+    }, React.createElement(Browser, {
       "content": this.state.browser_content,
       "ref": 'browser'
     }), React.createElement(Editor, {
@@ -43,6 +47,6 @@ module.exports = App = React.createClass({
       "onChange": this.editorChange
     }), React.createElement("button", {
       "onClick": this.update
-    }, "Save"));
+    }, "Build")));
   }
 });

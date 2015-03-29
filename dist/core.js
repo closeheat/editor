@@ -25,7 +25,7 @@ module.exports = Core = (function() {
 
 })();
 
-token = 'a991e9e427f251e019f662562830b54c4836d7ea';
+token = 'd188e3d18211aaec848e0a4f9066fc8d56a161f8';
 
 username = 'Nedomas';
 

@@ -3,8 +3,6 @@ $ = require 'jquery'
 
 module.exports =
 Browser = React.createClass
-  # componentDidMount: ->
-  #   React.render(<embed src={@src()} />, @getDOMNode())
   src: ->
     "data:text/html;charset=utf-8,#{encodeURIComponent(@code())}"
   code: ->
@@ -15,8 +13,8 @@ Browser = React.createClass
     result.replace(/src\=\"/, 'src="' + @base())
   base: ->
     'http://testing-editor.closeheatapp.com/'
-  srcHtml: ->
+  embedHTML: ->
     __html: "<embed src='#{@src()}'>"
   render: ->
-    <div dangerouslySetInnerHTML={@srcHtml()}>
+    <div className='col-xs-6 col-md-6 browser' dangerouslySetInnerHTML={@embedHTML()}>
     </div>

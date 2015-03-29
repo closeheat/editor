@@ -17,12 +17,13 @@ App = React.createClass
   update: ->
     fs.writeFileSync('/index.jade', @state.editor_content)
     @setState(browser_content: @indexHTML())
-    # @refs.browser.forceUpdate()
   editorChange: (new_content) ->
     @setState(editor_content: new_content)
   render: ->
-    <div>
-      <Browser content={@state.browser_content} ref='browser' />
-      <Editor value={@state.editor_content} onChange={@editorChange} />
-      <button onClick={@update}>Save</button>
+    <div className='container'>
+      <div className='row'>
+        <Browser content={@state.browser_content} ref='browser' />
+        <Editor value={@state.editor_content} onChange={@editorChange} />
+        <button onClick={@update}>Build</button>
+      </div>
     </div>

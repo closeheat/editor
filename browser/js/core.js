@@ -36,7 +36,11 @@ module.exports = App = React.createClass({
     });
   },
   render: function() {
-    return React.createElement("div", null, React.createElement(Browser, {
+    return React.createElement("div", {
+      "className": 'container'
+    }, React.createElement("div", {
+      "className": 'row'
+    }, React.createElement(Browser, {
       "content": this.state.browser_content,
       "ref": 'browser'
     }), React.createElement(Editor, {
@@ -44,7 +48,7 @@ module.exports = App = React.createClass({
       "onChange": this.editorChange
     }), React.createElement("button", {
       "onClick": this.update
-    }, "Save"));
+    }, "Build")));
   }
 });
 
@@ -71,14 +75,15 @@ module.exports = Browser = React.createClass({
   base: function() {
     return 'http://testing-editor.closeheatapp.com/';
   },
-  srcHtml: function() {
+  embedHTML: function() {
     return {
       __html: "<embed src='" + (this.src()) + "'>"
     };
   },
   render: function() {
     return React.createElement("div", {
-      "dangerouslySetInnerHTML": this.srcHtml()
+      "className": 'col-xs-6 col-md-6 browser',
+      "dangerouslySetInnerHTML": this.embedHTML()
     });
   }
 });
@@ -111,7 +116,7 @@ module.exports = Core = (function() {
 
 })();
 
-token = 'a991e9e427f251e019f662562830b54c4836d7ea';
+token = 'd188e3d18211aaec848e0a4f9066fc8d56a161f8';
 
 username = 'Nedomas';
 
@@ -138,14 +143,16 @@ module.exports = Editor = React.createClass({
     return this.props.onChange(new_content);
   },
   render: function() {
-    return React.createElement(AceEditor, {
+    return React.createElement("div", {
+      "className": 'col-xs-6 col-md-6 editor'
+    }, React.createElement(AceEditor, {
       "mode": 'java',
       "theme": 'github',
       "name": 'blah1',
       "height": '6em',
       "onChange": this.onChange,
       "value": this.props.value
-    });
+    }));
   }
 });
 

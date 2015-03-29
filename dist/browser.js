@@ -20,14 +20,15 @@ module.exports = Browser = React.createClass({
   base: function() {
     return 'http://testing-editor.closeheatapp.com/';
   },
-  srcHtml: function() {
+  embedHTML: function() {
     return {
       __html: "<embed src='" + (this.src()) + "'>"
     };
   },
   render: function() {
     return React.createElement("div", {
-      "dangerouslySetInnerHTML": this.srcHtml()
+      "className": 'col-xs-6 col-md-6 browser',
+      "dangerouslySetInnerHTML": this.embedHTML()
     });
   }
 });
