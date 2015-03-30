@@ -14,21 +14,27 @@ module.exports = Browser = React.createClass({
   appendBase: function(content) {
     var result;
     result = content;
-    result = result.replace(/href\=\"/, 'href="' + this.base());
-    return result.replace(/src\=\"/, 'src="' + this.base());
+    result = result.replace(/href\=\"(?!http:\/\/)(?!https:\/\/)/g, 'href="' + this.props.base);
+    return result.replace(/src\=\"(?!http:\/\/)(?!https:\/\/)/g, 'src="' + this.props.base);
   },
-  base: function() {
-    return 'http://testing-editor.closeheatapp.com/';
+  componentDidMount: function() {
+    var document;
+    document = frames['browser-frame'].document;
+    return document.write(this.code());
   },
-  embedHTML: function() {
-    return {
-      __html: "<embed src='" + (this.src()) + "'>"
-    };
+  componentDidUpdate: function() {
+    var document;
+    console.log('new code');
+    console.log(this.code());
+    document = frames['browser-frame'].document;
+    return document.write(this.code());
   },
   render: function() {
     return React.createElement("div", {
-      "className": 'col-xs-6 col-md-6 browser',
-      "dangerouslySetInnerHTML": this.embedHTML()
-    });
+      "className": 'col-xs-6 col-md-6 browser'
+    }, React.createElement("iframe", {
+      "id": 'browser',
+      "name": 'browser-frame'
+    }));
   }
 });

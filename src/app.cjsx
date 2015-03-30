@@ -22,7 +22,7 @@ App = React.createClass
   render: ->
     <div className='container'>
       <div className='row'>
-        <Browser content={@state.browser_content} ref='browser' />
+        <Browser content={@state.browser_content} base={@props.base} ref='browser' />
         <Editor value={@state.editor_content} onChange={@editorChange} />
         <button onClick={@update}>Build</button>
       </div>

@@ -42,6 +42,7 @@ module.exports = App = React.createClass({
       "className": 'row'
     }, React.createElement(Browser, {
       "content": this.state.browser_content,
+      "base": this.props.base,
       "ref": 'browser'
     }), React.createElement(Editor, {
       "value": this.state.editor_content,
@@ -69,27 +70,33 @@ module.exports = Browser = React.createClass({
   appendBase: function(content) {
     var result;
     result = content;
-    result = result.replace(/href\=\"/, 'href="' + this.base());
-    return result.replace(/src\=\"/, 'src="' + this.base());
+    result = result.replace(/href\=\"(?!http:\/\/)(?!https:\/\/)/g, 'href="' + this.props.base);
+    return result.replace(/src\=\"(?!http:\/\/)(?!https:\/\/)/g, 'src="' + this.props.base);
   },
-  base: function() {
-    return 'http://testing-editor.closeheatapp.com/';
+  componentDidMount: function() {
+    var document;
+    document = frames['browser-frame'].document;
+    return document.write(this.code());
   },
-  embedHTML: function() {
-    return {
-      __html: "<embed src='" + (this.src()) + "'>"
-    };
+  componentDidUpdate: function() {
+    var document;
+    console.log('new code');
+    console.log(this.code());
+    document = frames['browser-frame'].document;
+    return document.write(this.code());
   },
   render: function() {
     return React.createElement("div", {
-      "className": 'col-xs-6 col-md-6 browser',
-      "dangerouslySetInnerHTML": this.embedHTML()
-    });
+      "className": 'col-xs-6 col-md-6 browser'
+    }, React.createElement("iframe", {
+      "id": 'browser',
+      "name": 'browser-frame'
+    }));
   }
 });
 
 },{"jquery":74,"react":255}],3:[function(require,module,exports){
-var $, App, Core, Editor, Filesystem, React, reponame, token, username;
+var $, App, Core, Editor, Filesystem, React, base, reponame, token, username;
 
 $ = require('jquery');
 
@@ -102,28 +109,35 @@ Editor = require('./editor');
 App = require('./app');
 
 module.exports = Core = (function() {
-  function Core(token, username, reponame) {
+  function Core(token, username, reponame, base1) {
+    this.base = base1;
     this.filesystem = new Filesystem(token, username, reponame);
   }
 
   Core.prototype.load = function() {
-    return this.filesystem.load().then(function() {
-      return React.render(React.createElement(App, null), document.body);
-    });
+    return this.filesystem.load().then((function(_this) {
+      return function() {
+        return React.render(React.createElement(App, {
+          base: _this.base
+        }), document.body);
+      };
+    })(this));
   };
 
   return Core;
 
 })();
 
-token = 'd188e3d18211aaec848e0a4f9066fc8d56a161f8';
+token = '8080149d057ce69f7b78ae2a7ade804bc4b79d65';
 
-username = 'Nedomas';
+username = 'closeheat';
 
-reponame = 'testing-editor';
+reponame = 'web';
+
+base = 'http://web.closeheatapp.com/';
 
 $(function() {
-  return new Core(token, username, reponame).load();
+  return new Core(token, username, reponame, base).load();
 });
 
 },{"./app":1,"./editor":4,"./filesystem":5,"jquery":74,"react":255}],4:[function(require,module,exports){
@@ -197,7 +211,7 @@ module.exports = Filesystem = (function() {
           return fs.mkdirpSync("/" + dir.path);
         });
         files = _.select(objs, function(obj) {
-          return obj.type === 'blob';
+          return obj.path.match(/\.jade$/) && obj.type === 'blob';
         });
         return Promise.all(_this.addFileContents(files));
       };

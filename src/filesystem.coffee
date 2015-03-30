@@ -22,7 +22,9 @@ class Filesystem
       dirs = _.select objs, (file) -> file.type == 'tree'
       _.each dirs, (dir) -> fs.mkdirpSync("/#{dir.path}")
 
-      files = _.select objs, (obj) -> obj.type == 'blob'
+      files = _.select objs, (obj) ->
+        obj.path.match(/\.jade$/) && obj.type == 'blob'
+
       Promise.all(@addFileContents(files))
 
   getGithub: ->

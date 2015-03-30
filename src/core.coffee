@@ -7,16 +7,20 @@ App = require './app'
 
 module.exports =
 class Core
-  constructor: (token, username, reponame) ->
+  constructor: (token, username, reponame, @base) ->
     @filesystem = new Filesystem(token, username, reponame)
 
   load: ->
-    @filesystem.load().then ->
-      React.render(React.createElement(App, null), document.body)
+    @filesystem.load().then =>
+      React.render(React.createElement(App, base: @base), document.body)
 
-token = 'd188e3d18211aaec848e0a4f9066fc8d56a161f8'
-username = 'Nedomas'
-reponame = 'testing-editor'
+token = '8080149d057ce69f7b78ae2a7ade804bc4b79d65'
+# username = 'Nedomas'
+# reponame = 'testing-editor'
+# base = 'http://testing-editor.closeheatapp.com/'
+username = 'closeheat'
+reponame = 'web'
+base = 'http://web.closeheatapp.com/'
 
 $ ->
-  new Core(token, username, reponame).load()
+  new Core(token, username, reponame, base).load()

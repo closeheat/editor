@@ -41,6 +41,7 @@ module.exports = App = React.createClass({
       "className": 'row'
     }, React.createElement(Browser, {
       "content": this.state.browser_content,
+      "base": this.props.base,
       "ref": 'browser'
     }), React.createElement(Editor, {
       "value": this.state.editor_content,
