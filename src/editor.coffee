@@ -13,7 +13,6 @@ Editor = React.createClass
         mode='java'
         theme='github'
         name='blah1'
-        height='6em'
         onChange={@onChange}
         value={@props.value}
       />

@@ -20,7 +20,6 @@ module.exports = Editor = React.createClass({
       "mode": 'java',
       "theme": 'github',
       "name": 'blah1',
-      "height": '6em',
       "onChange": this.onChange,
       "value": this.props.value
     }));

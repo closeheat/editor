@@ -25,9 +25,7 @@ module.exports = App = React.createClass({
   },
   update: function() {
     fs.writeFileSync('/index.jade', this.state.editor_content);
-    return this.setState({
-      browser_content: this.indexHTML()
-    });
+    return this.refs.browser.refresh(this.indexHTML());
   },
   editorChange: function(new_content) {
     return this.setState({
@@ -40,7 +38,7 @@ module.exports = App = React.createClass({
     }, React.createElement("div", {
       "className": 'row'
     }, React.createElement(Browser, {
-      "content": this.state.browser_content,
+      "initial_content": this.state.browser_content,
       "base": this.props.base,
       "ref": 'browser'
     }), React.createElement(Editor, {
