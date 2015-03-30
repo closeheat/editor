@@ -28,6 +28,22 @@ module.exports = App = React.createClass({
     fs.writeFileSync('/index.jade', this.state.editor_content);
     return this.refs.browser.refresh(this.indexHTML());
   },
+  deploy: function() {
+    var $;
+    $ = require('jquery');
+    return $.ajax({
+      url: this.props.server + "/api/v1/editor/deploy",
+      method: 'POST',
+      dataType: 'json',
+      data: {
+        username: this.props.username,
+        reponame: this.props.reponame,
+        code: this.rawIndex()
+      }
+    }, function(err, resp) {
+      debugger;
+    });
+  },
   editorChange: function(new_content) {
     return this.setState({
       editor_content: new_content
@@ -47,16 +63,16 @@ module.exports = App = React.createClass({
       "onChange": this.editorChange
     }), React.createElement("button", {
       "onClick": this.update
-    }, "Build")));
+    }, "Build"), React.createElement("button", {
+      "onClick": this.deploy
+    }, "Deploy")));
   }
 });
 
-},{"./browser":2,"./editor":4,"jade-memory-fs":19,"lodash":75,"react":255}],2:[function(require,module,exports){
-var $, Browser, React;
+},{"./browser":2,"./editor":4,"jade-memory-fs":19,"jquery":74,"lodash":75,"react":255}],2:[function(require,module,exports){
+var Browser, React;
 
 React = require('react');
-
-$ = require('jquery');
 
 module.exports = Browser = React.createClass({
   src: function() {
@@ -87,8 +103,8 @@ module.exports = Browser = React.createClass({
   }
 });
 
-},{"jquery":74,"react":255}],3:[function(require,module,exports){
-var $, App, Core, Editor, Filesystem, React, base, reponame, token, username;
+},{"react":255}],3:[function(require,module,exports){
+var $, App, Core, Editor, Filesystem, React, base, reponame, server, token, username;
 
 $ = require('jquery');
 
@@ -101,8 +117,9 @@ Editor = require('./editor');
 App = require('./app');
 
 module.exports = Core = (function() {
-  function Core(token, username, reponame, base1) {
+  function Core(token, username, reponame, base1, server1) {
     this.base = base1;
+    this.server = server1;
     this.filesystem = new Filesystem(token, username, reponame);
   }
 
@@ -110,7 +127,8 @@ module.exports = Core = (function() {
     return this.filesystem.load().then((function(_this) {
       return function() {
         return React.render(React.createElement(App, {
-          base: _this.base
+          base: _this.base,
+          server: _this.server
         }), document.body);
       };
     })(this));
@@ -122,14 +140,16 @@ module.exports = Core = (function() {
 
 token = '8080149d057ce69f7b78ae2a7ade804bc4b79d65';
 
-username = 'closeheat';
+username = 'Nedomas';
 
-reponame = 'web';
+reponame = 'testing-editor';
 
-base = 'http://web.closeheatapp.com/';
+base = 'http://testing-editor.closeheatapp.com/';
+
+server = 'http://localhost:3000';
 
 $(function() {
-  return new Core(token, username, reponame, base).load();
+  return new Core(token, username, reponame, base, server).load();
 });
 
 },{"./app":1,"./editor":4,"./filesystem":5,"jquery":74,"react":255}],4:[function(require,module,exports){

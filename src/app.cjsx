@@ -16,8 +16,20 @@ App = React.createClass
     fs.readFileSync('/index.jade').toString()
   update: ->
     fs.writeFileSync('/index.jade', @state.editor_content)
-    # @setState(browser_content: @indexHTML())
     @refs.browser.refresh(@indexHTML())
+  deploy: ->
+    $ = require('jquery')
+
+    $.ajax
+      url: "#{@props.server}/api/v1/editor/deploy"
+      method: 'POST'
+      dataType: 'json'
+      data:
+        username: @props.username
+        reponame: @props.reponame
+        code: @rawIndex()
+    , (err, resp) ->
+      debugger
   editorChange: (new_content) ->
     @setState(editor_content: new_content)
   render: ->
@@ -26,5 +38,6 @@ App = React.createClass
         <Browser initial_content={@state.browser_content} base={@props.base} ref='browser' />
         <Editor value={@state.editor_content} onChange={@editorChange} />
         <button onClick={@update}>Build</button>
+        <button onClick={@deploy}>Deploy</button>
       </div>
     </div>

@@ -1,4 +1,4 @@
-var $, App, Core, Editor, Filesystem, React, base, reponame, token, username;
+var $, App, Core, Editor, Filesystem, React, base, reponame, server, token, username;
 
 $ = require('jquery');
 
@@ -11,8 +11,9 @@ Editor = require('./editor');
 App = require('./app');
 
 module.exports = Core = (function() {
-  function Core(token, username, reponame, base1) {
+  function Core(token, username, reponame, base1, server1) {
     this.base = base1;
+    this.server = server1;
     this.filesystem = new Filesystem(token, username, reponame);
   }
 
@@ -20,7 +21,8 @@ module.exports = Core = (function() {
     return this.filesystem.load().then((function(_this) {
       return function() {
         return React.render(React.createElement(App, {
-          base: _this.base
+          base: _this.base,
+          server: _this.server
         }), document.body);
       };
     })(this));
@@ -32,12 +34,14 @@ module.exports = Core = (function() {
 
 token = '8080149d057ce69f7b78ae2a7ade804bc4b79d65';
 
-username = 'closeheat';
+username = 'Nedomas';
 
-reponame = 'web';
+reponame = 'testing-editor';
 
-base = 'http://web.closeheatapp.com/';
+base = 'http://testing-editor.closeheatapp.com/';
+
+server = 'http://localhost:3000';
 
 $(function() {
-  return new Core(token, username, reponame, base).load();
+  return new Core(token, username, reponame, base, server).load();
 });

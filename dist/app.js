@@ -27,6 +27,22 @@ module.exports = App = React.createClass({
     fs.writeFileSync('/index.jade', this.state.editor_content);
     return this.refs.browser.refresh(this.indexHTML());
   },
+  deploy: function() {
+    var $;
+    $ = require('jquery');
+    return $.ajax({
+      url: this.props.server + "/api/v1/editor/deploy",
+      method: 'POST',
+      dataType: 'json',
+      data: {
+        username: this.props.username,
+        reponame: this.props.reponame,
+        code: this.rawIndex()
+      }
+    }, function(err, resp) {
+      debugger;
+    });
+  },
   editorChange: function(new_content) {
     return this.setState({
       editor_content: new_content
@@ -46,6 +62,8 @@ module.exports = App = React.createClass({
       "onChange": this.editorChange
     }), React.createElement("button", {
       "onClick": this.update
-    }, "Build")));
+    }, "Build"), React.createElement("button", {
+      "onClick": this.deploy
+    }, "Deploy")));
   }
 });
