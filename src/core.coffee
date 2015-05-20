@@ -1,3 +1,4 @@
+md = require 'marked'
 $ = require 'jquery'
 React = require 'react'
 
@@ -14,14 +15,14 @@ class Core
     @filesystem.load().then =>
       React.render(React.createElement(App, base: @base, server: @server), document.body)
 
-token = '6dd48ba02321d681d139bd9247066cbee6898019'
-username = 'Nedomas'
-reponame = 'testing-editor'
-base = 'http://testing-editor.closeheatapp.com/'
-username = 'closeheat'
-reponame = 'web'
-base = 'http://web.closeheatapp.com/'
-server = 'http://localhost:3000'
+# token = '6dd48ba02321d681d139bd9247066cbee6898019'
+# username = 'Nedomas'
+# reponame = 'myfriendisafounder'
+# base = 'http://myfriendisafounder.closeheatapp.com/'
+# username = 'closeheat'
+# reponame = 'web'
+# base = 'http://web.closeheatapp.com/'
+# server = 'http://localhost:3000'
 
 $ ->
-  new Core(token, username, reponame, base, server).load()
+  new Core(GITHUB_TOKEN, GITHUB_NAME, GITHUB_REPO, APP_DOMAIN).load()

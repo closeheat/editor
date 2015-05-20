@@ -38,7 +38,7 @@ module.exports = Filesystem = (function() {
           return fs.mkdirpSync("/" + dir.path);
         });
         files = _.select(objs, function(obj) {
-          return obj.path.match(/\.jade$/) && obj.type === 'blob';
+          return obj.path.match(/\.jade|md$/) && obj.type === 'blob';
         });
         return Promise.all(_this.addFileContents(files));
       };

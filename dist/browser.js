@@ -9,8 +9,8 @@ module.exports = Browser = React.createClass({
   code: function(content) {
     var result;
     result = content;
-    result = result.replace(/href\=\"(?!http:\/\/)(?!https:\/\/)/g, 'href="' + this.props.base);
-    return result.replace(/src\=\"(?!http:\/\/)(?!https:\/\/)/g, 'src="' + this.props.base);
+    result = result.replace(/href\=\"(?!http:\/\/)(?!https:\/\/)/g, 'href="' + this.props.base + '/');
+    return result.replace(/src\=\"(?!http:\/\/)(?!https:\/\/)/g, 'src="' + this.props.base + '/');
   },
   refresh: function(content) {
     var document;

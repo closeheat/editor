@@ -6,8 +6,8 @@ Browser = React.createClass
     "data:text/html;charset=utf-8,#{encodeURIComponent(@code())}"
   code: (content) ->
     result = content
-    result = result.replace(/href\=\"(?!http:\/\/)(?!https:\/\/)/g, 'href="' + @props.base)
-    result.replace(/src\=\"(?!http:\/\/)(?!https:\/\/)/g, 'src="' + @props.base)
+    result = result.replace(/href\=\"(?!http:\/\/)(?!https:\/\/)/g, 'href="' + @props.base + '/')
+    result.replace(/src\=\"(?!http:\/\/)(?!https:\/\/)/g, 'src="' + @props.base + '/')
   refresh: (content) ->
     document = frames['browser-frame'].document
     document.open()

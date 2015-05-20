@@ -1,4 +1,6 @@
-var $, App, Core, Filesystem, React, base, reponame, server, token, username;
+var $, App, Core, Filesystem, React, md;
+
+md = require('marked');
 
 $ = require('jquery');
 
@@ -9,9 +11,9 @@ Filesystem = require('./filesystem');
 App = require('./app');
 
 module.exports = Core = (function() {
-  function Core(token, username, reponame, base1, server1) {
-    this.base = base1;
-    this.server = server1;
+  function Core(token, username, reponame, base, server) {
+    this.base = base;
+    this.server = server;
     this.filesystem = new Filesystem(token, username, reponame);
   }
 
@@ -30,22 +32,6 @@ module.exports = Core = (function() {
 
 })();
 
-token = '6dd48ba02321d681d139bd9247066cbee6898019';
-
-username = 'Nedomas';
-
-reponame = 'testing-editor';
-
-base = 'http://testing-editor.closeheatapp.com/';
-
-username = 'closeheat';
-
-reponame = 'web';
-
-base = 'http://web.closeheatapp.com/';
-
-server = 'http://localhost:3000';
-
 $(function() {
-  return new Core(token, username, reponame, base, server).load();
+  return new Core(GITHUB_TOKEN, GITHUB_NAME, GITHUB_REPO, APP_DOMAIN).load();
 });
