@@ -1,5 +1,9 @@
 React = require 'react'
-AceEditor = require 'react-ace'
+brace  = require('brace')
+AceEditor  = require('react-ace')
+
+require('brace/mode/jade')
+require('brace/theme/github')
 
 module.exports =
 Editor = React.createClass
@@ -8,12 +12,12 @@ Editor = React.createClass
   onChange: (new_content) ->
     @props.onChange(new_content)
   render: ->
-    <div className='col-xs-6 col-md-6 editor'>
-      <AceEditor
-        mode='java'
-        theme='github'
-        name='blah1'
-        onChange={@onChange}
-        value={@props.value}
-      />
-    </div>
+    <AceEditor
+      mode='jade'
+      theme='github'
+      name='blah1'
+      height='calc(100vh - 100px)'
+      width='100%'
+      onChange={@onChange}
+      value={@props.value}
+    />

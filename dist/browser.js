@@ -23,7 +23,7 @@ module.exports = Browser = React.createClass({
   },
   render: function() {
     return React.createElement("div", {
-      "className": 'col-xs-6 col-md-6 browser'
+      "className": 'browser'
     }, React.createElement("iframe", {
       "id": 'browser',
       "name": 'browser-frame'

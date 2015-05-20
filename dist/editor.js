@@ -1,8 +1,14 @@
-var AceEditor, Editor, React;
+var AceEditor, Editor, React, brace;
 
 React = require('react');
 
+brace = require('brace');
+
 AceEditor = require('react-ace');
+
+require('brace/mode/jade');
+
+require('brace/theme/github');
 
 module.exports = Editor = React.createClass({
   getInitialState: function() {
@@ -14,14 +20,14 @@ module.exports = Editor = React.createClass({
     return this.props.onChange(new_content);
   },
   render: function() {
-    return React.createElement("div", {
-      "className": 'col-xs-6 col-md-6 editor'
-    }, React.createElement(AceEditor, {
-      "mode": 'java',
+    return React.createElement(AceEditor, {
+      "mode": 'jade',
       "theme": 'github',
       "name": 'blah1',
+      "height": 'calc(100vh - 100px)',
+      "width": '100%',
       "onChange": this.onChange,
       "value": this.props.value
-    }));
+    });
   }
 });

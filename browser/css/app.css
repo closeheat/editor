@@ -1,5 +1,36 @@
-.editor {
-  height: 100vh; }
-
 .browser iframe {
-  height: 100vh; }
+  height: 100vh;
+  width: 100%; }
+
+.actions {
+  height: 10vh; }
+
+body {
+  background-color: #292929; }
+
+.actions {
+  font-family: "Raleway"; }
+  .actions button {
+    margin: .5em auto;
+    display: block;
+    color: #fff;
+    border: none;
+    width: 90%;
+    text-transform: uppercase; }
+  .actions .preview {
+    background-color: #f5b638;
+    font-size: 1.5em;
+    border-bottom: 2px solid #916308;
+    font-weight: 600; }
+  .actions .publish {
+    background-color: #52ae28;
+    font-size: 1.1em;
+    border-bottom: 2px solid #2b5b15; }
+
+.row {
+  margin-left: 0;
+  margin-right: 0; }
+
+.col-md-7, .col-md-5 {
+  padding-left: 0;
+  padding-right: 0; }

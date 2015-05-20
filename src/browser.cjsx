@@ -15,6 +15,6 @@ Browser = React.createClass
   componentDidMount: ->
     @refresh(@props.initial_content)
   render: ->
-    <div className='col-xs-6 col-md-6 browser'>
+    <div className='browser'>
       <iframe id='browser' name='browser-frame'></iframe>
     </div>

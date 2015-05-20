@@ -33,11 +33,19 @@ App = React.createClass
   editorChange: (new_content) ->
     @setState(editor_content: new_content)
   render: ->
-    <div className='container'>
+    <main>
       <div className='row'>
-        <Browser initial_content={@state.browser_content} base={@props.base} ref='browser' />
-        <Editor value={@state.editor_content} onChange={@editorChange} />
-        <button onClick={@update}>Build</button>
-        <button onClick={@deploy}>Deploy</button>
+        <div className='col-md-5'>
+          <div className='editor'>
+            <Editor value={@state.editor_content} onChange={@editorChange} />
+          </div>
+          <div className='actions'>
+            <button onClick={@update} className='preview'>Preview</button>
+            <button onClick={@deploy} className='publish'>Publish</button>
+          </div>
+        </div>
+        <div className='col-md-7'>
+          <Browser initial_content={@state.browser_content} base={@props.base} ref='browser' />
+        </div>
       </div>
-    </div>
+    </main>

@@ -49,21 +49,29 @@ module.exports = App = React.createClass({
     });
   },
   render: function() {
-    return React.createElement("div", {
-      "className": 'container'
-    }, React.createElement("div", {
+    return React.createElement("main", null, React.createElement("div", {
       "className": 'row'
+    }, React.createElement("div", {
+      "className": 'col-md-5'
+    }, React.createElement("div", {
+      "className": 'editor'
+    }, React.createElement(Editor, {
+      "value": this.state.editor_content,
+      "onChange": this.editorChange
+    })), React.createElement("div", {
+      "className": 'actions'
+    }, React.createElement("button", {
+      "onClick": this.update,
+      "className": 'preview'
+    }, "Preview"), React.createElement("button", {
+      "onClick": this.deploy,
+      "className": 'publish'
+    }, "Publish"))), React.createElement("div", {
+      "className": 'col-md-7'
     }, React.createElement(Browser, {
       "initial_content": this.state.browser_content,
       "base": this.props.base,
       "ref": 'browser'
-    }), React.createElement(Editor, {
-      "value": this.state.editor_content,
-      "onChange": this.editorChange
-    }), React.createElement("button", {
-      "onClick": this.update
-    }, "Build"), React.createElement("button", {
-      "onClick": this.deploy
-    }, "Deploy")));
+    }))));
   }
 });

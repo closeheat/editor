@@ -2,7 +2,7 @@ $ = require 'jquery'
 React = require 'react'
 
 Filesystem = require './filesystem'
-Editor = require './editor'
+# Editor = require './editor'
 App = require './app'
 
 module.exports =
@@ -14,13 +14,13 @@ class Core
     @filesystem.load().then =>
       React.render(React.createElement(App, base: @base, server: @server), document.body)
 
-token = '8080149d057ce69f7b78ae2a7ade804bc4b79d65'
+token = '6dd48ba02321d681d139bd9247066cbee6898019'
 username = 'Nedomas'
 reponame = 'testing-editor'
 base = 'http://testing-editor.closeheatapp.com/'
-# username = 'closeheat'
-# reponame = 'web'
-# base = 'http://web.closeheatapp.com/'
+username = 'closeheat'
+reponame = 'web'
+base = 'http://web.closeheatapp.com/'
 server = 'http://localhost:3000'
 
 $ ->
