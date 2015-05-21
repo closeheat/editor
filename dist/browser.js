@@ -7,10 +7,7 @@ module.exports = Browser = React.createClass({
     return "data:text/html;charset=utf-8," + (encodeURIComponent(this.code()));
   },
   code: function(content) {
-    var result;
-    result = content;
-    result = result.replace(/href\=\"(?!http:\/\/)(?!https:\/\/)/g, 'href="' + this.props.base + '/');
-    return result.replace(/src\=\"(?!http:\/\/)(?!https:\/\/)/g, 'src="' + this.props.base + '/');
+    return content.replace('<head>', '<head><base href="http://spatial-3bc6.closeheatapp.com">');
   },
   refresh: function(content) {
     var document;

@@ -46,17 +46,30 @@ module.exports = App = React.createClass({
       editor_content: this.rawIndex()
     };
   },
+  indexFilename: function() {
+    var e;
+    try {
+      fs.readFileSync('/index.jade');
+      return '/index.jade';
+    } catch (_error) {
+      e = _error;
+      return '/index.html';
+    }
+  },
   indexHTML: function() {
     var md;
+    if (this.indexFilename() === '/index.html') {
+      return this.rawIndex();
+    }
     md = require('marked');
     jade.filters.md = md;
-    return jade.renderFile('/index.jade');
+    return jade.renderFile(this.indexFilename());
   },
   rawIndex: function() {
-    return fs.readFileSync('/index.jade').toString();
+    return fs.readFileSync(this.indexFilename()).toString();
   },
   update: function() {
-    fs.writeFileSync('/index.jade', this.state.editor_content);
+    fs.writeFileSync(this.indexFilename(), this.state.editor_content);
     return this.refs.browser.refresh(this.indexHTML());
   },
   showError: function() {
@@ -110,7 +123,8 @@ module.exports = App = React.createClass({
       "className": 'editor'
     }, React.createElement(Editor, {
       "value": this.state.editor_content,
-      "onChange": this.editorChange
+      "onChange": this.editorChange,
+      "index_filename": this.indexFilename()
     })), React.createElement("div", {
       "className": 'actions'
     }, React.createElement("button", {

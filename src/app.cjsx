@@ -28,14 +28,22 @@ App = React.createClass
   getInitialState: ->
     browser_content: @indexHTML()
     editor_content: @rawIndex()
+  indexFilename: ->
+    try
+      fs.readFileSync('/index.jade')
+      return '/index.jade'
+    catch e
+      '/index.html'
   indexHTML: ->
+    return @rawIndex() if @indexFilename() == '/index.html'
+
     md = require('marked')
     jade.filters.md = md
-    jade.renderFile('/index.jade')
+    jade.renderFile(@indexFilename())
   rawIndex: ->
-    fs.readFileSync('/index.jade').toString()
+    fs.readFileSync(@indexFilename()).toString()
   update: ->
-    fs.writeFileSync('/index.jade', @state.editor_content)
+    fs.writeFileSync(@indexFilename(), @state.editor_content)
     @refs.browser.refresh(@indexHTML())
   showError: ->
     @setState(modal_open: true)
@@ -65,7 +73,7 @@ App = React.createClass
       <div className='row'>
         <div className='col-md-5'>
           <div className='editor'>
-            <Editor value={@state.editor_content} onChange={@editorChange} />
+            <Editor value={@state.editor_content} onChange={@editorChange} index_filename={@indexFilename()} />
           </div>
           <div className='actions'>
             <button onClick={@update} className='preview'>Preview</button>

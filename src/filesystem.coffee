@@ -23,7 +23,7 @@ class Filesystem
       _.each dirs, (dir) -> fs.mkdirpSync("/#{dir.path}")
 
       files = _.select objs, (obj) ->
-        obj.path.match(/\.jade|md$/) && obj.type == 'blob'
+        obj.path.match(/\.jade|md|html$/) && obj.type == 'blob'
 
       Promise.all(@addFileContents(files))
 
