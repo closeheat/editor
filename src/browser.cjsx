@@ -5,7 +5,7 @@ Browser = React.createClass
   src: ->
     "data:text/html;charset=utf-8,#{encodeURIComponent(@code())}"
   code: (content) ->
-    content.replace('<head>', '<head><base href="http://spatial-3bc6.closeheatapp.com">')
+    content.replace('<head>', "<head><base href='#{@props.base}'>")
   refresh: (content) ->
     document = frames['browser-frame'].document
     document.open()

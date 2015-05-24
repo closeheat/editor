@@ -23,11 +23,29 @@ InfoModal = React.createClass
       </div>
     </Modal>
 
+Tour = React.createClass
+  step1: ->
+    <div className='tooltip-left tour-code-editor'>
+      Change the code here
+    </div>
+  step2: ->
+    <div className='tooltip-left tour-preview-button'>
+      Click "Preview" to see your changes in the browser
+    </div>
+  step3: ->
+    <div className='tooltip-left tour-deploy-button'>
+      Click "Publish" to make your changes available to website visitors
+    </div>
+  render: ->
+    step = @['step' + @props.step]
+    step && step()
+
 module.exports =
 App = React.createClass
   getInitialState: ->
     browser_content: @indexHTML()
     editor_content: @rawIndex()
+    tour_step: 1
   indexFilename: ->
     try
       fs.readFileSync('/index.jade')
@@ -45,6 +63,7 @@ App = React.createClass
   update: ->
     fs.writeFileSync(@indexFilename(), @state.editor_content)
     @refs.browser.refresh(@indexHTML())
+    @setState(tour_step: 3)
   showError: ->
     @setState(modal_open: true)
   showSuccess: ->
@@ -52,6 +71,7 @@ App = React.createClass
   closeModal: ->
     @setState(modal_open: false)
   deploy: ->
+    @setState(tour_step: 4)
     $ = require('jquery')
     @setState(modal_open: true, modal_title: 'Take a deep breath...')
 
@@ -63,10 +83,15 @@ App = React.createClass
         username: @props.username
         reponame: @props.reponame
         code: @rawIndex()
+        index_filename: @indexFilename()
     ).then(@showSuccess).fail(@showError)
 
   editorChange: (new_content) ->
     @setState(editor_content: new_content)
+
+    @setState(tour_step: 2) if @state.loaded
+    @setState(loaded: true) if new_content == @state.editor_content
+
   render: ->
     <main>
       <InfoModal open={@state.modal_open} title={@state.modal_title} close={@closeModal} />
@@ -84,5 +109,5 @@ App = React.createClass
           <Browser initial_content={@state.browser_content} base={@props.base} ref='browser' />
         </div>
       </div>
-
+      <Tour step={@state.tour_step} />
     </main>

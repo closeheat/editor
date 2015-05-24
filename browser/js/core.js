@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var App, Browser, Button, Editor, InfoModal, Modal, OverlayMixin, React, ReactBootstrap, _, jade;
+var App, Browser, Button, Editor, InfoModal, Modal, OverlayMixin, React, ReactBootstrap, Tour, _, jade;
 
 React = require('react');
 
@@ -40,11 +40,35 @@ InfoModal = React.createClass({
   }
 });
 
+Tour = React.createClass({
+  step1: function() {
+    return React.createElement("div", {
+      "className": 'tooltip-left tour-code-editor'
+    }, "Change the code here");
+  },
+  step2: function() {
+    return React.createElement("div", {
+      "className": 'tooltip-left tour-preview-button'
+    }, "Click \"Preview\" to see your changes in the browser");
+  },
+  step3: function() {
+    return React.createElement("div", {
+      "className": 'tooltip-left tour-deploy-button'
+    }, "Click \"Publish\" to make your changes available to website visitors");
+  },
+  render: function() {
+    var step;
+    step = this['step' + this.props.step];
+    return step && step();
+  }
+});
+
 module.exports = App = React.createClass({
   getInitialState: function() {
     return {
       browser_content: this.indexHTML(),
-      editor_content: this.rawIndex()
+      editor_content: this.rawIndex(),
+      tour_step: 1
     };
   },
   indexFilename: function() {
@@ -71,7 +95,10 @@ module.exports = App = React.createClass({
   },
   update: function() {
     fs.writeFileSync(this.indexFilename(), this.state.editor_content);
-    return this.refs.browser.refresh(this.indexHTML());
+    this.refs.browser.refresh(this.indexHTML());
+    return this.setState({
+      tour_step: 3
+    });
   },
   showError: function() {
     return this.setState({
@@ -90,6 +117,9 @@ module.exports = App = React.createClass({
   },
   deploy: function() {
     var $;
+    this.setState({
+      tour_step: 4
+    });
     $ = require('jquery');
     this.setState({
       modal_open: true,
@@ -102,14 +132,25 @@ module.exports = App = React.createClass({
       data: {
         username: this.props.username,
         reponame: this.props.reponame,
-        code: this.rawIndex()
+        code: this.rawIndex(),
+        index_filename: this.indexFilename()
       }
     }).then(this.showSuccess).fail(this.showError);
   },
   editorChange: function(new_content) {
-    return this.setState({
+    this.setState({
       editor_content: new_content
     });
+    if (this.state.loaded) {
+      this.setState({
+        tour_step: 2
+      });
+    }
+    if (new_content === this.state.editor_content) {
+      return this.setState({
+        loaded: true
+      });
+    }
   },
   render: function() {
     return React.createElement("main", null, React.createElement(InfoModal, {
@@ -140,7 +181,9 @@ module.exports = App = React.createClass({
       "initial_content": this.state.browser_content,
       "base": this.props.base,
       "ref": 'browser'
-    }))));
+    }))), React.createElement(Tour, {
+      "step": this.state.tour_step
+    }));
   }
 });
 
@@ -154,7 +197,7 @@ module.exports = Browser = React.createClass({
     return "data:text/html;charset=utf-8," + (encodeURIComponent(this.code()));
   },
   code: function(content) {
-    return content.replace('<head>', '<head><base href="http://spatial-3bc6.closeheatapp.com">');
+    return content.replace('<head>', "<head><base href='" + this.props.base + "'>");
   },
   refresh: function(content) {
     var document;
