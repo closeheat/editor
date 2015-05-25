@@ -1,4 +1,4 @@
-[![clsfinal](https://cloud.githubusercontent.com/assets/1877286/6791806/497dae84-d1b2-11e4-8c92-ee1f5d1836ec.png)](closeheat.com)
+[![clsfinal](https://cloud.githubusercontent.com/assets/1877286/6791806/497dae84-d1b2-11e4-8c92-ee1f5d1836ec.png)](http://closeheat.com)
 
 # closeheat - Ship Websites Faster
 
