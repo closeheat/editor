@@ -1,4 +1,4 @@
-var App, Browser, Button, Editor, InfoModal, Modal, OverlayMixin, React, ReactBootstrap, Tour, _, jade;
+var App, Browser, Editor, InfoModal, React, Tour, _, jade;
 
 React = require('react');
 
@@ -6,36 +6,23 @@ jade = require('jade-memory-fs');
 
 _ = require('lodash');
 
-ReactBootstrap = require('react-bootstrap');
-
-Modal = ReactBootstrap.Modal;
-
-Button = ReactBootstrap.Button;
-
-OverlayMixin = ReactBootstrap.OverlayMixin;
-
 Browser = require('./browser');
 
 Editor = require('./editor');
 
 InfoModal = React.createClass({
-  mixins: [OverlayMixin],
   render: function() {
-    return React.createElement("span", null);
-  },
-  renderOverlay: function() {
-    if (!this.props.open) {
+    if (this.props.open) {
+      return React.createElement("div", {
+        "className": 'modal'
+      }, React.createElement("div", {
+        "className": 'fog'
+      }), React.createElement("div", {
+        "className": 'loading'
+      }, "Loading"));
+    } else {
       return React.createElement("span", null);
     }
-    return React.createElement(Modal, {
-      "bsStyle": 'primary',
-      "title": this.props.title,
-      "onRequestHide": this.props.close
-    }, React.createElement("div", {
-      "className": 'modal-footer'
-    }, React.createElement(Button, {
-      "onClick": this.props.close
-    }, "Close")));
   }
 });
 
@@ -58,7 +45,11 @@ Tour = React.createClass({
   render: function() {
     var step;
     step = this['step' + this.props.step];
-    return step && step();
+    if (step && !this.props.done) {
+      return step();
+    } else {
+      return React.createElement("div", null);
+    }
   }
 });
 
@@ -67,8 +58,14 @@ module.exports = App = React.createClass({
     return {
       browser_content: this.indexHTML(),
       editor_content: this.rawIndex(),
+      status: 'none',
       tour_step: 1
     };
+  },
+  noStep: function() {
+    return this.setState({
+      tour_step: 1000
+    });
   },
   indexFilename: function() {
     var e;
@@ -95,34 +92,30 @@ module.exports = App = React.createClass({
   update: function() {
     fs.writeFileSync(this.indexFilename(), this.state.editor_content);
     this.refs.browser.refresh(this.indexHTML());
-    return this.setState({
-      tour_step: 3
-    });
+    if (this.state.loaded) {
+      return this.setState({
+        tour_step: 3
+      });
+    }
   },
   showError: function() {
     return this.setState({
-      modal_open: true
+      status: 'error'
     });
   },
   showSuccess: function() {
     return this.setState({
-      modal_title: 'Successfully deployed!'
-    });
-  },
-  closeModal: function() {
-    return this.setState({
-      modal_open: false
+      status: 'published'
     });
   },
   deploy: function() {
     var $;
     this.setState({
-      tour_step: 4
+      tour_done: true
     });
     $ = require('jquery');
     this.setState({
-      modal_open: true,
-      modal_title: 'Take a deep breath...'
+      status: 'publishing'
     });
     return $.ajax({
       url: SERVER_URL + "/apps/" + APP_SLUG + "/live_deploy",
@@ -151,12 +144,41 @@ module.exports = App = React.createClass({
       });
     }
   },
+  publishing: function() {
+    if (this.state.status === 'publishing') {
+      return React.createElement("div", {
+        "className": 'editor-modal'
+      }, React.createElement("div", {
+        "className": 'fog'
+      }), React.createElement("div", {
+        "className": 'publishing'
+      }, "Publishing..."));
+    }
+  },
+  published: function() {
+    if (this.state.status === 'published') {
+      return React.createElement("div", {
+        "className": 'editor-modal'
+      }, React.createElement("div", {
+        "className": 'fog',
+        "onClick": this.closeModal
+      }), React.createElement("div", {
+        "className": 'published'
+      }, React.createElement("h3", null, "Your edits are published."), React.createElement("a", {
+        "href": 'http://' + APP_SLUG + '.closeheatapp.com'
+      }, "Open your website"), React.createElement("button", {
+        "className": 'back',
+        "onClick": this.closeModal
+      }, "Back to editor")));
+    }
+  },
+  closeModal: function() {
+    return this.setState({
+      status: 'none'
+    });
+  },
   render: function() {
-    return React.createElement("main", null, React.createElement(InfoModal, {
-      "open": this.state.modal_open,
-      "title": this.state.modal_title,
-      "close": this.closeModal
-    }), React.createElement("div", {
+    return React.createElement("main", null, this.publishing(), this.published(), React.createElement("div", {
       "className": 'row'
     }, React.createElement("div", {
       "className": 'col-md-5'
@@ -181,7 +203,8 @@ module.exports = App = React.createClass({
       "base": this.props.base,
       "ref": 'browser'
     }))), React.createElement(Tour, {
-      "step": this.state.tour_step
+      "step": this.state.tour_step,
+      "done": this.state.tour_done
     }));
   }
 });
