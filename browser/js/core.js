@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var App, Browser, Editor, InfoModal, React, Tour, _, jade;
+var App, Browser, Editor, PublishStatus, React, Tour, _, jade;
 
 React = require('react');
 
@@ -11,19 +11,56 @@ Browser = require('./browser');
 
 Editor = require('./editor');
 
-InfoModal = React.createClass({
-  render: function() {
-    if (this.props.open) {
-      return React.createElement("div", {
-        "className": 'modal'
-      }, React.createElement("div", {
-        "className": 'fog'
-      }), React.createElement("div", {
-        "className": 'loading'
-      }, "Loading"));
-    } else {
+PublishStatus = React.createClass({
+  currentStage: function() {
+    return this.props.current || 0;
+  },
+  error: function(i) {
+    if (!(this.props.error && this.currentStage() === i + 1)) {
       return React.createElement("span", null);
     }
+    return React.createElement("div", {
+      "className": 'stage-error'
+    }, "App name ", this.props.error);
+  },
+  render: function() {
+    var cx;
+    if (this.currentStage() === 0) {
+      return React.createElement("span", {
+        "className": 'deploy-steps'
+      });
+    }
+    cx = React.addons.classSet;
+    return React.createElement("ol", {
+      "className": "deploy-steps list-unstyled list-group"
+    }, _.map(this.props.stages, (function(_this) {
+      return function(stage, i) {
+        var icon_classes, li_classes;
+        li_classes = function(_this) {
+          return cx({
+            'list-group-item': true,
+            success: !_this.props.error && _this.currentStage() > i + 1,
+            failure: _this.props.error && _this.currentStage() === i + 1
+          });
+        };
+        icon_classes = function(_this) {
+          return cx({
+            fa: true,
+            icon: true,
+            'fa-check-circle': !_this.props.error && _this.currentStage() > i + 1,
+            'fa-spinner fa-spin': !_this.props.error && _this.currentStage() === i + 1,
+            'fa-exclamation-circle': _this.props.error && _this.currentStage() === i + 1
+          });
+        };
+        return React.createElement("li", {
+          "className": li_classes(_this)
+        }, React.createElement("span", {
+          "className": 'stage-name'
+        }, stage), React.createElement("i", {
+          "className": icon_classes(_this)
+        }), _this.error(i));
+      };
+    })(this)));
   }
 });
 
@@ -56,16 +93,30 @@ Tour = React.createClass({
 
 module.exports = App = React.createClass({
   getInitialState: function() {
+    var tour_step;
+    tour_step = TOUR_FINISHED ? 1000 : 1;
     return {
       browser_content: this.indexHTML(),
       editor_content: this.rawIndex(),
       status: 'none',
-      tour_step: 1
+      tour_step: tour_step
     };
   },
   noStep: function() {
     return this.setState({
       tour_step: 1000
+    });
+  },
+  goToStep: function(tour_step) {
+    console.log({
+      tour_step: tour_step,
+      state: this.state.tour_step
+    });
+    if (tour_step < this.state.tour_step) {
+      return;
+    }
+    return this.setState({
+      tour_step: tour_step
     });
   },
   indexFilename: function() {
@@ -94,9 +145,7 @@ module.exports = App = React.createClass({
     fs.writeFileSync(this.indexFilename(), this.state.editor_content);
     this.refs.browser.refresh(this.indexHTML());
     if (this.state.loaded) {
-      return this.setState({
-        tour_step: 3
-      });
+      return this.goToStep(3);
     }
   },
   showError: function() {
@@ -135,9 +184,7 @@ module.exports = App = React.createClass({
       editor_content: new_content
     });
     if (this.state.loaded) {
-      this.setState({
-        tour_step: 2
-      });
+      this.goToStep(2);
     }
     if (new_content === this.state.editor_content) {
       return this.setState({
@@ -146,32 +193,37 @@ module.exports = App = React.createClass({
     }
   },
   publishing: function() {
-    if (this.state.status === 'publishing') {
-      return React.createElement("div", {
-        "className": 'editor-modal'
-      }, React.createElement("div", {
-        "className": 'fog'
-      }), React.createElement("div", {
-        "className": 'publishing'
-      }, "Publishing..."));
-    }
+    var stages;
+    stages = ['Build app', 'Publish to Github', 'Publish to server'];
+    React.createElement(PublishStatus, {
+      "stages": stages,
+      "current": 1.
+    });
+    return React.createElement("div", {
+      "className": 'editor-modal'
+    }, React.createElement("div", {
+      "className": 'fog'
+    }), React.createElement("div", {
+      "className": 'publishing'
+    }, "Publishing..."));
   },
   published: function() {
-    if (this.state.status === 'published') {
-      return React.createElement("div", {
-        "className": 'editor-modal'
-      }, React.createElement("div", {
-        "className": 'fog',
-        "onClick": this.closeModal
-      }), React.createElement("div", {
-        "className": 'published'
-      }, React.createElement("h3", null, "Your edits are published."), React.createElement("a", {
-        "href": 'http://' + APP_SLUG + '.closeheatapp.com'
-      }, "Open your website"), React.createElement("button", {
-        "className": 'back',
-        "onClick": this.closeModal
-      }, "Back to editor")));
+    if (this.state.status !== 'published') {
+      return;
     }
+    return React.createElement("div", {
+      "className": 'editor-modal'
+    }, React.createElement("div", {
+      "className": 'fog',
+      "onClick": this.closeModal
+    }), React.createElement("div", {
+      "className": 'published'
+    }, React.createElement("h3", null, "Your edits are published."), React.createElement("a", {
+      "href": 'http://' + APP_SLUG + '.closeheatapp.com'
+    }, "Open your website"), React.createElement("button", {
+      "className": 'back',
+      "onClick": this.closeModal
+    }, "Back to editor")));
   },
   closeModal: function() {
     return this.setState({

@@ -5,21 +5,44 @@ _ = require 'lodash'
 Browser = require('./browser')
 Editor = require('./editor')
 
-InfoModal = React.createClass
-  render: ->
-    if @props.open
-      return (
-        <div className='modal'>
-          <div className='fog'></div>
-          <div className='loading'>Loading</div>
-        </div>
-      )
-    else
-      return <span/>
+PublishStatus = React.createClass
+  currentStage: ->
+    @props.current || 0
+  error: (i) ->
+    return <span/> unless @props.error && @currentStage() == i + 1
 
-    # <div>
-      # <div className='fog'></div>
-    # </div>
+    <div className='stage-error'>
+      App name {@props.error}
+    </div>
+  render: ->
+    return <span className='deploy-steps'/> if @currentStage() == 0
+
+    cx = React.addons.classSet
+
+    <ol className="deploy-steps list-unstyled list-group">
+      {_.map @props.stages, (stage, i) =>
+        li_classes = (_this) =>
+          cx
+            'list-group-item': true
+            success: !_this.props.error && _this.currentStage() > i + 1
+            failure: _this.props.error && _this.currentStage() == i + 1
+
+        icon_classes = (_this) =>
+          cx
+            fa: true
+            icon: true
+            'fa-check-circle': !_this.props.error && _this.currentStage() > i + 1
+            'fa-spinner fa-spin': !_this.props.error && _this.currentStage() == i + 1
+            'fa-exclamation-circle': _this.props.error && _this.currentStage() == i + 1
+
+        <li className={li_classes(@)}>
+          <span className='stage-name'>{stage}</span>
+          <i className={icon_classes(@)}></i>
+          {@error(i)}
+        </li>
+      }
+    </ol>
+
 
 Tour = React.createClass
   step1: ->
@@ -45,13 +68,23 @@ Tour = React.createClass
 module.exports =
 App = React.createClass
   getInitialState: ->
+    tour_step = if TOUR_FINISHED
+      1000
+    else
+      1
+
     browser_content: @indexHTML()
     editor_content: @rawIndex()
     status: 'none'
-    tour_step: 1
+    tour_step: tour_step
 
   noStep: ->
     @setState(tour_step: 1000)
+  goToStep: (tour_step) ->
+    console.log(tour_step: tour_step, state: @state.tour_step)
+    return if tour_step < @state.tour_step
+
+    @setState(tour_step: tour_step)
   indexFilename: ->
     try
       fs.readFileSync('/index.jade')
@@ -69,7 +102,7 @@ App = React.createClass
   update: ->
     fs.writeFileSync(@indexFilename(), @state.editor_content)
     @refs.browser.refresh(@indexHTML())
-    @setState(tour_step: 3) if @state.loaded
+    @goToStep(3) if @state.loaded
   showError: ->
     @setState(status: 'error')
   showSuccess: ->
@@ -93,26 +126,30 @@ App = React.createClass
   editorChange: (new_content) ->
     @setState(editor_content: new_content)
 
-    @setState(tour_step: 2) if @state.loaded
+    @goToStep(2) if @state.loaded
     @setState(loaded: true) if new_content == @state.editor_content
 
   publishing: ->
-    if @state.status == 'publishing'
-      <div className='editor-modal'>
-        <div className='fog'></div>
-        <div className='publishing'>Publishing...</div>
-      </div>
+    # return unless @state.status == 'publishing'
+    stages = ['Build app', 'Publish to Github', 'Publish to server']
+
+    <PublishStatus stages={stages} current={1} />
+
+    <div className='editor-modal'>
+      <div className='fog'></div>
+      <div className='publishing'>Publishing...</div>
+    </div>
 
   published: ->
-    if @state.status == 'published'
-      <div className='editor-modal'>
-        <div className='fog' onClick={@closeModal}></div>
-        <div className='published'>
-          <h3>Your edits are published.</h3>
-          <a href={'http://' + APP_SLUG + '.closeheatapp.com'}>Open your website</a>
-          <button className='back' onClick={@closeModal}>Back to editor</button>
-        </div>
+    return unless @state.status == 'published'
+    <div className='editor-modal'>
+      <div className='fog' onClick={@closeModal}></div>
+      <div className='published'>
+        <h3>Your edits are published.</h3>
+        <a href={'http://' + APP_SLUG + '.closeheatapp.com'}>Open your website</a>
+        <button className='back' onClick={@closeModal}>Back to editor</button>
       </div>
+    </div>
 
   closeModal: ->
     @setState(status: 'none')
