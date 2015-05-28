@@ -1,4 +1,4 @@
-React = require 'react'
+React = require 'react/addons'
 jade = require 'jade-memory-fs'
 _ = require 'lodash'
 
@@ -32,7 +32,7 @@ PublishStatus = React.createClass
             fa: true
             icon: true
             'fa-check-circle': !_this.props.error && _this.currentStage() > i + 1
-            'fa-spinner fa-spin': !_this.props.error && _this.currentStage() == i + 1
+            'fa-circle-o-notch fa-spin': !_this.props.error && _this.currentStage() == i + 1
             'fa-exclamation-circle': _this.props.error && _this.currentStage() == i + 1
 
         <li className={li_classes(@)}>
@@ -75,8 +75,8 @@ App = React.createClass
 
     browser_content: @indexHTML()
     editor_content: @rawIndex()
-    status: 'none'
     tour_step: tour_step
+    stage: 0
 
   noStep: ->
     @setState(tour_step: 1000)
@@ -103,14 +103,13 @@ App = React.createClass
     fs.writeFileSync(@indexFilename(), @state.editor_content)
     @refs.browser.refresh(@indexHTML())
     @goToStep(3) if @state.loaded
-  showError: ->
-    @setState(status: 'error')
+  showError: (e) ->
+    @setState(publish_error: e)
   showSuccess: ->
-    @setState(status: 'published')
+    @setState(stage: 2)
   deploy: ->
-    @setState(tour_done: true)
+    @setState(tour_done: true, stage: 1)
     $ = require('jquery')
-    @setState(status: 'publishing')
 
     $.ajax(
       url: "#{SERVER_URL}/apps/#{APP_SLUG}/live_deploy"
@@ -123,6 +122,9 @@ App = React.createClass
         index_filename: @indexFilename()
     ).then(@showSuccess).fail(@showError)
 
+    pusher_user_channel.bind 'app.build', =>
+      @setState(stage: 3)
+
   editorChange: (new_content) ->
     @setState(editor_content: new_content)
 
@@ -130,34 +132,36 @@ App = React.createClass
     @setState(loaded: true) if new_content == @state.editor_content
 
   publishing: ->
-    # return unless @state.status == 'publishing'
-    stages = ['Build app', 'Publish to Github', 'Publish to server']
+    return unless @state.stage > 0
 
-    <PublishStatus stages={stages} current={1} />
+    stages = ['Publish to Github', 'Publish to server']
 
     <div className='editor-modal'>
       <div className='fog'></div>
-      <div className='publishing'>Publishing...</div>
-    </div>
-
-  published: ->
-    return unless @state.status == 'published'
-    <div className='editor-modal'>
-      <div className='fog' onClick={@closeModal}></div>
-      <div className='published'>
-        <h3>Your edits are published.</h3>
-        <a href={'http://' + APP_SLUG + '.closeheatapp.com'}>Open your website</a>
-        <button className='back' onClick={@closeModal}>Back to editor</button>
+      <div className='content row'>
+        <div className='col-md-offset-4 col-md-4'>
+          <h3 className='text-center'>Be still...</h3>
+          <PublishStatus stages={stages} current={@state.stage} />
+          {@published()}
+        </div>
       </div>
     </div>
 
+  published: ->
+    return unless @state.stage == 3
+
+    <div className='published text-center'>
+      <h4>Your edits were succesfully published.</h4>
+      <a href={'http://' + APP_SLUG + '.closeheatapp.com'}>Take a look at my changes</a>
+      <button className='back' onClick={@closeModal}>Back to editor</button>
+    </div>
+
   closeModal: ->
-    @setState(status: 'none')
+    @setState(stage: 0)
 
   render: ->
     <main>
       {@publishing()}
-      {@published()}
 
       <div className='row'>
         <div className='col-md-5'>

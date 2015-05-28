@@ -1,6 +1,6 @@
 var App, Browser, Editor, PublishStatus, React, Tour, _, jade;
 
-React = require('react');
+React = require('react/addons');
 
 jade = require('jade-memory-fs');
 
@@ -47,7 +47,7 @@ PublishStatus = React.createClass({
             fa: true,
             icon: true,
             'fa-check-circle': !_this.props.error && _this.currentStage() > i + 1,
-            'fa-spinner fa-spin': !_this.props.error && _this.currentStage() === i + 1,
+            'fa-circle-o-notch fa-spin': !_this.props.error && _this.currentStage() === i + 1,
             'fa-exclamation-circle': _this.props.error && _this.currentStage() === i + 1
           });
         };
@@ -97,8 +97,8 @@ module.exports = App = React.createClass({
     return {
       browser_content: this.indexHTML(),
       editor_content: this.rawIndex(),
-      status: 'none',
-      tour_step: tour_step
+      tour_step: tour_step,
+      stage: 0
     };
   },
   noStep: function() {
@@ -147,26 +147,24 @@ module.exports = App = React.createClass({
       return this.goToStep(3);
     }
   },
-  showError: function() {
+  showError: function(e) {
     return this.setState({
-      status: 'error'
+      publish_error: e
     });
   },
   showSuccess: function() {
     return this.setState({
-      status: 'published'
+      stage: 2
     });
   },
   deploy: function() {
     var $;
     this.setState({
-      tour_done: true
+      tour_done: true,
+      stage: 1
     });
     $ = require('jquery');
-    this.setState({
-      status: 'publishing'
-    });
-    return $.ajax({
+    $.ajax({
       url: SERVER_URL + "/apps/" + APP_SLUG + "/live_deploy",
       method: 'POST',
       dataType: 'json',
@@ -177,6 +175,13 @@ module.exports = App = React.createClass({
         index_filename: this.indexFilename()
       }
     }).then(this.showSuccess).fail(this.showError);
+    return pusher_user_channel.bind('app.build', (function(_this) {
+      return function() {
+        return _this.setState({
+          stage: 3
+        });
+      };
+    })(this));
   },
   editorChange: function(new_content) {
     this.setState({
@@ -193,44 +198,45 @@ module.exports = App = React.createClass({
   },
   publishing: function() {
     var stages;
-    stages = ['Build app', 'Publish to Github', 'Publish to server'];
-    React.createElement(PublishStatus, {
-      "stages": stages,
-      "current": 1.
-    });
+    if (!(this.state.stage > 0)) {
+      return;
+    }
+    stages = ['Publish to Github', 'Publish to server'];
     return React.createElement("div", {
       "className": 'editor-modal'
     }, React.createElement("div", {
       "className": 'fog'
     }), React.createElement("div", {
-      "className": 'publishing'
-    }, "Publishing..."));
+      "className": 'content row'
+    }, React.createElement("div", {
+      "className": 'col-md-offset-4 col-md-4'
+    }, React.createElement("h3", {
+      "className": 'text-center'
+    }, "Be still..."), React.createElement(PublishStatus, {
+      "stages": stages,
+      "current": this.state.stage
+    }), this.published())));
   },
   published: function() {
-    if (this.state.status !== 'published') {
+    if (this.state.stage !== 3) {
       return;
     }
     return React.createElement("div", {
-      "className": 'editor-modal'
-    }, React.createElement("div", {
-      "className": 'fog',
-      "onClick": this.closeModal
-    }), React.createElement("div", {
-      "className": 'published'
-    }, React.createElement("h3", null, "Your edits are published."), React.createElement("a", {
+      "className": 'published text-center'
+    }, React.createElement("h4", null, "Your edits were succesfully published."), React.createElement("a", {
       "href": 'http://' + APP_SLUG + '.closeheatapp.com'
-    }, "Open your website"), React.createElement("button", {
+    }, "Take a look at my changes"), React.createElement("button", {
       "className": 'back',
       "onClick": this.closeModal
-    }, "Back to editor")));
+    }, "Back to editor"));
   },
   closeModal: function() {
     return this.setState({
-      status: 'none'
+      stage: 0
     });
   },
   render: function() {
-    return React.createElement("main", null, this.publishing(), this.published(), React.createElement("div", {
+    return React.createElement("main", null, this.publishing(), React.createElement("div", {
       "className": 'row'
     }, React.createElement("div", {
       "className": 'col-md-5'
