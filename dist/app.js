@@ -1,4 +1,4 @@
-var $, App, Browser, Editor, PublishStatus, React, Tour, _, jade;
+var $, App, Browser, Editor, PublishStatus, React, Tour, _, jade, m;
 
 React = require('react/addons');
 
@@ -6,7 +6,11 @@ jade = require('jade-memory-fs');
 
 _ = require('lodash');
 
-$ = require('jquery');
+window.jQuery = $ = require('jquery');
+
+m = require('materialize-css/js/init');
+
+debugger;
 
 Browser = require('./browser');
 
