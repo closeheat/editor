@@ -2,8 +2,8 @@ React = require 'react/addons'
 jade = require 'jade-memory-fs'
 _ = require 'lodash'
 
-window.jQuery = $ = require 'jquery'
-require('materialize-css/js/init')
+window.jQuery = window.$ = require 'jquery'
+require('./materialize')
 
 Browser = require('./browser')
 Editor = require('./editor')

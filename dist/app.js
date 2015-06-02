@@ -1,4 +1,4 @@
-var $, App, Browser, Editor, PublishStatus, React, Tour, _, jade, m;
+var App, Browser, Editor, PublishStatus, React, Tour, _, jade;
 
 React = require('react/addons');
 
@@ -6,11 +6,9 @@ jade = require('jade-memory-fs');
 
 _ = require('lodash');
 
-window.jQuery = $ = require('jquery');
+window.jQuery = window.$ = require('jquery');
 
-m = require('materialize-css/js/init');
-
-debugger;
+require('./materialize');
 
 Browser = require('./browser');
 
@@ -165,6 +163,7 @@ module.exports = App = React.createClass({
     });
   },
   deploy: function() {
+    var $;
     this.setState({
       tour_done: true,
       stage: 1
