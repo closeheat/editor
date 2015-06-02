@@ -10,7 +10,7 @@ require('brace/mode/html');
 
 require('brace/mode/jade');
 
-require('brace/theme/github');
+require('brace/theme/xcode');
 
 module.exports = Editor = React.createClass({
   getInitialState: function() {
@@ -31,9 +31,9 @@ module.exports = Editor = React.createClass({
   render: function() {
     return React.createElement(AceEditor, {
       "mode": this.mode(),
-      "theme": 'github',
+      "theme": 'xcode',
       "name": 'blah1',
-      "height": 'calc(100vh - 100px)',
+      "height": 'calc(100vh - 64px)',
       "width": '100%',
       "onChange": this.onChange,
       "value": this.props.value

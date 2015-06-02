@@ -1,6 +1,7 @@
 React = require 'react/addons'
 jade = require 'jade-memory-fs'
 _ = require 'lodash'
+$ = require 'jquery'
 
 Browser = require('./browser')
 Editor = require('./editor')
@@ -19,11 +20,11 @@ PublishStatus = React.createClass
 
     cx = React.addons.classSet
 
-    <ol className="deploy-steps list-unstyled list-group">
+    <ul className="deploy-steps collection">
       {_.map @props.stages, (stage, i) =>
         li_classes = (_this) =>
           cx
-            'list-group-item': true
+            'collection-item': true
             success: !_this.props.error && _this.currentStage() > i + 1
             failure: _this.props.error && _this.currentStage() == i + 1
 
@@ -31,6 +32,7 @@ PublishStatus = React.createClass
           cx
             fa: true
             icon: true
+            'secondary-content': true
             'fa-check-circle': !_this.props.error && _this.currentStage() > i + 1
             'fa-circle-o-notch fa-spin': !_this.props.error && _this.currentStage() == i + 1
             'fa-exclamation-circle': _this.props.error && _this.currentStage() == i + 1
@@ -41,7 +43,7 @@ PublishStatus = React.createClass
           {@error(i)}
         </li>
       }
-    </ol>
+    </ul>
 
 
 Tour = React.createClass
@@ -109,6 +111,7 @@ App = React.createClass
     @setState(stage: 2)
   deploy: ->
     @setState(tour_done: true, stage: 1)
+    $('#publishing-modal').openModal()
     $ = require('jquery')
 
     $.ajax(
@@ -131,19 +134,33 @@ App = React.createClass
     @goToStep(2) if @state.loaded
     @setState(loaded: true) if new_content == @state.editor_content
 
+  slideEditor: ->
+    # $('.editor-col').animate({width:'toggle'},500)
+    #
+    $('.editor-col').toggleClass('disabled')
+    $('.browser-col').toggleClass('active')
+
   publishing: ->
     return unless @state.stage > 0
 
-    stages = ['Publish to Github', 'Publish to server']
+    stages = ['Publish to GitHub', 'Publish to server']
 
-    <div className='editor-modal'>
-      <div className='fog'></div>
-      <div className='content row'>
-        <div className='col-md-offset-4 col-md-4'>
-          <h3 className='text-center'>Be still...</h3>
+    # <div className='editor-modal'>
+    #   <div className='fog'></div>
+    #   <div className='content row'>
+    #     <div className='col-md-offset-4 col-md-4'>
+    #       <h3 className='text-center'>Be still...</h3>
+    #       <PublishStatus stages={stages} current={@state.stage} />
+    #       {@published()}
+    #     </div>
+    #   </div>
+    # </div>
+    <div id="publishing-modal" className="modal">
+      <div className="modal-content">
+        <h4>Publishing</h4>
+        <p>
           <PublishStatus stages={stages} current={@state.stage} />
-          {@published()}
-        </div>
+        </p>
       </div>
     </div>
 
@@ -164,16 +181,36 @@ App = React.createClass
       {@publishing()}
 
       <div className='row'>
-        <div className='col-md-5'>
+        <div className='col editor-col full m5'>
+          <nav>
+            <div className="nav-wrapper">
+              <ul className="left">
+                <li>
+                  <a href="#" onClick={@update}><i className="mdi-image-remove-red-eye left"></i>Preview</a>
+                </li>
+                <li>
+                  <a href="#" onClick={@deploy}><i className="mdi-content-send left"></i>Publish</a>
+                </li>
+              </ul>
+            </div>
+          </nav>
           <div className='editor'>
             <Editor value={@state.editor_content} onChange={@editorChange} index_filename={@indexFilename()} />
           </div>
-          <div className='actions'>
-            <button onClick={@update} className='preview'>Preview</button>
-            <button onClick={@deploy} className='publish'>Publish</button>
-          </div>
         </div>
-        <div className='col-md-7'>
+        <div className='col browser-col full m7'>
+          <nav>
+            <div className="nav-wrapper">
+              <a href="#" className="right brand-logo">
+                <img src="/logo-square.png"/>
+              </a>
+              <ul className="left">
+                <li>
+                  <a href="#" onClick={@slideEditor} ><i className="mdi-navigation-menu left"></i></a>
+                </li>
+              </ul>
+            </div>
+          </nav>
           <Browser initial_content={@state.browser_content} base={@props.base} ref='browser' />
         </div>
       </div>

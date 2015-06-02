@@ -4,7 +4,7 @@ AceEditor  = require('react-ace')
 
 require('brace/mode/html')
 require('brace/mode/jade')
-require('brace/theme/github')
+require('brace/theme/xcode')
 
 module.exports =
 Editor = React.createClass
@@ -20,9 +20,9 @@ Editor = React.createClass
   render: ->
     <AceEditor
       mode={@mode()}
-      theme='github'
+      theme='xcode'
       name='blah1'
-      height='calc(100vh - 100px)'
+      height='calc(100vh - 64px)'
       width='100%'
       onChange={@onChange}
       value={@props.value}

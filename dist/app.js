@@ -1,10 +1,12 @@
-var App, Browser, Editor, PublishStatus, React, Tour, _, jade;
+var $, App, Browser, Editor, PublishStatus, React, Tour, _, jade;
 
 React = require('react/addons');
 
 jade = require('jade-memory-fs');
 
 _ = require('lodash');
+
+$ = require('jquery');
 
 Browser = require('./browser');
 
@@ -30,14 +32,14 @@ PublishStatus = React.createClass({
       });
     }
     cx = React.addons.classSet;
-    return React.createElement("ol", {
-      "className": "deploy-steps list-unstyled list-group"
+    return React.createElement("ul", {
+      "className": "deploy-steps collection"
     }, _.map(this.props.stages, (function(_this) {
       return function(stage, i) {
         var icon_classes, li_classes;
         li_classes = function(_this) {
           return cx({
-            'list-group-item': true,
+            'collection-item': true,
             success: !_this.props.error && _this.currentStage() > i + 1,
             failure: _this.props.error && _this.currentStage() === i + 1
           });
@@ -46,6 +48,7 @@ PublishStatus = React.createClass({
           return cx({
             fa: true,
             icon: true,
+            'secondary-content': true,
             'fa-check-circle': !_this.props.error && _this.currentStage() > i + 1,
             'fa-circle-o-notch fa-spin': !_this.props.error && _this.currentStage() === i + 1,
             'fa-exclamation-circle': _this.props.error && _this.currentStage() === i + 1
@@ -158,11 +161,11 @@ module.exports = App = React.createClass({
     });
   },
   deploy: function() {
-    var $;
     this.setState({
       tour_done: true,
       stage: 1
     });
+    $('#publishing-modal').openModal();
     $ = require('jquery');
     $.ajax({
       url: SERVER_URL + "/apps/" + APP_SLUG + "/live_deploy",
@@ -196,26 +199,25 @@ module.exports = App = React.createClass({
       });
     }
   },
+  slideEditor: function() {
+    $('.editor-col').toggleClass('disabled');
+    return $('.browser-col').toggleClass('active');
+  },
   publishing: function() {
     var stages;
     if (!(this.state.stage > 0)) {
       return;
     }
-    stages = ['Publish to Github', 'Publish to server'];
+    stages = ['Publish to GitHub', 'Publish to server'];
     return React.createElement("div", {
-      "className": 'editor-modal'
+      "id": "publishing-modal",
+      "className": "modal"
     }, React.createElement("div", {
-      "className": 'fog'
-    }), React.createElement("div", {
-      "className": 'content row'
-    }, React.createElement("div", {
-      "className": 'col-md-offset-4 col-md-4'
-    }, React.createElement("h3", {
-      "className": 'text-center'
-    }, "Be still..."), React.createElement(PublishStatus, {
+      "className": "modal-content"
+    }, React.createElement("h4", null, "Publishing"), React.createElement("p", null, React.createElement(PublishStatus, {
       "stages": stages,
       "current": this.state.stage
-    }), this.published())));
+    }))));
   },
   published: function() {
     if (this.state.stage !== 3) {
@@ -239,24 +241,44 @@ module.exports = App = React.createClass({
     return React.createElement("main", null, this.publishing(), React.createElement("div", {
       "className": 'row'
     }, React.createElement("div", {
-      "className": 'col-md-5'
-    }, React.createElement("div", {
+      "className": 'col editor-col full m5'
+    }, React.createElement("nav", null, React.createElement("div", {
+      "className": "nav-wrapper"
+    }, React.createElement("ul", {
+      "className": "left"
+    }, React.createElement("li", null, React.createElement("a", {
+      "href": "#",
+      "onClick": this.update
+    }, React.createElement("i", {
+      "className": "mdi-image-remove-red-eye left"
+    }), "Preview")), React.createElement("li", null, React.createElement("a", {
+      "href": "#",
+      "onClick": this.deploy
+    }, React.createElement("i", {
+      "className": "mdi-content-send left"
+    }), "Publish"))))), React.createElement("div", {
       "className": 'editor'
     }, React.createElement(Editor, {
       "value": this.state.editor_content,
       "onChange": this.editorChange,
       "index_filename": this.indexFilename()
-    })), React.createElement("div", {
-      "className": 'actions'
-    }, React.createElement("button", {
-      "onClick": this.update,
-      "className": 'preview'
-    }, "Preview"), React.createElement("button", {
-      "onClick": this.deploy,
-      "className": 'publish'
-    }, "Publish"))), React.createElement("div", {
-      "className": 'col-md-7'
-    }, React.createElement(Browser, {
+    }))), React.createElement("div", {
+      "className": 'col browser-col full m7'
+    }, React.createElement("nav", null, React.createElement("div", {
+      "className": "nav-wrapper"
+    }, React.createElement("a", {
+      "href": "#",
+      "className": "right brand-logo"
+    }, React.createElement("img", {
+      "src": "/logo-square.png"
+    })), React.createElement("ul", {
+      "className": "left"
+    }, React.createElement("li", null, React.createElement("a", {
+      "href": "#",
+      "onClick": this.slideEditor
+    }, React.createElement("i", {
+      "className": "mdi-navigation-menu left"
+    })))))), React.createElement(Browser, {
       "initial_content": this.state.browser_content,
       "base": this.props.base,
       "ref": 'browser'

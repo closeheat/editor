@@ -1,11 +1,13 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var App, Browser, Editor, PublishStatus, React, Tour, _, jade;
+var $, App, Browser, Editor, PublishStatus, React, Tour, _, jade;
 
 React = require('react/addons');
 
 jade = require('jade-memory-fs');
 
 _ = require('lodash');
+
+$ = require('jquery');
 
 Browser = require('./browser');
 
@@ -31,14 +33,14 @@ PublishStatus = React.createClass({
       });
     }
     cx = React.addons.classSet;
-    return React.createElement("ol", {
-      "className": "deploy-steps list-unstyled list-group"
+    return React.createElement("ul", {
+      "className": "deploy-steps collection"
     }, _.map(this.props.stages, (function(_this) {
       return function(stage, i) {
         var icon_classes, li_classes;
         li_classes = function(_this) {
           return cx({
-            'list-group-item': true,
+            'collection-item': true,
             success: !_this.props.error && _this.currentStage() > i + 1,
             failure: _this.props.error && _this.currentStage() === i + 1
           });
@@ -47,6 +49,7 @@ PublishStatus = React.createClass({
           return cx({
             fa: true,
             icon: true,
+            'secondary-content': true,
             'fa-check-circle': !_this.props.error && _this.currentStage() > i + 1,
             'fa-circle-o-notch fa-spin': !_this.props.error && _this.currentStage() === i + 1,
             'fa-exclamation-circle': _this.props.error && _this.currentStage() === i + 1
@@ -159,11 +162,11 @@ module.exports = App = React.createClass({
     });
   },
   deploy: function() {
-    var $;
     this.setState({
       tour_done: true,
       stage: 1
     });
+    $('#publishing-modal').openModal();
     $ = require('jquery');
     $.ajax({
       url: SERVER_URL + "/apps/" + APP_SLUG + "/live_deploy",
@@ -197,26 +200,25 @@ module.exports = App = React.createClass({
       });
     }
   },
+  slideEditor: function() {
+    $('.editor-col').toggleClass('disabled');
+    return $('.browser-col').toggleClass('active');
+  },
   publishing: function() {
     var stages;
     if (!(this.state.stage > 0)) {
       return;
     }
-    stages = ['Publish to Github', 'Publish to server'];
+    stages = ['Publish to GitHub', 'Publish to server'];
     return React.createElement("div", {
-      "className": 'editor-modal'
+      "id": "publishing-modal",
+      "className": "modal"
     }, React.createElement("div", {
-      "className": 'fog'
-    }), React.createElement("div", {
-      "className": 'content row'
-    }, React.createElement("div", {
-      "className": 'col-md-offset-4 col-md-4'
-    }, React.createElement("h3", {
-      "className": 'text-center'
-    }, "Be still..."), React.createElement(PublishStatus, {
+      "className": "modal-content"
+    }, React.createElement("h4", null, "Publishing"), React.createElement("p", null, React.createElement(PublishStatus, {
       "stages": stages,
       "current": this.state.stage
-    }), this.published())));
+    }))));
   },
   published: function() {
     if (this.state.stage !== 3) {
@@ -240,24 +242,44 @@ module.exports = App = React.createClass({
     return React.createElement("main", null, this.publishing(), React.createElement("div", {
       "className": 'row'
     }, React.createElement("div", {
-      "className": 'col-md-5'
-    }, React.createElement("div", {
+      "className": 'col editor-col full m5'
+    }, React.createElement("nav", null, React.createElement("div", {
+      "className": "nav-wrapper"
+    }, React.createElement("ul", {
+      "className": "left"
+    }, React.createElement("li", null, React.createElement("a", {
+      "href": "#",
+      "onClick": this.update
+    }, React.createElement("i", {
+      "className": "mdi-image-remove-red-eye left"
+    }), "Preview")), React.createElement("li", null, React.createElement("a", {
+      "href": "#",
+      "onClick": this.deploy
+    }, React.createElement("i", {
+      "className": "mdi-content-send left"
+    }), "Publish"))))), React.createElement("div", {
       "className": 'editor'
     }, React.createElement(Editor, {
       "value": this.state.editor_content,
       "onChange": this.editorChange,
       "index_filename": this.indexFilename()
-    })), React.createElement("div", {
-      "className": 'actions'
-    }, React.createElement("button", {
-      "onClick": this.update,
-      "className": 'preview'
-    }, "Preview"), React.createElement("button", {
-      "onClick": this.deploy,
-      "className": 'publish'
-    }, "Publish"))), React.createElement("div", {
-      "className": 'col-md-7'
-    }, React.createElement(Browser, {
+    }))), React.createElement("div", {
+      "className": 'col browser-col full m7'
+    }, React.createElement("nav", null, React.createElement("div", {
+      "className": "nav-wrapper"
+    }, React.createElement("a", {
+      "href": "#",
+      "className": "right brand-logo"
+    }, React.createElement("img", {
+      "src": "/logo-square.png"
+    })), React.createElement("ul", {
+      "className": "left"
+    }, React.createElement("li", null, React.createElement("a", {
+      "href": "#",
+      "onClick": this.slideEditor
+    }, React.createElement("i", {
+      "className": "mdi-navigation-menu left"
+    })))))), React.createElement(Browser, {
       "initial_content": this.state.browser_content,
       "base": this.props.base,
       "ref": 'browser'
@@ -351,7 +373,7 @@ require('brace/mode/html');
 
 require('brace/mode/jade');
 
-require('brace/theme/github');
+require('brace/theme/xcode');
 
 module.exports = Editor = React.createClass({
   getInitialState: function() {
@@ -372,9 +394,9 @@ module.exports = Editor = React.createClass({
   render: function() {
     return React.createElement(AceEditor, {
       "mode": this.mode(),
-      "theme": 'github',
+      "theme": 'xcode',
       "name": 'blah1',
-      "height": 'calc(100vh - 100px)',
+      "height": 'calc(100vh - 64px)',
       "width": '100%',
       "onChange": this.onChange,
       "value": this.props.value
@@ -382,7 +404,7 @@ module.exports = Editor = React.createClass({
   }
 });
 
-},{"brace":6,"brace/mode/html":7,"brace/mode/jade":8,"brace/theme/github":10,"react":258,"react-ace":84}],5:[function(require,module,exports){
+},{"brace":6,"brace/mode/html":7,"brace/mode/jade":8,"brace/theme/xcode":10,"react":258,"react-ace":84}],5:[function(require,module,exports){
 var Filesystem, Github, _;
 
 _ = require('lodash');
@@ -23146,103 +23168,94 @@ function get_blob() {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],10:[function(require,module,exports){
-ace.define("ace/theme/github",["require","exports","module","ace/lib/dom"], function(acequire, exports, module) {
+ace.define("ace/theme/xcode",["require","exports","module","ace/lib/dom"], function(acequire, exports, module) {
 
 exports.isDark = false;
-exports.cssClass = "ace-github";
+exports.cssClass = "ace-xcode";
 exports.cssText = "\
-.ace-github .ace_gutter {\
+.ace-xcode .ace_gutter {\
 background: #e8e8e8;\
-color: #AAA;\
+color: #333\
 }\
-.ace-github  {\
-background: #fff;\
-color: #000;\
-}\
-.ace-github .ace_keyword {\
-font-weight: bold;\
-}\
-.ace-github .ace_string {\
-color: #D14;\
-}\
-.ace-github .ace_variable.ace_class {\
-color: teal;\
-}\
-.ace-github .ace_constant.ace_numeric {\
-color: #099;\
-}\
-.ace-github .ace_constant.ace_buildin {\
-color: #0086B3;\
-}\
-.ace-github .ace_support.ace_function {\
-color: #0086B3;\
-}\
-.ace-github .ace_comment {\
-color: #998;\
-font-style: italic;\
-}\
-.ace-github .ace_variable.ace_language  {\
-color: #0086B3;\
-}\
-.ace-github .ace_paren {\
-font-weight: bold;\
-}\
-.ace-github .ace_boolean {\
-font-weight: bold;\
-}\
-.ace-github .ace_string.ace_regexp {\
-color: #009926;\
-font-weight: normal;\
-}\
-.ace-github .ace_variable.ace_instance {\
-color: teal;\
-}\
-.ace-github .ace_constant.ace_language {\
-font-weight: bold;\
-}\
-.ace-github .ace_cursor {\
-color: black;\
-}\
-.ace-github .ace_marker-layer .ace_active-line {\
-background: rgb(255, 255, 204);\
-}\
-.ace-github .ace_marker-layer .ace_selection {\
-background: rgb(181, 213, 255);\
-}\
-.ace-github.ace_multiselect .ace_selection.ace_start {\
-box-shadow: 0 0 3px 0px white;\
-border-radius: 2px;\
-}\
-.ace-github.ace_nobold .ace_line > span {\
-font-weight: normal !important;\
-}\
-.ace-github .ace_marker-layer .ace_step {\
-background: rgb(252, 255, 0);\
-}\
-.ace-github .ace_marker-layer .ace_stack {\
-background: rgb(164, 229, 101);\
-}\
-.ace-github .ace_marker-layer .ace_bracket {\
-margin: -1px 0 0 -1px;\
-border: 1px solid rgb(192, 192, 192);\
-}\
-.ace-github .ace_gutter-active-line {\
-background-color : rgba(0, 0, 0, 0.07);\
-}\
-.ace-github .ace_marker-layer .ace_selected-word {\
-background: rgb(250, 250, 255);\
-border: 1px solid rgb(200, 200, 250);\
-}\
-.ace-github .ace_print-margin {\
+.ace-xcode .ace_print-margin {\
 width: 1px;\
-background: #e8e8e8;\
+background: #e8e8e8\
 }\
-.ace-github .ace_indent-guide {\
-background: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bLly//BwAmVgd1/w11/gAAAABJRU5ErkJggg==\") right repeat-y;\
+.ace-xcode {\
+background-color: #FFFFFF;\
+color: #000000\
+}\
+.ace-xcode .ace_cursor {\
+color: #000000\
+}\
+.ace-xcode .ace_marker-layer .ace_selection {\
+background: #B5D5FF\
+}\
+.ace-xcode.ace_multiselect .ace_selection.ace_start {\
+box-shadow: 0 0 3px 0px #FFFFFF;\
+border-radius: 2px\
+}\
+.ace-xcode .ace_marker-layer .ace_step {\
+background: rgb(198, 219, 174)\
+}\
+.ace-xcode .ace_marker-layer .ace_bracket {\
+margin: -1px 0 0 -1px;\
+border: 1px solid #BFBFBF\
+}\
+.ace-xcode .ace_marker-layer .ace_active-line {\
+background: rgba(0, 0, 0, 0.071)\
+}\
+.ace-xcode .ace_gutter-active-line {\
+background-color: rgba(0, 0, 0, 0.071)\
+}\
+.ace-xcode .ace_marker-layer .ace_selected-word {\
+border: 1px solid #B5D5FF\
+}\
+.ace-xcode .ace_constant.ace_language,\
+.ace-xcode .ace_keyword,\
+.ace-xcode .ace_meta,\
+.ace-xcode .ace_variable.ace_language {\
+color: #C800A4\
+}\
+.ace-xcode .ace_invisible {\
+color: #BFBFBF\
+}\
+.ace-xcode .ace_constant.ace_character,\
+.ace-xcode .ace_constant.ace_other {\
+color: #275A5E\
+}\
+.ace-xcode .ace_constant.ace_numeric {\
+color: #3A00DC\
+}\
+.ace-xcode .ace_entity.ace_other.ace_attribute-name,\
+.ace-xcode .ace_support.ace_constant,\
+.ace-xcode .ace_support.ace_function {\
+color: #450084\
+}\
+.ace-xcode .ace_fold {\
+background-color: #C800A4;\
+border-color: #000000\
+}\
+.ace-xcode .ace_entity.ace_name.ace_tag,\
+.ace-xcode .ace_support.ace_class,\
+.ace-xcode .ace_support.ace_type {\
+color: #790EAD\
+}\
+.ace-xcode .ace_storage {\
+color: #C900A4\
+}\
+.ace-xcode .ace_string {\
+color: #DF0002\
+}\
+.ace-xcode .ace_comment {\
+color: #008E00\
+}\
+.ace-xcode .ace_indent-guide {\
+background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bLly//BwAmVgd1/w11/gAAAABJRU5ErkJggg==) right repeat-y\
 }";
 
-    var dom = acequire("../lib/dom");
-    dom.importCssString(exports.cssText, exports.cssClass);
+var dom = acequire("../lib/dom");
+dom.importCssString(exports.cssText, exports.cssClass);
 });
 
 },{}],11:[function(require,module,exports){
@@ -25840,27 +25853,34 @@ function hasOwnProperty(obj, prop) {
  */
 
 (function() {
-
+  'use strict';
+  
   // Initial Setup
   // -------------
 
   var XMLHttpRequest,  _;
+  /* istanbul ignore else  */
   if (typeof exports !== 'undefined') {
       XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
       _ = require('underscore');
-      btoa = require('btoa');
-  } else {
-      _ = window._;
+      if (typeof btoa === 'undefined') {
+        var btoa = require('btoa'); //jshint ignore:line
+      }
+      
+  } else { 
+      _ = window._; 
   }
+  
   //prefer native XMLHttpRequest always
+  /* istanbul ignore if  */
   if (typeof window !== 'undefined' && typeof window.XMLHttpRequest !== 'undefined'){
       XMLHttpRequest = window.XMLHttpRequest;
   }
 
 
-  var API_URL = 'https://api.github.com';
 
   var Github = function(options) {
+    var API_URL = options.apiUrl || 'https://api.github.com';
 
     // HTTP Request Abstraction
     // =======
@@ -25870,7 +25890,7 @@ function hasOwnProperty(obj, prop) {
     function _request(method, path, data, cb, raw, sync) {
       function getURL() {
         var url = path.indexOf('//') >= 0 ? path : API_URL + path;
-        return url + ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime();
+        return url + ((/\?/).test(url) ? '&' : '?') + (new Date()).getTime();
       }
 
       var xhr = new XMLHttpRequest();
@@ -25879,7 +25899,7 @@ function hasOwnProperty(obj, prop) {
       xhr.open(method, getURL(), !sync);
       if (!sync) {
         xhr.onreadystatechange = function () {
-          if (this.readyState == 4) {
+          if (this.readyState === 4) {
             if (this.status >= 200 && this.status < 300 || this.status === 304) {
               cb(null, raw ? this.responseText : this.responseText ? JSON.parse(this.responseText) : true, this);
             } else {
@@ -25890,7 +25910,7 @@ function hasOwnProperty(obj, prop) {
       }
 
       if (!raw) {
-        xhr.dataType = "json";
+        xhr.dataType = 'json';
         xhr.setRequestHeader('Accept','application/vnd.github.v3+json');
       } else {
         xhr.setRequestHeader('Accept','application/vnd.github.v3.raw+json');
@@ -25901,17 +25921,20 @@ function hasOwnProperty(obj, prop) {
         var authorization = options.token ? 'token ' + options.token : 'Basic ' + btoa(options.username + ':' + options.password);
         xhr.setRequestHeader('Authorization', authorization);
       }
-      if (data)
+      if (data) {
         xhr.send(JSON.stringify(data));
-      else
+      } else {
         xhr.send();
-      if (sync) return xhr.response;
+      }
+      if (sync) {
+        return xhr.response;
+      }
     }
 
     function _requestAllPages(path, cb) {
       var results = [];
       (function iterate() {
-        _request("GET", path, null, function(err, res, xhr) {
+        _request('GET', path, null, function(err, res, xhr) {
           if (err) {
             return cb(err);
           }
@@ -25942,7 +25965,7 @@ function hasOwnProperty(obj, prop) {
     Github.User = function() {
       this.repos = function(cb) {
         // Github does not always honor the 1000 limit so we want to iterate over the data set.
-        _requestAllPages("/user/repos?type=all&per_page=1000&sort=updated", function(err, res) {
+        _requestAllPages('/user/repos?type=all&per_page=1000&sort=updated', function(err, res) {
           cb(err, res);
         });
       };
@@ -25951,7 +25974,7 @@ function hasOwnProperty(obj, prop) {
       // -------
 
       this.orgs = function(cb) {
-        _request("GET", "/user/orgs", null, function(err, res) {
+        _request("GET", '/user/orgs', null, function(err, res) {
           cb(err, res);
         });
       };
@@ -25960,7 +25983,7 @@ function hasOwnProperty(obj, prop) {
       // -------
 
       this.gists = function(cb) {
-        _request("GET", "/gists", null, function(err, res) {
+        _request("GET", '/gists', null, function(err, res) {
           cb(err,res);
         });
       };
@@ -25969,7 +25992,7 @@ function hasOwnProperty(obj, prop) {
       // -------
 
       this.notifications = function(cb) {
-        _request("GET", "/notifications", null, function(err, res) {
+        _request("GET", '/notifications', null, function(err, res) {
           cb(err,res);
         });
       };
@@ -25978,9 +26001,9 @@ function hasOwnProperty(obj, prop) {
       // -------
 
       this.show = function(username, cb) {
-        var command = username ? "/users/"+username : "/user";
+        var command = username ? '/users/' + username : '/user';
 
-        _request("GET", command, null, function(err, res) {
+        _request('GET', command, null, function(err, res) {
           cb(err, res);
         });
       };
@@ -25990,7 +26013,7 @@ function hasOwnProperty(obj, prop) {
 
       this.userRepos = function(username, cb) {
         // Github does not always honor the 1000 limit so we want to iterate over the data set.
-        _requestAllPages("/users/"+username+"/repos?type=all&per_page=1000&sort=updated", function(err, res) {
+        _requestAllPages('/users/' + username + '/repos?type=all&per_page=1000&sort=updated', function(err, res) {
           cb(err, res);
         });
       };
@@ -25999,7 +26022,7 @@ function hasOwnProperty(obj, prop) {
       // -------
 
       this.userGists = function(username, cb) {
-        _request("GET", "/users/"+username+"/gists", null, function(err, res) {
+        _request('GET', '/users/' + username + '/gists', null, function(err, res) {
           cb(err,res);
         });
       };
@@ -26009,7 +26032,7 @@ function hasOwnProperty(obj, prop) {
 
       this.orgRepos = function(orgname, cb) {
         // Github does not always honor the 1000 limit so we want to iterate over the data set.
-        _requestAllPages("/orgs/"+orgname+"/repos?type=all&&page_num=1000&sort=updated&direction=desc", function(err, res) {
+        _requestAllPages('/orgs/' + orgname + '/repos?type=all&&page_num=1000&sort=updated&direction=desc', function(err, res) {
           cb(err, res);
         });
       };
@@ -26018,7 +26041,7 @@ function hasOwnProperty(obj, prop) {
       // -------
 
       this.follow = function(username, cb) {
-        _request("PUT", "/user/following/"+username, null, function(err, res) {
+        _request('PUT', '/user/following/' + username, null, function(err, res) {
           cb(err, res);
         });
       };
@@ -26027,7 +26050,7 @@ function hasOwnProperty(obj, prop) {
       // -------
 
       this.unfollow = function(username, cb) {
-        _request("DELETE", "/user/following/"+username, null, function(err, res) {
+        _request('DELETE', '/user/following/' + username, null, function(err, res) {
           cb(err, res);
         });
       };
@@ -26035,7 +26058,7 @@ function hasOwnProperty(obj, prop) {
       // Create a repo
       // -------
       this.createRepo = function(options, cb) {
-        _request("POST", "/user/repos", options, cb);
+        _request('POST', '/user/repos', options, cb);
       };
 
     };
@@ -26048,11 +26071,11 @@ function hasOwnProperty(obj, prop) {
       var user = options.user;
 
       var that = this;
-      var repoPath = "/repos/" + user + "/" + repo;
+      var repoPath = '/repos/' + user + '/' + repo;
 
       var currentTree = {
-        "branch": null,
-        "sha": null
+        'branch': null,
+        'sha': null
       };
 
 
@@ -26060,15 +26083,18 @@ function hasOwnProperty(obj, prop) {
       // --------
 
       this.deleteRepo = function(cb) {
-        _request("DELETE", repoPath, options, cb);
+        _request('DELETE', repoPath, options, cb);
       };
 
       // Uses the cache if branch has not been changed
       // -------
 
       function updateTree(branch, cb) {
-        if (branch === currentTree.branch && currentTree.sha) return cb(null, currentTree.sha);
-        that.getRef("heads/"+branch, function(err, sha) {
+        if (branch === currentTree.branch && currentTree.sha) {
+          return cb(null, currentTree.sha);
+        }
+        
+        that.getRef('heads/' + branch, function(err, sha) {
           currentTree.branch = branch;
           currentTree.sha = sha;
           cb(err, sha);
@@ -26079,8 +26105,11 @@ function hasOwnProperty(obj, prop) {
       // -------
 
       this.getRef = function(ref, cb) {
-        _request("GET", repoPath + "/git/refs/" + ref, null, function(err, res) {
-          if (err) return cb(err);
+        _request('GET', repoPath + '/git/refs/' + ref, null, function(err, res) {
+          if (err) {
+            return cb(err);
+          }
+          
           cb(null, res.object.sha);
         });
       };
@@ -26094,7 +26123,7 @@ function hasOwnProperty(obj, prop) {
       // }
 
       this.createRef = function(options, cb) {
-        _request("POST", repoPath + "/git/refs", options, cb);
+        _request('POST', repoPath + '/git/refs', options, cb);
       };
 
       // Delete a reference
@@ -26104,29 +26133,32 @@ function hasOwnProperty(obj, prop) {
       // repo.deleteRef('tags/v1.0')
 
       this.deleteRef = function(ref, cb) {
-        _request("DELETE", repoPath + "/git/refs/"+ref, options, cb);
+        _request('DELETE', repoPath + '/git/refs/' + ref, options, cb);
       };
 
       // Create a repo
       // -------
 
       this.createRepo = function(options, cb) {
-        _request("POST", "/user/repos", options, cb);
+        _request('POST', '/user/repos', options, cb);
       };
 
       // Delete a repo
       // --------
 
       this.deleteRepo = function(cb) {
-        _request("DELETE", repoPath, options, cb);
+        _request('DELETE', repoPath, options, cb);
       };
 
       // List all tags of a repository
       // -------
 
       this.listTags = function(cb) {
-        _request("GET", repoPath + "/tags", null, function(err, tags) {
-          if (err) return cb(err);
+        _request('GET', repoPath + '/tags', null, function(err, tags) {
+          if (err) {
+            return cb(err);
+          }
+          
           cb(null, tags);
         });
       };
@@ -26135,7 +26167,7 @@ function hasOwnProperty(obj, prop) {
       // -------
 
       this.listPulls = function(state, cb) {
-        _request("GET", repoPath + "/pulls" + (state ? '?state=' + state : ''), null, function(err, pulls) {
+        _request('GET', repoPath + "/pulls" + (state ? '?state=' + state : ''), null, function(err, pulls) {
           if (err) return cb(err);
           cb(null, pulls);
         });
@@ -26176,6 +26208,16 @@ function hasOwnProperty(obj, prop) {
 
       this.getBlob = function(sha, cb) {
         _request("GET", repoPath + "/git/blobs/" + sha, null, cb, 'raw');
+      };
+
+      // For a given file path, get the corresponding sha (blob for files, tree for dirs)
+      // -------
+
+      this.getCommit = function(branch, sha, cb) {
+        _request("GET", repoPath + "/git/commits/"+sha, null, function(err, commit) {
+          if (err) return cb(err);
+          cb(null, commit);
+        });
       };
 
       // For a given file path, get the corresponding sha (blob for files, tree for dirs)
@@ -26284,7 +26326,7 @@ function hasOwnProperty(obj, prop) {
       // -------
 
       this.updateHead = function(head, commit, cb) {
-        _request("PATCH", repoPath + "/git/refs/heads/" + head, { "sha": commit }, function(err, res) {
+        _request("PATCH", repoPath + "/git/refs/heads/" + head, { "sha": commit }, function(err) {
           cb(err);
         });
       };
@@ -26296,11 +26338,32 @@ function hasOwnProperty(obj, prop) {
         _request("GET", repoPath, null, cb);
       };
 
+      // Show repository contributors
+      // -------
+
+      this.contributors = function (cb, retry) {
+        retry = retry || 1000;
+        var self = this;
+        _request("GET", repoPath + "/stats/contributors", null, function (err, data, response) {
+          if (err) return cb(err);
+          if (response.status === 202) {
+            setTimeout(
+              function () {
+                self.contributors(cb, retry);
+              },
+              retry
+            );
+          } else {
+            cb(err, data);
+          }
+        });
+      };
+
       // Get contents
       // --------
 
       this.contents = function(ref, path, cb) {
-        _request("GET", repoPath + "/contents/"+path, { ref: ref }, cb);
+        _request("GET", repoPath + "/contents" + (path ? "/" + path : ""), { ref: ref }, cb);
       };
 
       // Fork repository
@@ -26443,7 +26506,7 @@ function hasOwnProperty(obj, prop) {
 
       this.write = function(branch, path, content, message, cb) {
         that.getSha(branch, path, function(err, sha) {
-          if (err && err.error!=404) return cb(err);
+          if (err && err.error !== 404) return cb(err);
           _request("PUT", repoPath + "/contents/" + path, {
             message: message,
             content: btoa(content),
@@ -26591,7 +26654,13 @@ function hasOwnProperty(obj, prop) {
       var path = "/repos/" + options.user + "/" + options.repo + "/issues";
 
       this.list = function(options, cb) {
-        _request("GET", path, options, cb);
+        var query = [];
+        for (var key in options) {
+          if (options.hasOwnProperty(key)) {
+            query.push(encodeURIComponent(key) + "=" + encodeURIComponent(options[key]));
+          }
+        }
+        _requestAllPages(path + '?' + query.join("&"), cb);
       };
     };
 
@@ -26615,9 +26684,8 @@ function hasOwnProperty(obj, prop) {
     };
   };
 
-
+  /* istanbul ignore else  */
   if (typeof exports !== 'undefined') {
-    // Github = exports;
     module.exports = Github;
   } else {
     window.Github = Github;
@@ -52827,7 +52895,7 @@ return jQuery;
 (function (global){
 /**
  * @license
- * lodash 3.9.1 (Custom Build) <https://lodash.com/>
+ * lodash 3.9.3 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern -d -o ./index.js`
  * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
@@ -52840,7 +52908,7 @@ return jQuery;
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '3.9.1';
+  var VERSION = '3.9.3';
 
   /** Used to compose bitmasks for wrapper metadata. */
   var BIND_FLAG = 1,
@@ -52945,6 +53013,9 @@ return jQuery;
   /** Used to detect host constructors (Safari > 5). */
   var reIsHostCtor = /^\[object .+?Constructor\]$/;
 
+  /** Used to detect unsigned integer values. */
+  var reIsUint = /^\d+$/;
+
   /** Used to match latin-1 supplementary letters (excluding mathematical operators). */
   var reLatin1 = /[\xc0-\xd6\xd8-\xde\xdf-\xf6\xf8-\xff]/g;
 
@@ -52979,9 +53050,8 @@ return jQuery;
     'Array', 'ArrayBuffer', 'Date', 'Error', 'Float32Array', 'Float64Array',
     'Function', 'Int8Array', 'Int16Array', 'Int32Array', 'Math', 'Number',
     'Object', 'RegExp', 'Set', 'String', '_', 'clearTimeout', 'document',
-    'isFinite', 'parseInt', 'setTimeout', 'TypeError', 'Uint8Array',
-    'Uint8ClampedArray', 'Uint16Array', 'Uint32Array', 'WeakMap',
-    'window'
+    'isFinite', 'parseFloat', 'parseInt', 'setTimeout', 'TypeError', 'Uint8Array',
+    'Uint8ClampedArray', 'Uint16Array', 'Uint32Array', 'WeakMap', 'window'
   ];
 
   /** Used to make template sourceURLs easier to identify. */
@@ -53106,6 +53176,8 @@ return jQuery;
    * restricted `window` object, otherwise the `window` object is used.
    */
   var root = freeGlobal || ((freeWindow !== (this && this.window)) && freeWindow) || freeSelf || this;
+
+  /*--------------------------------------------------------------------------*/
 
   /**
    * The base implementation of `compareAscending` which compares values and
@@ -53475,6 +53547,8 @@ return jQuery;
     return htmlUnescapes[chr];
   }
 
+  /*--------------------------------------------------------------------------*/
+
   /**
    * Create a new pristine `lodash` function using the given `context` object.
    *
@@ -53568,6 +53642,7 @@ return jQuery;
         clearTimeout = context.clearTimeout,
         floor = Math.floor,
         getPrototypeOf = getNative(Object, 'getPrototypeOf'),
+        parseFloat = context.parseFloat,
         push = arrayProto.push,
         Set = getNative(context, 'Set'),
         setTimeout = context.setTimeout,
@@ -53600,7 +53675,8 @@ return jQuery;
         nativeRandom = Math.random;
 
     /** Used as references for `-Infinity` and `Infinity`. */
-    var POSITIVE_INFINITY = Number.POSITIVE_INFINITY;
+    var NEGATIVE_INFINITY = Number.NEGATIVE_INFINITY,
+        POSITIVE_INFINITY = Number.POSITIVE_INFINITY;
 
     /** Used as references for the maximum length and index of an array. */
     var MAX_ARRAY_LENGTH = 4294967295,
@@ -53621,6 +53697,8 @@ return jQuery;
 
     /** Used to lookup unminified function names. */
     var realNames = {};
+
+    /*------------------------------------------------------------------------*/
 
     /**
      * Creates a `lodash` object which wraps `value` to enable implicit chaining.
@@ -53842,6 +53920,8 @@ return jQuery;
       }
     };
 
+    /*------------------------------------------------------------------------*/
+
     /**
      * Creates a lazy wrapper object which wraps `value` to enable lazy evaluation.
      *
@@ -53970,6 +54050,8 @@ return jQuery;
       return result;
     }
 
+    /*------------------------------------------------------------------------*/
+
     /**
      * Creates a cache object to store key/value pairs.
      *
@@ -54038,6 +54120,8 @@ return jQuery;
       return this;
     }
 
+    /*------------------------------------------------------------------------*/
+
     /**
      *
      * Creates a cache object to store unique values.
@@ -54086,6 +54170,8 @@ return jQuery;
         data.hash[value] = true;
       }
     }
+
+    /*------------------------------------------------------------------------*/
 
     /**
      * Copies the values of `source` to `array`.
@@ -54170,7 +54256,7 @@ return jQuery;
     }
 
     /**
-     * A specialized version of `baseExtremum` for arrays whichs invokes `iteratee`
+     * A specialized version of `baseExtremum` for arrays which invokes `iteratee`
      * with one argument: (value).
      *
      * @private
@@ -54942,7 +55028,7 @@ return jQuery;
       if (value === other) {
         return true;
       }
-      if (value == null || other == null || (!isObject(value) && !isObject(other))) {
+      if (value == null || other == null || (!isObject(value) && !isObjectLike(other))) {
         return value !== value && other !== other;
       }
       return baseIsEqualDeep(value, other, baseIsEqual, customizer, isLoose, stackA, stackB);
@@ -55119,8 +55205,7 @@ return jQuery;
     }
 
     /**
-     * The base implementation of `_.matchesProperty` which does not which does
-     * not clone `value`.
+     * The base implementation of `_.matchesProperty` which does not clone `srcValue`.
      *
      * @private
      * @param {string} path The path of the property to get.
@@ -56885,7 +56970,7 @@ return jQuery;
      * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
      */
     function isIndex(value, length) {
-      value = typeof value == 'number' ? value : parseFloat(value);
+      value = (typeof value == 'number' || reIsUint.test(value)) ? +value : -1;
       length = length == null ? MAX_SAFE_INTEGER : length;
       return value > -1 && value % 1 == 0 && value < length;
     }
@@ -56942,7 +57027,15 @@ return jQuery;
      */
     function isLaziable(func) {
       var funcName = getFuncName(func);
-      return !!funcName && func === lodash[funcName] && funcName in LazyWrapper.prototype;
+      if (!(funcName in LazyWrapper.prototype)) {
+        return false;
+      }
+      var other = lodash[funcName];
+      if (func === other) {
+        return true;
+      }
+      var data = getData(other);
+      return !!data && func === data[0];
     }
 
     /**
@@ -57258,6 +57351,8 @@ return jQuery;
         : new LodashWrapper(wrapper.__wrapped__, wrapper.__chain__, arrayCopy(wrapper.__actions__));
     }
 
+    /*------------------------------------------------------------------------*/
+
     /**
      * Creates an array of elements split into groups the length of `size`.
      * If `collection` can't be split evenly, the final chunk will be the remaining
@@ -57325,8 +57420,8 @@ return jQuery;
     }
 
     /**
-     * Creates an array excluding all values of the provided arrays using
-     * [`SameValueZero`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero)
+     * Creates an array of unique `array` values not included in the other
+     * provided arrays using [`SameValueZero`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero)
      * for equality comparisons.
      *
      * @static
@@ -57799,8 +57894,8 @@ return jQuery;
     }
 
     /**
-     * Creates an array of unique values in all provided arrays using
-     * [`SameValueZero`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero)
+     * Creates an array of unique values that are included in all of the provided
+     * arrays using [`SameValueZero`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero)
      * for equality comparisons.
      *
      * @static
@@ -58353,8 +58448,8 @@ return jQuery;
     }
 
     /**
-     * Creates an array of unique values, in order, of the provided arrays using
-     * [`SameValueZero`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero)
+     * Creates an array of unique values, in order, from all of the provided arrays
+     * using [`SameValueZero`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-samevaluezero)
      * for equality comparisons.
      *
      * @static
@@ -58535,7 +58630,7 @@ return jQuery;
     });
 
     /**
-     * Creates an array that is the [symmetric difference](https://en.wikipedia.org/wiki/Symmetric_difference)
+     * Creates an array of unique values that is the [symmetric difference](https://en.wikipedia.org/wiki/Symmetric_difference)
      * of the provided arrays.
      *
      * @static
@@ -58651,6 +58746,8 @@ return jQuery;
       arrays.length = length;
       return unzipWith(arrays, iteratee, thisArg);
     });
+
+    /*------------------------------------------------------------------------*/
 
     /**
      * Creates a `lodash` object that wraps `value` with explicit method
@@ -58901,6 +58998,8 @@ return jQuery;
     function wrapperValue() {
       return baseWrapperValue(this.__wrapped__, this.__actions__);
     }
+
+    /*------------------------------------------------------------------------*/
 
     /**
      * Creates an array of elements corresponding to the given keys, or indexes,
@@ -59709,8 +59808,20 @@ return jQuery;
         var length = collection.length;
         return length > 0 ? collection[baseRandom(0, length - 1)] : undefined;
       }
-      var result = shuffle(collection);
-      result.length = nativeMin(n < 0 ? 0 : (+n || 0), result.length);
+      var index = -1,
+          result = toArray(collection),
+          length = result.length,
+          lastIndex = length - 1;
+
+      n = nativeMin(n < 0 ? 0 : (+n || 0), length);
+      while (++index < n) {
+        var rand = baseRandom(index, lastIndex),
+            value = result[rand];
+
+        result[rand] = result[index];
+        result[index] = value;
+      }
+      result.length = n;
       return result;
     }
 
@@ -59729,20 +59840,7 @@ return jQuery;
      * // => [4, 1, 3, 2]
      */
     function shuffle(collection) {
-      collection = toIterable(collection);
-
-      var index = -1,
-          length = collection.length,
-          result = Array(length);
-
-      while (++index < length) {
-        var rand = baseRandom(0, index);
-        if (index != rand) {
-          result[index] = result[rand];
-        }
-        result[rand] = collection[index];
-      }
-      return result;
+      return sample(collection, POSITIVE_INFINITY);
     }
 
     /**
@@ -60023,6 +60121,8 @@ return jQuery;
       return filter(collection, baseMatches(source));
     }
 
+    /*------------------------------------------------------------------------*/
+
     /**
      * Gets the number of milliseconds that have elapsed since the Unix epoch
      * (1 January 1970 00:00:00 UTC).
@@ -60040,6 +60140,8 @@ return jQuery;
     var now = nativeNow || function() {
       return new Date().getTime();
     };
+
+    /*------------------------------------------------------------------------*/
 
     /**
      * The opposite of `_.before`; this method creates a function that invokes
@@ -61021,6 +61123,8 @@ return jQuery;
       return createWrapper(wrapper, PARTIAL_FLAG, null, [value], []);
     }
 
+    /*------------------------------------------------------------------------*/
+
     /**
      * Creates a clone of `value`. If `isDeep` is `true` nested objects are cloned,
      * otherwise they are assigned by reference. If `customizer` is provided it is
@@ -61851,6 +61955,8 @@ return jQuery;
     function toPlainObject(value) {
       return baseCopy(value, keysIn(value));
     }
+
+    /*------------------------------------------------------------------------*/
 
     /**
      * Assigns own enumerable properties of source object(s) to the destination
@@ -62685,13 +62791,13 @@ return jQuery;
 
       var index = -1,
           length = path.length,
-          endIndex = length - 1,
+          lastIndex = length - 1,
           nested = object;
 
       while (nested != null && ++index < length) {
         var key = path[index];
         if (isObject(nested)) {
-          if (index == endIndex) {
+          if (index == lastIndex) {
             nested[key] = value;
           } else if (nested[key] == null) {
             nested[key] = isIndex(path[index + 1]) ? [] : {};
@@ -62809,6 +62915,8 @@ return jQuery;
       return baseValues(object, keysIn(object));
     }
 
+    /*------------------------------------------------------------------------*/
+
     /**
      * Checks if `n` is between `start` and up to but not including, `end`. If
      * `end` is not specified it is set to `start` with `start` then set to `0`.
@@ -62912,6 +63020,8 @@ return jQuery;
       }
       return baseRandom(min, max);
     }
+
+    /*------------------------------------------------------------------------*/
 
     /**
      * Converts `string` to [camel case](https://en.wikipedia.org/wiki/CamelCase).
@@ -63778,6 +63888,8 @@ return jQuery;
       return string.match(pattern || reWords) || [];
     }
 
+    /*------------------------------------------------------------------------*/
+
     /**
      * Attempts to invoke `func`, returning either the result or the caught error
      * object. Any additional arguments are provided to `func` when it is invoked.
@@ -63895,7 +64007,7 @@ return jQuery;
     }
 
     /**
-     * Creates a function which performs a deep comparison between a given object
+     * Creates a function that performs a deep comparison between a given object
      * and `source`, returning `true` if the given object has equivalent property
      * values, else `false`.
      *
@@ -63924,7 +64036,7 @@ return jQuery;
     }
 
     /**
-     * Creates a function which compares the property value of `path` on a given
+     * Creates a function that compares the property value of `path` on a given
      * object to `value`.
      *
      * **Note:** This method supports comparing arrays, booleans, `Date` objects,
@@ -63952,12 +64064,14 @@ return jQuery;
     }
 
     /**
-     * Creates a function which invokes the method at `path` on a given object.
+     * Creates a function that invokes the method at `path` on a given object.
+     * Any additional arguments are provided to the invoked method.
      *
      * @static
      * @memberOf _
      * @category Utility
      * @param {Array|string} path The path of the method to invoke.
+     * @param {...*} [args] The arguments to invoke the method with.
      * @returns {Function} Returns the new function.
      * @example
      *
@@ -63979,13 +64093,15 @@ return jQuery;
     });
 
     /**
-     * The opposite of `_.method`; this method creates a function which invokes
-     * the method at a given path on `object`.
+     * The opposite of `_.method`; this method creates a function that invokes
+     * the method at a given path on `object`. Any additional arguments are
+     * provided to the invoked method.
      *
      * @static
      * @memberOf _
      * @category Utility
      * @param {Object} object The object to query.
+     * @param {...*} [args] The arguments to invoke the method with.
      * @returns {Function} Returns the new function.
      * @example
      *
@@ -64111,7 +64227,7 @@ return jQuery;
     }
 
     /**
-     * A no-operation function which returns `undefined` regardless of the
+     * A no-operation function that returns `undefined` regardless of the
      * arguments it receives.
      *
      * @static
@@ -64129,7 +64245,7 @@ return jQuery;
     }
 
     /**
-     * Creates a function which returns the property value at `path` on a
+     * Creates a function that returns the property value at `path` on a
      * given object.
      *
      * @static
@@ -64155,7 +64271,7 @@ return jQuery;
     }
 
     /**
-     * The opposite of `_.property`; this method creates a function which returns
+     * The opposite of `_.property`; this method creates a function that returns
      * the property value at a given path on `object`.
      *
      * @static
@@ -64309,6 +64425,8 @@ return jQuery;
       return baseToString(prefix) + id;
     }
 
+    /*------------------------------------------------------------------------*/
+
     /**
      * Adds two numbers.
      *
@@ -64374,7 +64492,7 @@ return jQuery;
      * _.max(users, 'age');
      * // => { 'user': 'fred', 'age': 40 }
      */
-    var max = createExtremum(gt, -Infinity);
+    var max = createExtremum(gt, NEGATIVE_INFINITY);
 
     /**
      * Gets the minimum value of `collection`. If `collection` is empty or falsey
@@ -64423,7 +64541,7 @@ return jQuery;
      * _.min(users, 'age');
      * // => { 'user': 'barney', 'age': 36 }
      */
-    var min = createExtremum(lt, Infinity);
+    var min = createExtremum(lt, POSITIVE_INFINITY);
 
     /**
      * Gets the sum of the values in `collection`.
@@ -64472,6 +64590,8 @@ return jQuery;
         ? arraySum(isArray(collection) ? collection : toIterable(collection))
         : baseSum(collection, iteratee);
     }
+
+    /*------------------------------------------------------------------------*/
 
     // Ensure wrappers are instances of `baseLodash`.
     lodash.prototype = baseLodash.prototype;
@@ -64620,6 +64740,8 @@ return jQuery;
     // Add functions to `lodash.prototype`.
     mixin(lodash, lodash);
 
+    /*------------------------------------------------------------------------*/
+
     // Add functions that return unwrapped values when chaining.
     lodash.add = add;
     lodash.attempt = attempt;
@@ -64728,6 +64850,8 @@ return jQuery;
       return source;
     }()), false);
 
+    /*------------------------------------------------------------------------*/
+
     // Add functions capable of returning wrapped and unwrapped values when chaining.
     lodash.sample = sample;
 
@@ -64739,6 +64863,8 @@ return jQuery;
         return sample(value, n);
       });
     };
+
+    /*------------------------------------------------------------------------*/
 
     /**
      * The semantic version number.
@@ -64966,6 +65092,8 @@ return jQuery;
 
     return lodash;
   }
+
+  /*--------------------------------------------------------------------------*/
 
   // Export lodash.
   var _ = runInContext();
