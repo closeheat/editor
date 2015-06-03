@@ -1,4 +1,4 @@
-var App, Browser, Editor, PublishStatus, React, Tour, _, jade;
+var $, App, Browser, Editor, PublishStatus, React, Tour, _, jade;
 
 React = require('react/addons');
 
@@ -6,7 +6,7 @@ jade = require('jade-memory-fs');
 
 _ = require('lodash');
 
-window.jQuery = window.$ = require('jquery');
+$ = window.jQuery = window.$ = require('jquery');
 
 require('./materialize');
 
@@ -163,13 +163,10 @@ module.exports = App = React.createClass({
     });
   },
   deploy: function() {
-    var $;
     this.setState({
       tour_done: true,
       stage: 1
     });
-    $('#publishing-modal').openModal();
-    $ = require('jquery');
     $.ajax({
       url: SERVER_URL + "/apps/" + APP_SLUG + "/live_deploy",
       method: 'POST',
@@ -206,42 +203,77 @@ module.exports = App = React.createClass({
     $('.editor-col').toggleClass('disabled');
     return $('.browser-col').toggleClass('active');
   },
-  publishing: function() {
+  publishingModal: function() {
+    return React.createElement("div", {
+      "id": "publishing-modal",
+      "className": "modal"
+    }, this.publishingContent(), this.publishedFooter());
+  },
+  publishingContent: function() {
     var stages;
     if (!(this.state.stage > 0)) {
       return;
     }
     stages = ['Publish to GitHub', 'Publish to server'];
     return React.createElement("div", {
-      "id": "publishing-modal",
-      "className": "modal"
-    }, React.createElement("div", {
       "className": "modal-content"
     }, React.createElement("h4", null, "Publishing"), React.createElement("p", null, React.createElement(PublishStatus, {
       "stages": stages,
       "current": this.state.stage
-    }))));
+    })), this.published());
   },
   published: function() {
     if (this.state.stage !== 3) {
       return;
     }
+    return React.createElement("p", null, React.createElement("span", {
+      "className": "green-text"
+    }, "Your changes were succesfully published."));
+  },
+  publishedFooter: function() {
     return React.createElement("div", {
-      "className": 'published text-center'
-    }, React.createElement("h4", null, "Your edits were succesfully published."), React.createElement("a", {
+      "className": 'modal-footer'
+    }, React.createElement("a", {
+      "className": "modal-action waves-effect waves-light btn green",
       "href": 'http://' + APP_SLUG + '.closeheatapp.com'
     }, "Take a look at my changes"), React.createElement("button", {
-      "className": 'back',
+      "style": {
+        marginRight: '10px'
+      },
+      "className": 'modal-action waves-effect waves-light btn blue',
       "onClick": this.closeModal
     }, "Back to editor"));
   },
+  openModal: function() {
+    if (this.state.modalOpened) {
+      return;
+    }
+    this.setState({
+      modalOpened: true
+    });
+    return $('#publishing-modal').openModal();
+  },
   closeModal: function() {
-    return this.setState({
+    this.setState({
       stage: 0
     });
+    this.setState({
+      modalOpened: false
+    });
+    return $('#publishing-modal').closeModal();
+  },
+  componentDidUpdate: function(_prev_props, prev_state) {
+    if (this.state.stage === prev_state.stage) {
+      return;
+    }
+    if (this.state.stage > 0) {
+      return this.openModal();
+    } else {
+      return this.closeModal();
+    }
   },
   render: function() {
-    return React.createElement("main", null, this.publishing(), React.createElement("div", {
+    return React.createElement("main", null, React.createElement("div", {
       "className": 'row'
     }, React.createElement("div", {
       "className": 'col editor-col full m5'
@@ -288,6 +320,6 @@ module.exports = App = React.createClass({
     }))), React.createElement(Tour, {
       "step": this.state.tour_step,
       "done": this.state.tour_done
-    }));
+    }), this.publishingModal());
   }
 });
