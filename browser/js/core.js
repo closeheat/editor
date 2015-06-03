@@ -232,6 +232,9 @@ module.exports = App = React.createClass({
     }, "Your changes were succesfully published."));
   },
   publishedFooter: function() {
+    if (this.state.stage !== 3) {
+      return;
+    }
     return React.createElement("div", {
       "className": 'modal-footer'
     }, React.createElement("a", {

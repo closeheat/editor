@@ -165,7 +165,7 @@ App = React.createClass
     </p>
 
   publishedFooter: ->
-    # return unless @state.stage == 3
+    return unless @state.stage == 3
 
     <div className='modal-footer'>
       <a className="modal-action waves-effect waves-light btn green" href={'http://' + APP_SLUG + '.closeheatapp.com'}>Take a look at my changes</a>
