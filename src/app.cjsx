@@ -137,6 +137,7 @@ App = React.createClass
   slideEditor: ->
     $('.editor-col').toggleClass('disabled')
     $('.browser-col').toggleClass('active')
+    $('.tour-code-editor').toggleClass('hide')
 
   publishingModal: ->
     <div id="publishing-modal" className="modal">

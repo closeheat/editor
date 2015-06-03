@@ -201,7 +201,8 @@ module.exports = App = React.createClass({
   },
   slideEditor: function() {
     $('.editor-col').toggleClass('disabled');
-    return $('.browser-col').toggleClass('active');
+    $('.browser-col').toggleClass('active');
+    return $('.tour-code-editor').toggleClass('hide');
   },
   publishingModal: function() {
     return React.createElement("div", {
