@@ -11,10 +11,10 @@ Filesystem = require('./filesystem');
 App = require('./app');
 
 module.exports = Core = (function() {
-  function Core(token, username, reponame, base, server) {
+  function Core(base, server) {
     this.base = base;
     this.server = server;
-    this.filesystem = new Filesystem(token, username, reponame);
+    this.filesystem = new Filesystem();
   }
 
   Core.prototype.load = function() {
@@ -33,5 +33,5 @@ module.exports = Core = (function() {
 })();
 
 $(function() {
-  return new Core(GITHUB_TOKEN, GITHUB_NAME, GITHUB_REPO, APP_DOMAIN).load();
+  return new Core(APP_DOMAIN).load();
 });

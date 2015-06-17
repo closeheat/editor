@@ -3,7 +3,7 @@ request = require 'request'
 
 module.exports =
 class Filesystem
-  constructor: (@token, @username, @reponame) ->
+  constructor: ->
     require('jade-memory-fs')
 
   files: ->

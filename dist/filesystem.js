@@ -5,10 +5,7 @@ _ = require('lodash');
 request = require('request');
 
 module.exports = Filesystem = (function() {
-  function Filesystem(token, username, reponame) {
-    this.token = token;
-    this.username = username;
-    this.reponame = reponame;
+  function Filesystem() {
     require('jade-memory-fs');
   }
 
