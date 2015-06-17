@@ -2,7 +2,7 @@ React = require 'react/addons'
 jade = require 'jade-memory-fs'
 _ = require 'lodash'
 
-window.jQuery = window.$ = require 'jquery'
+$ = window.jQuery = window.$ = require 'jquery'
 require('./materialize')
 
 Browser = require('./browser')
