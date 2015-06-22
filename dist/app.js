@@ -1,4 +1,4 @@
-var $, App, Browser, Editor, PublishStatus, React, Tour, _, jade;
+var App, Browser, Editor, PublishStatus, React, Tour, _, jade;
 
 React = require('react/addons');
 
@@ -6,7 +6,7 @@ jade = require('jade-memory-fs');
 
 _ = require('lodash');
 
-$ = window.jQuery = window.$ = require('jquery');
+window.jQuery = window.$ = require('jquery');
 
 require('./materialize');
 
@@ -168,7 +168,6 @@ module.exports = App = React.createClass({
       stage: 1
     });
     $('#publishing-modal').openModal();
-    $ = require('jquery');
     $.ajax({
       url: SERVER_URL + "/apps/" + APP_SLUG + "/live_deploy",
       method: 'POST',
@@ -207,9 +206,6 @@ module.exports = App = React.createClass({
   },
   publishing: function() {
     var stages;
-    if (!(this.state.stage > 0)) {
-      return;
-    }
     stages = ['Publish to GitHub', 'Publish to server'];
     return React.createElement("div", {
       "id": "publishing-modal",

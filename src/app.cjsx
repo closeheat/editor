@@ -2,7 +2,7 @@ React = require 'react/addons'
 jade = require 'jade-memory-fs'
 _ = require 'lodash'
 
-$ = window.jQuery = window.$ = require 'jquery'
+window.jQuery = window.$ = require 'jquery'
 require('./materialize')
 
 Browser = require('./browser')
@@ -114,7 +114,6 @@ App = React.createClass
   deploy: ->
     @setState(tour_done: true, stage: 1)
     $('#publishing-modal').openModal()
-    $ = require('jquery')
 
     $.ajax(
       url: "#{SERVER_URL}/apps/#{APP_SLUG}/live_deploy"
@@ -143,7 +142,7 @@ App = React.createClass
     $('.browser-col').toggleClass('active')
 
   publishing: ->
-    return unless @state.stage > 0
+    # return unless @state.stage > 0
 
     stages = ['Publish to GitHub', 'Publish to server']
 
