@@ -2,7 +2,7 @@ React = require 'react/addons'
 jade = require 'jade-memory-fs'
 _ = require 'lodash'
 
-window.jQuery = window.$ = require 'jquery'
+$ = window.jQuery = window.$ = require 'jquery'
 require('./materialize')
 
 Browser = require('./browser')
@@ -113,7 +113,6 @@ App = React.createClass
     @setState(stage: 2)
   deploy: ->
     @setState(tour_done: true, stage: 1)
-    $('#publishing-modal').openModal()
 
     $.ajax(
       url: "#{SERVER_URL}/apps/#{APP_SLUG}/live_deploy"
@@ -136,51 +135,65 @@ App = React.createClass
     @setState(loaded: true) if new_content == @state.editor_content
 
   slideEditor: ->
-    # $('.editor-col').animate({width:'toggle'},500)
-    #
     $('.editor-col').toggleClass('disabled')
     $('.browser-col').toggleClass('active')
+    $('.tour-code-editor').toggleClass('hide')
 
-  publishing: ->
-    # return unless @state.stage > 0
+  publishingModal: ->
+    <div id="publishing-modal" className="modal">
+      {@publishingContent()}
+      {@publishedFooter()}
+    </div>
+
+  publishingContent: ->
+    return unless @state.stage > 0
 
     stages = ['Publish to GitHub', 'Publish to server']
 
-    # <div className='editor-modal'>
-    #   <div className='fog'></div>
-    #   <div className='content row'>
-    #     <div className='col-md-offset-4 col-md-4'>
-    #       <h3 className='text-center'>Be still...</h3>
-    #       <PublishStatus stages={stages} current={@state.stage} />
-    #       {@published()}
-    #     </div>
-    #   </div>
-    # </div>
-    <div id="publishing-modal" className="modal">
-      <div className="modal-content">
-        <h4>Publishing</h4>
-        <p>
-          <PublishStatus stages={stages} current={@state.stage} />
-        </p>
-      </div>
+    <div className="modal-content">
+      <h4>Publishing</h4>
+      <p>
+        <PublishStatus stages={stages} current={@state.stage} />
+      </p>
+      {@published()}
     </div>
 
   published: ->
     return unless @state.stage == 3
 
-    <div className='published text-center'>
-      <h4>Your edits were succesfully published.</h4>
-      <a href={'http://' + APP_SLUG + '.closeheatapp.com'}>Take a look at my changes</a>
-      <button className='back' onClick={@closeModal}>Back to editor</button>
+    <p>
+      <span className="green-text">Your changes were succesfully published.</span>
+    </p>
+
+  publishedFooter: ->
+    return unless @state.stage == 3
+
+    <div className='modal-footer'>
+      <a className="modal-action waves-effect waves-light btn green" href={'http://' + APP_SLUG + '.closeheatapp.com'}>Take a look at my changes</a>
+      <button style={{marginRight: '10px'}}className='modal-action waves-effect waves-light btn blue' onClick={@closeModal}>Back to editor</button>
     </div>
+
+  openModal: ->
+    return if @state.modalOpened
+
+    @setState(modalOpened: true)
+    $('#publishing-modal').openModal()
 
   closeModal: ->
     @setState(stage: 0)
+    @setState(modalOpened: false)
+    $('#publishing-modal').closeModal()
+
+  componentDidUpdate: (_prev_props, prev_state) ->
+    return if @state.stage == prev_state.stage
+
+    if @state.stage > 0
+      @openModal()
+    else
+      @closeModal()
 
   render: ->
     <main>
-      {@publishing()}
-
       <div className='row'>
         <div className='col editor-col full m5'>
           <nav>
@@ -216,4 +229,5 @@ App = React.createClass
         </div>
       </div>
       <Tour step={@state.tour_step} done={@state.tour_done}/>
+      {@publishingModal()}
     </main>

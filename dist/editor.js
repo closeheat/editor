@@ -28,6 +28,9 @@ module.exports = Editor = React.createClass({
       return 'html';
     }
   },
+  onLoad: function(editor) {
+    return editor.clearSelection();
+  },
   render: function() {
     return React.createElement(AceEditor, {
       "mode": this.mode(),
@@ -36,6 +39,7 @@ module.exports = Editor = React.createClass({
       "height": 'calc(100vh - 64px)',
       "width": '100%',
       "onChange": this.onChange,
+      "onLoad": this.onLoad,
       "value": this.props.value
     });
   }

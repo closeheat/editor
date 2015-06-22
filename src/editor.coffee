@@ -17,6 +17,8 @@ Editor = React.createClass
       'jade'
     else
       'html'
+  onLoad: (editor) ->
+    editor.clearSelection()
   render: ->
     <AceEditor
       mode={@mode()}
@@ -25,5 +27,6 @@ Editor = React.createClass
       height='calc(100vh - 64px)'
       width='100%'
       onChange={@onChange}
+      onLoad={@onLoad}
       value={@props.value}
     />
