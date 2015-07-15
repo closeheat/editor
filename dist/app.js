@@ -158,9 +158,16 @@ module.exports = App = React.createClass({
     });
   },
   showSuccess: function() {
-    return this.setState({
+    this.setState({
       stage: 2
     });
+    return _.delay((function(_this) {
+      return function() {
+        return _this.setState({
+          stage: 3
+        });
+      };
+    })(this), 5000);
   },
   deploy: function() {
     this.setState({

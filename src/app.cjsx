@@ -111,6 +111,10 @@ App = React.createClass
     @setState(publish_error: e)
   showSuccess: ->
     @setState(stage: 2)
+
+    _.delay =>
+      @setState(stage: 3)
+    , 5000
   deploy: ->
     @setState(tour_done: true, stage: 1)
 
