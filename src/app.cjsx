@@ -114,7 +114,7 @@ App = React.createClass
 
     _.delay =>
       @setState(stage: 3)
-    , 5000
+    , 9000
   deploy: ->
     @setState(tour_done: true, stage: 1)
 

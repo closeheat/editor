@@ -167,7 +167,7 @@ module.exports = App = React.createClass({
           stage: 3
         });
       };
-    })(this), 5000);
+    })(this), 9000);
   },
   deploy: function() {
     this.setState({
