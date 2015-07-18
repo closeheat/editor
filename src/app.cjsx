@@ -197,6 +197,8 @@ App = React.createClass
       @closeModal()
 
   render: ->
+    edit_other_files_url = "http://app.closeheat.com/apps/#{APP_SLUG}/guide/toolkit"
+
     <main>
       <div className='row'>
         <div className='col editor-col full m5'>
@@ -208,6 +210,9 @@ App = React.createClass
                 </li>
                 <li>
                   <a href="#" onClick={@deploy}><i className="mdi-content-send left"></i>Publish</a>
+                </li>
+                <li>
+                  <a href={edit_other_files_url} target='_blank'><i className="mdi-action-view-module left"></i>Edit other files</a>
                 </li>
               </ul>
             </div>

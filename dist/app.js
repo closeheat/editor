@@ -284,6 +284,8 @@ module.exports = App = React.createClass({
     }
   },
   render: function() {
+    var edit_other_files_url;
+    edit_other_files_url = "http://app.closeheat.com/apps/" + APP_SLUG + "/guide/toolkit";
     return React.createElement("main", null, React.createElement("div", {
       "className": 'row'
     }, React.createElement("div", {
@@ -302,7 +304,12 @@ module.exports = App = React.createClass({
       "onClick": this.deploy
     }, React.createElement("i", {
       "className": "mdi-content-send left"
-    }), "Publish"))))), React.createElement("div", {
+    }), "Publish")), React.createElement("li", null, React.createElement("a", {
+      "href": edit_other_files_url,
+      "target": '_blank'
+    }, React.createElement("i", {
+      "className": "mdi-action-view-module left"
+    }), "Edit other files"))))), React.createElement("div", {
       "className": 'editor'
     }, React.createElement(Editor, {
       "value": this.state.editor_content,
