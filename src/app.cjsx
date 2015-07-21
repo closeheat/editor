@@ -118,6 +118,7 @@ App = React.createClass
       @setState(stage: 3)
     , 9000
   deploy: ->
+    @trackEverything('browser_editor/publish')
     @setState(tour_done: true, stage: 1)
 
     $.ajax(
@@ -146,12 +147,6 @@ App = React.createClass
     $('.tour-code-editor').toggleClass('hide')
 
     @trackEverything('browser_editor/slide')
-  publishingModal: ->
-    <div id="publishing-modal" className="modal">
-      {@publishingContent()}
-      {@publishedFooter()}
-    </div>
-
   trackEverything: (part_url) ->
     $.ajax(
       url: "#{SERVER_URL}/track/#{part_url}"
@@ -161,6 +156,11 @@ App = React.createClass
         app_slug: APP_SLUG
         editor_content: @state.editor_content
     )
+  publishingModal: ->
+    <div id="publishing-modal" className="modal">
+      {@publishingContent()}
+      {@publishedFooter()}
+    </div>
 
   publishingContent: ->
     return unless @state.stage > 0
@@ -211,6 +211,7 @@ App = React.createClass
 
   render: ->
     edit_other_files_url = "http://app.closeheat.com/apps/#{APP_SLUG}/guide/toolkit"
+
     <main>
       <div className='row'>
         <div className='col editor-col full m5'>

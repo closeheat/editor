@@ -171,6 +171,7 @@ module.exports = App = React.createClass({
     })(this), 9000);
   },
   deploy: function() {
+    this.trackEverything('browser_editor/publish');
     this.setState({
       tour_done: true,
       stage: 1
@@ -213,12 +214,6 @@ module.exports = App = React.createClass({
     $('.tour-code-editor').toggleClass('hide');
     return this.trackEverything('browser_editor/slide');
   },
-  publishingModal: function() {
-    return React.createElement("div", {
-      "id": "publishing-modal",
-      "className": "modal"
-    }, this.publishingContent(), this.publishedFooter());
-  },
   trackEverything: function(part_url) {
     return $.ajax({
       url: SERVER_URL + "/track/" + part_url,
@@ -229,6 +224,12 @@ module.exports = App = React.createClass({
         editor_content: this.state.editor_content
       }
     });
+  },
+  publishingModal: function() {
+    return React.createElement("div", {
+      "id": "publishing-modal",
+      "className": "modal"
+    }, this.publishingContent(), this.publishedFooter());
   },
   publishingContent: function() {
     var stages;
