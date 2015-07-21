@@ -149,8 +149,17 @@ module.exports = App = React.createClass({
     fs.writeFileSync(this.indexFilename(), this.state.editor_content);
     this.refs.browser.refresh(this.indexHTML());
     if (this.state.loaded) {
-      return this.goToStep(3);
+      this.goToStep(3);
     }
+    return $.ajax({
+      url: SERVER_URL + "/track/browser_editor/preview",
+      method: 'POST',
+      dataType: 'json',
+      data: {
+        app_slug: APP_SLUG,
+        editor_content: this.state.editor_content
+      }
+    });
   },
   showError: function(e) {
     return this.setState({

@@ -107,6 +107,15 @@ App = React.createClass
     fs.writeFileSync(@indexFilename(), @state.editor_content)
     @refs.browser.refresh(@indexHTML())
     @goToStep(3) if @state.loaded
+
+    $.ajax(
+      url: "#{SERVER_URL}/track/browser_editor/preview"
+      method: 'POST'
+      dataType: 'json'
+      data:
+        app_slug: APP_SLUG
+        editor_content: @state.editor_content
+    )
   showError: (e) ->
     @setState(publish_error: e)
   showSuccess: ->
