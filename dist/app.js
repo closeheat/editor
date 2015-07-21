@@ -151,15 +151,7 @@ module.exports = App = React.createClass({
     if (this.state.loaded) {
       this.goToStep(3);
     }
-    return $.ajax({
-      url: SERVER_URL + "/track/browser_editor/preview",
-      method: 'POST',
-      dataType: 'json',
-      data: {
-        app_slug: APP_SLUG,
-        editor_content: this.state.editor_content
-      }
-    });
+    return this.trackEverything('browser_editor/preview');
   },
   showError: function(e) {
     return this.setState({
@@ -218,7 +210,19 @@ module.exports = App = React.createClass({
   slideEditor: function() {
     $('.editor-col').toggleClass('disabled');
     $('.browser-col').toggleClass('active');
-    return $('.tour-code-editor').toggleClass('hide');
+    $('.tour-code-editor').toggleClass('hide');
+    return this.trackEverything('browser_editor/slide');
+  },
+  trackEverything: function(part_url) {
+    return $.ajax({
+      url: SERVER_URL + "/track/" + part_url,
+      method: 'POST',
+      dataType: 'json',
+      data: {
+        app_slug: APP_SLUG,
+        editor_content: this.state.editor_content
+      }
+    });
   },
   publishingModal: function() {
     return React.createElement("div", {
@@ -304,17 +308,22 @@ module.exports = App = React.createClass({
     }, React.createElement("ul", {
       "className": "left"
     }, React.createElement("li", null, React.createElement("a", {
-      "href": "#",
+      "href": "javascript:void(0)",
       "onClick": this.update
     }, React.createElement("i", {
       "className": "mdi-image-remove-red-eye left"
     }), "Preview")), React.createElement("li", null, React.createElement("a", {
-      "href": "#",
+      "href": "javascript:void(0)",
       "onClick": this.deploy
     }, React.createElement("i", {
       "className": "mdi-content-send left"
     }), "Publish")), React.createElement("li", null, React.createElement("a", {
       "href": edit_other_files_url,
+      "onClick": ((function(_this) {
+        return function() {
+          return _this.trackEverything('browser_editor/edit_other');
+        };
+      })(this)),
       "target": '_blank'
     }, React.createElement("i", {
       "className": "mdi-action-view-module left"
@@ -329,14 +338,20 @@ module.exports = App = React.createClass({
     }, React.createElement("nav", null, React.createElement("div", {
       "className": "nav-wrapper"
     }, React.createElement("a", {
-      "href": "#",
+      "href": edit_other_files_url,
+      "onClick": ((function(_this) {
+        return function() {
+          return _this.trackEverything('browser_editor/click_logo');
+        };
+      })(this)),
+      "target": '_blank',
       "className": "right brand-logo"
     }, React.createElement("img", {
       "src": "/logo-square.png"
     })), React.createElement("ul", {
       "className": "left"
     }, React.createElement("li", null, React.createElement("a", {
-      "href": "#",
+      "href": "javascript:void(0)",
       "onClick": this.slideEditor
     }, React.createElement("i", {
       "className": "mdi-navigation-menu left"

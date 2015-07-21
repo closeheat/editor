@@ -108,14 +108,7 @@ App = React.createClass
     @refs.browser.refresh(@indexHTML())
     @goToStep(3) if @state.loaded
 
-    $.ajax(
-      url: "#{SERVER_URL}/track/browser_editor/preview"
-      method: 'POST'
-      dataType: 'json'
-      data:
-        app_slug: APP_SLUG
-        editor_content: @state.editor_content
-    )
+    @trackEverything('browser_editor/preview')
   showError: (e) ->
     @setState(publish_error: e)
   showSuccess: ->
@@ -152,6 +145,16 @@ App = React.createClass
     $('.browser-col').toggleClass('active')
     $('.tour-code-editor').toggleClass('hide')
 
+    @trackEverything('browser_editor/slide')
+  trackEverything: (part_url) ->
+    $.ajax(
+      url: "#{SERVER_URL}/track/#{part_url}"
+      method: 'POST'
+      dataType: 'json'
+      data:
+        app_slug: APP_SLUG
+        editor_content: @state.editor_content
+    )
   publishingModal: ->
     <div id="publishing-modal" className="modal">
       {@publishingContent()}
@@ -215,13 +218,13 @@ App = React.createClass
             <div className="nav-wrapper">
               <ul className="left">
                 <li>
-                  <a href="#" onClick={@update}><i className="mdi-image-remove-red-eye left"></i>Preview</a>
+                  <a href="javascript:void(0)" onClick={@update}><i className="mdi-image-remove-red-eye left"></i>Preview</a>
                 </li>
                 <li>
-                  <a href="#" onClick={@deploy}><i className="mdi-content-send left"></i>Publish</a>
+                  <a href="javascript:void(0)" onClick={@deploy}><i className="mdi-content-send left"></i>Publish</a>
                 </li>
                 <li>
-                  <a href={edit_other_files_url} target='_blank'><i className="mdi-action-view-module left"></i>Edit other files</a>
+                  <a href={edit_other_files_url} onClick={=> @trackEverything('browser_editor/edit_other')} target='_blank'><i className="mdi-action-view-module left"></i>Edit other files</a>
                 </li>
               </ul>
             </div>
@@ -233,12 +236,13 @@ App = React.createClass
         <div className='col browser-col full m7'>
           <nav>
             <div className="nav-wrapper">
-              <a href="#" className="right brand-logo">
+
+              <a href={edit_other_files_url} onClick={=> @trackEverything('browser_editor/click_logo')} target='_blank' className="right brand-logo">
                 <img src="/logo-square.png"/>
               </a>
               <ul className="left">
                 <li>
-                  <a href="#" onClick={@slideEditor} ><i className="mdi-navigation-menu left"></i></a>
+                  <a href="javascript:void(0)" onClick={@slideEditor} ><i className="mdi-navigation-menu left"></i></a>
                 </li>
               </ul>
             </div>
