@@ -1,5 +1,6 @@
 _ = require 'lodash'
 request = require 'request'
+Promise = require 'bluebird'
 
 module.exports =
 class Filesystem

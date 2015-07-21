@@ -1,8 +1,10 @@
-var Filesystem, _, request;
+var Filesystem, Promise, _, request;
 
 _ = require('lodash');
 
 request = require('request');
+
+Promise = require('bluebird');
 
 module.exports = Filesystem = (function() {
   function Filesystem() {
