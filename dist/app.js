@@ -149,8 +149,9 @@ module.exports = App = React.createClass({
     fs.writeFileSync(this.indexFilename(), this.state.editor_content);
     this.refs.browser.refresh(this.indexHTML());
     if (this.state.loaded) {
-      return this.goToStep(3);
+      this.goToStep(3);
     }
+    return this.trackEverything('browser_editor/preview');
   },
   showError: function(e) {
     return this.setState({
@@ -158,9 +159,16 @@ module.exports = App = React.createClass({
     });
   },
   showSuccess: function() {
-    return this.setState({
+    this.setState({
       stage: 2
     });
+    return _.delay((function(_this) {
+      return function() {
+        return _this.setState({
+          stage: 3
+        });
+      };
+    })(this), 9000);
   },
   deploy: function() {
     this.setState({
@@ -202,13 +210,25 @@ module.exports = App = React.createClass({
   slideEditor: function() {
     $('.editor-col').toggleClass('disabled');
     $('.browser-col').toggleClass('active');
-    return $('.tour-code-editor').toggleClass('hide');
+    $('.tour-code-editor').toggleClass('hide');
+    return this.trackEverything('browser_editor/slide');
   },
   publishingModal: function() {
     return React.createElement("div", {
       "id": "publishing-modal",
       "className": "modal"
     }, this.publishingContent(), this.publishedFooter());
+  },
+  trackEverything: function(part_url) {
+    return $.ajax({
+      url: SERVER_URL + "/track/" + part_url,
+      method: 'POST',
+      dataType: 'json',
+      data: {
+        app_slug: APP_SLUG,
+        editor_content: this.state.editor_content
+      }
+    });
   },
   publishingContent: function() {
     var stages;
@@ -277,6 +297,8 @@ module.exports = App = React.createClass({
     }
   },
   render: function() {
+    var edit_other_files_url;
+    edit_other_files_url = "http://app.closeheat.com/apps/" + APP_SLUG + "/guide/toolkit";
     return React.createElement("main", null, React.createElement("div", {
       "className": 'row'
     }, React.createElement("div", {
@@ -286,16 +308,26 @@ module.exports = App = React.createClass({
     }, React.createElement("ul", {
       "className": "left"
     }, React.createElement("li", null, React.createElement("a", {
-      "href": "#",
+      "href": "javascript:void(0)",
       "onClick": this.update
     }, React.createElement("i", {
       "className": "mdi-image-remove-red-eye left"
     }), "Preview")), React.createElement("li", null, React.createElement("a", {
-      "href": "#",
+      "href": "javascript:void(0)",
       "onClick": this.deploy
     }, React.createElement("i", {
       "className": "mdi-content-send left"
-    }), "Publish"))))), React.createElement("div", {
+    }), "Publish")), React.createElement("li", null, React.createElement("a", {
+      "href": edit_other_files_url,
+      "onClick": ((function(_this) {
+        return function() {
+          return _this.trackEverything('browser_editor/edit_other');
+        };
+      })(this)),
+      "target": '_blank'
+    }, React.createElement("i", {
+      "className": "mdi-action-view-module left"
+    }), "Edit other files"))))), React.createElement("div", {
       "className": 'editor'
     }, React.createElement(Editor, {
       "value": this.state.editor_content,
@@ -306,14 +338,20 @@ module.exports = App = React.createClass({
     }, React.createElement("nav", null, React.createElement("div", {
       "className": "nav-wrapper"
     }, React.createElement("a", {
-      "href": "#",
+      "href": edit_other_files_url,
+      "onClick": ((function(_this) {
+        return function() {
+          return _this.trackEverything('browser_editor/click_logo');
+        };
+      })(this)),
+      "target": '_blank',
       "className": "right brand-logo"
     }, React.createElement("img", {
       "src": "/logo-square.png"
     })), React.createElement("ul", {
       "className": "left"
     }, React.createElement("li", null, React.createElement("a", {
-      "href": "#",
+      "href": "javascript:void(0)",
       "onClick": this.slideEditor
     }, React.createElement("i", {
       "className": "mdi-navigation-menu left"
