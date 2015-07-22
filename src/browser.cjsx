@@ -7,9 +7,10 @@ Browser = React.createClass
   code: (content) ->
     content.replace('<head>', "<head><base href='#{@props.base}'>")
   refresh: (content) ->
-    document = frames['browser-frame'].document
-    document.open()
-    document.write(@code(content))
+    doc = document.getElementById('browser').contentWindow.document
+    doc.open()
+    doc.write(@code(content))
+    doc.close()
   componentDidMount: ->
     @refresh(@props.initial_content)
   render: ->

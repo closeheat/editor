@@ -10,10 +10,11 @@ module.exports = Browser = React.createClass({
     return content.replace('<head>', "<head><base href='" + this.props.base + "'>");
   },
   refresh: function(content) {
-    var document;
-    document = frames['browser-frame'].document;
-    document.open();
-    return document.write(this.code(content));
+    var doc;
+    doc = document.getElementById('browser').contentWindow.document;
+    doc.open();
+    doc.write(this.code(content));
+    return doc.close();
   },
   componentDidMount: function() {
     return this.refresh(this.props.initial_content);
