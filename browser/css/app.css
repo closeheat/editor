@@ -1,37 +1,65 @@
-.browser iframe {
-  height: 100vh;
-  width: 100%;
-  border: none; }
-
-.actions {
-  height: 10vh; }
+html {
+  height: 100%; }
 
 body {
-  background-color: #292929; }
-
-.actions {
-  font-family: "Raleway"; }
-  .actions button {
-    margin: .5em auto;
-    display: block;
-    color: #fff;
-    border: none;
-    width: 90%;
-    text-transform: uppercase; }
-  .actions .preview {
-    background-color: #f5b638;
-    font-size: 1.5em;
-    border-bottom: 2px solid #916308;
-    font-weight: 600; }
-  .actions .publish {
-    background-color: #52ae28;
-    font-size: 1.1em;
-    border-bottom: 2px solid #2b5b15; }
+  height: 100%; }
 
 .row {
-  margin-left: 0;
-  margin-right: 0; }
+  margin-bottom: 0; }
+  .row .col.full {
+    padding: 0; }
 
-.col-md-7, .col-md-5 {
-  padding-left: 0;
-  padding-right: 0; }
+.deploy-steps .collection-item {
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out; }
+  .deploy-steps .collection-item .fa {
+    font-size: 20px; }
+  .deploy-steps .collection-item .secondary-content {
+    color: #03a9f4; }
+  .deploy-steps .collection-item.success .secondary-content {
+    color: #4caf50; }
+  .deploy-steps .collection-item.failure .secondary-content {
+    color: #f44336; }
+
+nav {
+  box-shadow: none; }
+  nav .brand-logo.right {
+    padding-top: 7px;
+    padding-right: 15px; }
+  nav .brand-logo img {
+    width: 30px; }
+
+.browser {
+  height: calc(100vh - 64px); }
+  .browser iframe {
+    height: calc(100vh - 64px);
+    width: 100%;
+    border: none; }
+
+.editor-col {
+  max-width: 40%;
+  min-width: 40%;
+  overflow-y: hidden;
+  transition-property: all;
+  transition-duration: .7s;
+  transition-timing-function: cubic-bezier(0.42, 0, 0.58, 1); }
+  .editor-col.disabled {
+    min-width: 0;
+    max-width: 0; }
+
+.browser-col {
+  overflow-y: hidden;
+  max-width: 60%;
+  min-width: 60%;
+  transition-property: all;
+  transition-duration: .7s;
+  transition-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+  box-shadow: inset 8px 0px 7px -8px rgba(0, 0, 0, 0.16); }
+  .browser-col.active {
+    max-width: 100%;
+    min-width: 100%; }
+  .browser-col nav {
+    box-shadow: inherit; }
