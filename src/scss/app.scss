@@ -1,9 +1,11 @@
 html {
   height: 100%;
 }
+
 body {
   height: 100%;
 }
+
 .row {
   margin-bottom: 0;
   .col.full {
@@ -54,12 +56,8 @@ nav {
   }
   box-shadow: none;
 }
-// .deploy-steps {
-//   height: 100px;
-// }
-//
+
 .browser {
-  // height: 100%;
   height: calc(100vh - 64px);
 
   iframe {
@@ -68,6 +66,7 @@ nav {
     border: none;
   }
 }
+
 .editor-col {
   max-width: 40%;
   min-width: 40%;
@@ -80,6 +79,7 @@ nav {
     max-width: 0;
   }
 }
+
 .browser-col {
   overflow-y: hidden;
   max-width: 60%;
@@ -88,10 +88,12 @@ nav {
   transition-duration: .7s;
   transition-timing-function: cubic-bezier(0.420, 0.000, 0.580, 1.000);
   box-shadow: inset 8px 0px 7px -8px rgba(0, 0, 0, 0.16);
+
   &.active {
     max-width: 100%;
     min-width: 100%;
   }
+
   nav {
     box-shadow: inherit;
   }

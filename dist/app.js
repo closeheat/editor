@@ -71,18 +71,18 @@ PublishStatus = React.createClass({
 Tour = React.createClass({
   step1: function() {
     return React.createElement("div", {
-      "className": 'tooltip-left tour-code-editor'
-    }, "Change the code here");
+      "className": 'closeheat-tour-code-editor'
+    }, "Change \"NAME\" to your actual name for the magic to happen");
   },
   step2: function() {
     return React.createElement("div", {
-      "className": 'tooltip-left tour-preview-button'
-    }, "Click \"Preview\" to see your changes in the browser");
+      "className": 'closeheat-tour-preview-button'
+    }, "Click \"Preview\" to see your changes");
   },
   step3: function() {
     return React.createElement("div", {
-      "className": 'tooltip-left tour-deploy-button'
-    }, "Click \"Publish\" to make your changes available to website visitors");
+      "className": 'closeheat-tour-deploy-button'
+    }, "Click \"Publish\" to make your changes available to public");
   },
   render: function() {
     var step;

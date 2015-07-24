@@ -50,16 +50,16 @@ PublishStatus = React.createClass
 
 Tour = React.createClass
   step1: ->
-    <div className='tooltip-left tour-code-editor'>
-      Change the code here
+    <div className='closeheat-tour-code-editor'>
+      Change "NAME" to your actual name for the magic to happen
     </div>
   step2: ->
-    <div className='tooltip-left tour-preview-button'>
-      Click "Preview" to see your changes in the browser
+    <div className='closeheat-tour-preview-button'>
+      Click "Preview" to see your changes
     </div>
   step3: ->
-    <div className='tooltip-left tour-deploy-button'>
-      Click "Publish" to make your changes available to website visitors
+    <div className='closeheat-tour-deploy-button'>
+      Click "Publish" to make your changes available to public
     </div>
   render: ->
     step = @['step' + @props.step]
