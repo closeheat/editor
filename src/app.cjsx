@@ -7,6 +7,7 @@ require('./materialize')
 
 Browser = require('./browser')
 Editor = require('./editor')
+html2jade = require 'html2jade'
 
 PublishStatus = React.createClass
   currentStage: ->
@@ -62,6 +63,7 @@ Tour = React.createClass
       Click "Publish" to make your changes available to public
     </div>
   render: ->
+    return <div></div>
     step = @['step' + @props.step]
 
     if step && !@props.done
@@ -209,6 +211,14 @@ App = React.createClass
     else
       @closeModal()
 
+  inlineEdited: (before, after) ->
+    console.log(before, after)
+    new_code = @indexHTML().replace(before, after)
+
+    html2jade.convertHtml new_code, {}, (err, jade) =>
+      @setState(editor_content: jade)
+      @update()
+
   render: ->
     edit_other_files_url = "http://app.closeheat.com/apps/#{APP_SLUG}/guide/toolkit"
 
@@ -248,7 +258,7 @@ App = React.createClass
               </ul>
             </div>
           </nav>
-          <Browser initial_content={@state.browser_content} base={@props.base} ref='browser' />
+          <Browser initial_content={@state.browser_content} base={@props.base} ref='browser' app={@} />
         </div>
       </div>
       <Tour step={@state.tour_step} done={@state.tour_done}/>

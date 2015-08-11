@@ -1,13 +1,46 @@
-var Browser, React;
+var Browser, ContentEditable, React, inlineEditingInject;
 
 React = require('react');
 
+ContentEditable = require('react-wysiwyg');
+
+window.$ = require('jquery');
+
+inlineEditingInject = function() {
+  var $, browser, noContentEditable, sendToEditor;
+  sendToEditor = function(before, after) {
+    return parent.CloseheatAppComponentInstance.inlineEdited(before, after);
+  };
+  noContentEditable = function(target) {
+    var result;
+    result = target.clone();
+    result.removeAttr('contenteditable');
+    result.removeAttr('data-before');
+    return result;
+  };
+  $ = parent.$;
+  browser = $(window.document);
+  browser.find('h1').prop('contentEditable', true);
+  debugger;
+  browser.on('focus', '[contenteditable]', function() {
+    console.log('focus');
+    return this.setAttribute('data-before', noContentEditable($(this)).prop('outerHTML'));
+  });
+  return browser.on('blur', '[contenteditable]', function() {
+    console.log('bl');
+    return sendToEditor($(this).data('before'), noContentEditable($(this)).prop('outerHTML'));
+  });
+};
+
 module.exports = Browser = React.createClass({
-  src: function() {
-    return "data:text/html;charset=utf-8," + (encodeURIComponent(this.code()));
+  getInitialState: function() {
+    window.CloseheatAppComponentInstance = this.props.app;
+    return {};
   },
   code: function(content) {
-    return content.replace('<head>', "<head><base href='" + this.props.base + "'>");
+    var result;
+    result = content.replace('<head>', "<head><base href='" + this.props.base + "'>");
+    return result.replace('</body>', "<script type='text/javascript'>inlineEditing = " + (inlineEditingInject.toString()) + "; inlineEditing()</script></body>");
   },
   refresh: function(content) {
     var doc;

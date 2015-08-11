@@ -1,4 +1,4 @@
-var $, App, Browser, Editor, PublishStatus, React, Tour, _, jade;
+var $, App, Browser, Editor, PublishStatus, React, Tour, _, html2jade, jade;
 
 React = require('react/addons');
 
@@ -13,6 +13,8 @@ require('./materialize');
 Browser = require('./browser');
 
 Editor = require('./editor');
+
+html2jade = require('html2jade');
 
 PublishStatus = React.createClass({
   currentStage: function() {
@@ -86,6 +88,7 @@ Tour = React.createClass({
   },
   render: function() {
     var step;
+    return React.createElement("div", null);
     step = this['step' + this.props.step];
     if (step && !this.props.done) {
       return step();
@@ -297,6 +300,19 @@ module.exports = App = React.createClass({
       return this.closeModal();
     }
   },
+  inlineEdited: function(before, after) {
+    var new_code;
+    console.log(before, after);
+    new_code = this.indexHTML().replace(before, after);
+    return html2jade.convertHtml(new_code, {}, (function(_this) {
+      return function(err, jade) {
+        _this.setState({
+          editor_content: jade
+        });
+        return _this.update();
+      };
+    })(this));
+  },
   render: function() {
     var edit_other_files_url;
     edit_other_files_url = "http://app.closeheat.com/apps/" + APP_SLUG + "/guide/toolkit";
@@ -359,7 +375,8 @@ module.exports = App = React.createClass({
     })))))), React.createElement(Browser, {
       "initial_content": this.state.browser_content,
       "base": this.props.base,
-      "ref": 'browser'
+      "ref": 'browser',
+      "app": this
     }))), React.createElement(Tour, {
       "step": this.state.tour_step,
       "done": this.state.tour_done
