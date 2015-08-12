@@ -1,4 +1,4 @@
-var $, App, CodeMode, Core, DefaultRoute, Filesystem, React, Route, Router, md;
+var $, App, CodeMode, Core, DefaultRoute, Filesystem, PreviewMode, React, Route, Router, md;
 
 md = require('marked');
 
@@ -17,6 +17,8 @@ Filesystem = require('./filesystem');
 App = require('./app');
 
 CodeMode = require('./code_mode');
+
+PreviewMode = require('./preview_mode');
 
 module.exports = Core = (function() {
   function Core(base, server) {
@@ -44,6 +46,9 @@ module.exports = Core = (function() {
     }, React.createElement(Route, {
       "name": 'code',
       "handler": CodeMode
+    }), React.createElement(Route, {
+      "name": 'preview',
+      "handler": PreviewMode
     }), React.createElement(DefaultRoute, {
       "handler": CodeMode
     }));

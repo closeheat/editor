@@ -51,7 +51,7 @@ module.exports = Filesystem = (function() {
     return new Promise((function(_this) {
       return function(resolve, reject) {
         return request.post({
-          url: window.location.href + "/initial"
+          url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/initial"
         }, function(err, status, resp) {
           var files;
           if (err) {

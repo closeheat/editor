@@ -40,8 +40,6 @@ nav {
     border: none; }
 
 .editor-col {
-  max-width: 40%;
-  min-width: 40%;
   overflow-y: hidden;
   transition-property: all;
   transition-duration: .7s;
@@ -52,8 +50,6 @@ nav {
 
 .browser-col {
   overflow-y: hidden;
-  max-width: 60%;
-  min-width: 60%;
   transition-property: all;
   transition-duration: .7s;
   transition-timing-function: cubic-bezier(0.42, 0, 0.58, 1);

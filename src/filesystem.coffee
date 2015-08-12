@@ -34,7 +34,7 @@ class Filesystem
 
   getFiles: ->
     new Promise (resolve, reject) =>
-      request.post url: "#{window.location.href}/initial", (err, status, resp) ->
+      request.post url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/initial", (err, status, resp) ->
         return reject(err) if err
 
         files = JSON.parse(resp).files
