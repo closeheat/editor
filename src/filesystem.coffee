@@ -34,10 +34,10 @@ class Filesystem
 
   getFiles: ->
     new Promise (resolve, reject) =>
-      request.post url: "#{window.location.href}/files", (err, status, resp) ->
+      request.post url: "#{window.location.href}/initial", (err, status, resp) ->
         return reject(err) if err
 
-        files = JSON.parse(resp).editor
+        files = JSON.parse(resp).files
         resolve(files)
 
   addFileContents: (files) ->

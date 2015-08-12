@@ -27,6 +27,7 @@
     "react-ace": "2.0.0",
     "react-bootstrap": "^0.22.6",
     "react-code-mirror": "^3.0.4",
+    "react-router": "^0.13.3",
     "request": "^2.54.0"
   },
   "keywords": [

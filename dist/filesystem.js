@@ -51,13 +51,13 @@ module.exports = Filesystem = (function() {
     return new Promise((function(_this) {
       return function(resolve, reject) {
         return request.post({
-          url: window.location.href + "/files"
+          url: window.location.href + "/initial"
         }, function(err, status, resp) {
           var files;
           if (err) {
             return reject(err);
           }
-          files = JSON.parse(resp).editor;
+          files = JSON.parse(resp).files;
           return resolve(files);
         });
       };
