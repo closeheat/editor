@@ -10,6 +10,7 @@ Filesystem = require './filesystem'
 App = require './app'
 CodeMode = require './code_mode'
 PreviewMode = require './preview_mode'
+TabHandler = require './tab_handler'
 
 module.exports =
 class Core
@@ -23,7 +24,9 @@ class Core
 
   routes: ->
     <Route handler={App} path='/' base={@base} server={@server} >
-      <Route name='code' handler={CodeMode} />
+      <Route name='code' handler={CodeMode}>
+        <Route name='file' path='/code/:path' handler={TabHandler} />
+      </Route>
       <Route name='preview' handler={PreviewMode} />
       <DefaultRoute handler={CodeMode} />
     </Route>

@@ -49,5 +49,6 @@ React.createClass
         browser_content={@state.browser_content}
         index_html={@indexHTML()}
         raw_index={@rawIndex()}
-        editorChange={@editorChange}/>
+        editorChange={@editorChange}
+        />
     </main>

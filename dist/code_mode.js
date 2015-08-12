@@ -1,10 +1,29 @@
-var CodeMode, Editor, React;
+var React, RouteHandler, Router, Tab, _;
 
 React = require('react/addons');
 
-Editor = require('./editor');
+_ = require('lodash');
 
-module.exports = CodeMode = React.createClass({
+Router = require('react-router');
+
+RouteHandler = Router.RouteHandler;
+
+Tab = require('./tab');
+
+module.exports = React.createClass({
+  getInitialState: function() {
+    return {
+      tabs: [
+        {
+          path: '/index.html',
+          content: 'h2 Nope'
+        }, {
+          path: '/index.html',
+          content: 'h2 Nope'
+        }
+      ]
+    };
+  },
   render: function() {
     return React.createElement("div", null, React.createElement("div", {
       "className": 'row'
@@ -12,10 +31,8 @@ module.exports = CodeMode = React.createClass({
       "className": 'col editor-col full m12'
     }, React.createElement("div", {
       "className": 'editor'
-    }, React.createElement(Editor, {
-      "value": this.props.editor_content,
-      "onChange": this.props.editorChange,
-      "index_filename": this.props.index_filename
-    })))));
+    }, React.createElement("ul", null, _.map(this.state.tabs, function(tab) {
+      return React.createElement(Tab, React.__spread({}, tab));
+    })), React.createElement(RouteHandler, React.__spread({}, this.props))))));
   }
 });

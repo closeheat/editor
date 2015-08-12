@@ -7,13 +7,13 @@ require('brace/mode/jade')
 require('brace/theme/xcode')
 
 module.exports =
-Editor = React.createClass
+React.createClass
   getInitialState: ->
     loaded: false
   onChange: (new_content) ->
     @props.onChange(new_content)
   mode: ->
-    if @props.index_filename == '/index.jade'
+    if @props.path.match(/\.jade$/)
       'jade'
     else
       'html'

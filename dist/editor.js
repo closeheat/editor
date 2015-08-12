@@ -1,4 +1,4 @@
-var AceEditor, Editor, React, brace;
+var AceEditor, React, brace;
 
 React = require('react');
 
@@ -12,7 +12,7 @@ require('brace/mode/jade');
 
 require('brace/theme/xcode');
 
-module.exports = Editor = React.createClass({
+module.exports = React.createClass({
   getInitialState: function() {
     return {
       loaded: false
@@ -22,7 +22,7 @@ module.exports = Editor = React.createClass({
     return this.props.onChange(new_content);
   },
   mode: function() {
-    if (this.props.index_filename === '/index.jade') {
+    if (this.props.path.match(/\.jade$/)) {
       return 'jade';
     } else {
       return 'html';
