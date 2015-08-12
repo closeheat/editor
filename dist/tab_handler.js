@@ -18,7 +18,7 @@ module.exports = React.createClass({
     return !!this.path();
   },
   path: function() {
-    return this.props.params.path;
+    return this.props.params.splat;
   },
   renderFileManager: function() {
     console.log('file mamager');

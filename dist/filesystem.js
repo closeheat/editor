@@ -22,12 +22,8 @@ module.exports = Filesystem = (function() {
   Filesystem.prototype.addFiles = function() {
     return this.getFiles().then((function(_this) {
       return function(files) {
-        var compatible_files;
         _this.createDirs(files);
-        compatible_files = _.select(files, function(file) {
-          return file.path.match(/\.jade|md|html$/);
-        });
-        return Promise.all(_this.addFileContents(compatible_files));
+        return Promise.all(_this.addFileContents(files));
       };
     })(this));
   };

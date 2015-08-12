@@ -24,8 +24,8 @@ class Core
 
   routes: ->
     <Route handler={App} path='/' base={@base} server={@server} >
-      <Route name='code' handler={CodeMode}>
-        <Route name='file' path='/code/:path' handler={TabHandler} />
+      <Route name='code' path='/code' handler={CodeMode}>
+        <Route name='file' path='*' handler={TabHandler} />
       </Route>
       <Route name='preview' handler={PreviewMode} />
       <DefaultRoute handler={CodeMode} />

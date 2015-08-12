@@ -47,10 +47,11 @@ module.exports = Core = (function() {
       "server": this.server
     }, React.createElement(Route, {
       "name": 'code',
+      "path": '/code',
       "handler": CodeMode
     }, React.createElement(Route, {
       "name": 'file',
-      "path": '/code/:path',
+      "path": '*',
       "handler": TabHandler
     })), React.createElement(Route, {
       "name": 'preview',

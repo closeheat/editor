@@ -17,10 +17,10 @@ class Filesystem
     @getFiles().then (files) =>
       @createDirs(files)
 
-      compatible_files = _.select files, (file) ->
-        file.path.match(/\.jade|md|html$/)
-
-      Promise.all(@addFileContents(compatible_files))
+      # compatible_files = _.select files, (file) ->
+      #   file.path.match(/\.jade|md|html$/)
+      #
+      Promise.all(@addFileContents(files))
 
   createDirs: (files) ->
     files_in_dirs = _.select files, (file) ->

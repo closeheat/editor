@@ -15,11 +15,11 @@ module.exports = React.createClass({
     return {
       tabs: [
         {
-          path: '/index.html',
+          path: 'index.jade',
           content: 'h2 Nope'
         }, {
-          path: '/index.html',
-          content: 'h2 Nope'
+          path: 'js/app.coffee',
+          content: 'var hello;'
         }
       ]
     };

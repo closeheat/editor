@@ -11,7 +11,7 @@ module.exports = React.createClass({
     return React.createElement("li", null, React.createElement(Link, {
       "to": 'file',
       "params": {
-        path: this.props.path
+        splat: this.props.path
       }
     }, React.createElement("div", null, this.props.path)));
   }

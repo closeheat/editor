@@ -7,7 +7,7 @@ module.exports =
 React.createClass
   render: ->
     <li>
-      <Link to='file' params={{ path: @props.path }}>
+      <Link to='file' params={{ splat: @props.path }}>
         <div>{@props.path}</div>
       </Link>
     </li>

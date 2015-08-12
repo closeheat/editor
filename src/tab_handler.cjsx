@@ -11,7 +11,7 @@ React.createClass
   isFile: ->
     !!@path()
   path: ->
-    @props.params.path
+    @props.params.splat
   renderFileManager: ->
     console.log 'file mamager'
     <div></div>
