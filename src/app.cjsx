@@ -33,7 +33,6 @@ React.createClass
     @transitionWithCodeModeHistory('code', '/code/*?')
   previewClick: ->
     @transitionWithCodeModeHistory('preview', 'preview-with-history')
-    @setState(clean_files: @serializedFiles())
 
     browser_ref = @refs.appRouteHandler.refs.__routeHandler__.refs.browser
     return unless browser_ref
@@ -72,17 +71,17 @@ React.createClass
 
   build: ->
     new Promise (resolve, reject) =>
-      $.ajax(
-        dataType: 'json'
-        method: 'POST'
-        data: { files: @changedFiles() }
+      request.post
+        json: true
+        body:
+          files: @changedFiles()
         url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/preview"
-      ).then((resp) ->
+      , (err, status, resp) =>
+        return reject(err) if err
         return reject(resp.error) unless resp.success
 
+        @setState(clean_files: @serializedFiles())
         resolve()
-      ).fail (err) ->
-        reject(err)
 
   render: ->
     <main>

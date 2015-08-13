@@ -42,9 +42,6 @@ module.exports = React.createClass({
   previewClick: function() {
     var browser_ref;
     this.transitionWithCodeModeHistory('preview', 'preview-with-history');
-    this.setState({
-      clean_files: this.serializedFiles()
-    });
     browser_ref = this.refs.appRouteHandler.refs.__routeHandler__.refs.browser;
     if (!browser_ref) {
       return;
@@ -94,20 +91,23 @@ module.exports = React.createClass({
   build: function() {
     return new Promise((function(_this) {
       return function(resolve, reject) {
-        return $.ajax({
-          dataType: 'json',
-          method: 'POST',
-          data: {
+        return request.post({
+          json: true,
+          body: {
             files: _this.changedFiles()
           },
           url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/preview"
-        }).then(function(resp) {
+        }, function(err, status, resp) {
+          if (err) {
+            return reject(err);
+          }
           if (!resp.success) {
             return reject(resp.error);
           }
+          _this.setState({
+            clean_files: _this.serializedFiles()
+          });
           return resolve();
-        }).fail(function(err) {
-          return reject(err);
         });
       };
     })(this));
