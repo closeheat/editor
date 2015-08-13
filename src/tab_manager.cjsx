@@ -10,11 +10,15 @@ React.createClass
 
     <Editor value={content} path={@path()} onChange={@props.editorChange} />
   isFile: ->
-    !!@path()
+    try
+      fs.readFileSync("/#{@path()}")
+      true
+    catch e
+      false
   path: ->
     @props.params.splat
   renderFileManager: ->
-    <FileManager/>
+    <FileManager path={@path()} />
   render: ->
     if @isFile()
       @renderEditor()

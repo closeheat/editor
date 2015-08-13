@@ -17,13 +17,22 @@ module.exports = React.createClass({
     });
   },
   isFile: function() {
-    return !!this.path();
+    var e;
+    try {
+      fs.readFileSync("/" + (this.path()));
+      return true;
+    } catch (_error) {
+      e = _error;
+      return false;
+    }
   },
   path: function() {
     return this.props.params.splat;
   },
   renderFileManager: function() {
-    return React.createElement(FileManager, null);
+    return React.createElement(FileManager, {
+      "path": this.path()
+    });
   },
   render: function() {
     if (this.isFile()) {
