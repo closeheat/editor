@@ -1,8 +1,10 @@
-var Editor, React;
+var Editor, FileManager, React;
 
 React = require('react/addons');
 
 Editor = require('./editor');
+
+FileManager = require('./file_manager');
 
 module.exports = React.createClass({
   renderEditor: function() {
@@ -15,14 +17,14 @@ module.exports = React.createClass({
     });
   },
   isFile: function() {
+    debugger;
     return !!this.path();
   },
   path: function() {
     return this.props.params.splat;
   },
   renderFileManager: function() {
-    console.log('file mamager');
-    return React.createElement("div", null);
+    return React.createElement(FileManager, null);
   },
   render: function() {
     if (this.isFile()) {

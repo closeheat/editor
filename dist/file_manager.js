@@ -10,10 +10,6 @@ module.exports = React.createClass({
       "className": 'col editor-col full m12'
     }, React.createElement("div", {
       "className": 'editor'
-    }, React.createElement(Editor, {
-      "value": this.props.editor_content,
-      "onChange": this.props.editorChange,
-      "index_filename": this.props.index_filename
-    })))));
+    }, "FILES BE HERE"))));
   }
 });

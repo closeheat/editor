@@ -1,4 +1,4 @@
-var React, RouteHandler, Router, Tab, _;
+var Link, React, RouteHandler, Router, Tab, _;
 
 React = require('react/addons');
 
@@ -7,6 +7,8 @@ _ = require('lodash');
 Router = require('react-router');
 
 RouteHandler = Router.RouteHandler;
+
+Link = Router.Link;
 
 Tab = require('./tab');
 
@@ -33,6 +35,11 @@ module.exports = React.createClass({
       "className": 'editor'
     }, React.createElement("ul", null, _.map(this.state.tabs, function(tab) {
       return React.createElement(Tab, React.__spread({}, tab));
-    })), React.createElement(RouteHandler, React.__spread({}, this.props))))));
+    }), React.createElement(Link, {
+      "to": 'file',
+      "params": {
+        splat: ''
+      }
+    }, React.createElement("div", null, "New tab"))), React.createElement(RouteHandler, React.__spread({}, this.props))))));
   }
 });

@@ -3,6 +3,7 @@ _ = require 'lodash'
 
 Router = require 'react-router'
 RouteHandler = Router.RouteHandler
+Link = Router.Link
 
 Tab = require('./tab')
 
@@ -28,6 +29,9 @@ React.createClass
               {_.map @state.tabs, (tab) ->
                 <Tab {...tab}/>
               }
+              <Link to='file' params={{ splat: '' }}>
+                <div>New tab</div>
+              </Link>
             </ul>
             <RouteHandler {...@props}/>
           </div>

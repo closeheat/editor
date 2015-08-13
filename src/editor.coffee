@@ -1,8 +1,10 @@
 React = require 'react'
 brace  = require('brace')
 AceEditor  = require('react-ace')
+_  = require('lodash')
 
 require('brace/mode/html')
+require('brace/mode/coffee')
 require('brace/mode/jade')
 require('brace/theme/xcode')
 
@@ -13,10 +15,19 @@ React.createClass
   onChange: (new_content) ->
     @props.onChange(new_content)
   mode: ->
-    if @props.path.match(/\.jade$/)
-      'jade'
-    else
-      'html'
+    ext = @props.path.match(/\.(.*)$/)[1] || 'html'
+
+    result = _.detect @supportedModes(), (supported_ext) ->
+      supported_ext == ext
+
+    result || 'html'
+
+  supportedModes: ->
+    [
+      'jade',
+      'html',
+      'coffee'
+    ]
   onLoad: (editor) ->
     editor.clearSelection()
   render: ->

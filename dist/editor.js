@@ -1,4 +1,4 @@
-var AceEditor, React, brace;
+var AceEditor, React, _, brace;
 
 React = require('react');
 
@@ -6,7 +6,11 @@ brace = require('brace');
 
 AceEditor = require('react-ace');
 
+_ = require('lodash');
+
 require('brace/mode/html');
+
+require('brace/mode/coffee');
 
 require('brace/mode/jade');
 
@@ -22,11 +26,15 @@ module.exports = React.createClass({
     return this.props.onChange(new_content);
   },
   mode: function() {
-    if (this.props.path.match(/\.jade$/)) {
-      return 'jade';
-    } else {
-      return 'html';
-    }
+    var ext, result;
+    ext = this.props.path.match(/\.(.*)$/)[1] || 'html';
+    result = _.detect(this.supportedModes(), function(supported_ext) {
+      return supported_ext === ext;
+    });
+    return result || 'html';
+  },
+  supportedModes: function() {
+    return ['jade', 'html', 'coffee'];
   },
   onLoad: function(editor) {
     return editor.clearSelection();

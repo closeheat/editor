@@ -7,7 +7,7 @@ React.createClass
       <div className='row'>
         <div className='col editor-col full m12'>
           <div className='editor'>
-            <Editor value={@props.editor_content} onChange={@props.editorChange} index_filename={@props.index_filename} />
+            FILES BE HERE
           </div>
         </div>
       </div>
