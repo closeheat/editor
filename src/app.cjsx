@@ -2,6 +2,8 @@ React = require 'react/addons'
 jade = require 'jade-memory-fs'
 _ = require 'lodash'
 $ = window.jQuery = window.$ = require 'jquery'
+request = require 'request'
+Promise = require 'bluebird'
 require('./materialize')
 
 Router = require 'react-router'
@@ -27,13 +29,26 @@ React.createClass
   codeClick: ->
     @transitionWithCodeModeHistory('code', '/code/*?')
   previewClick: ->
-    @transitionWithCodeModeHistory('preview', 'preview-with-history')
+    @build().then((resp) =>
+      @transitionWithCodeModeHistory('preview', 'preview-with-history')
 
-    browser_ref = @refs.appRouteHandler.refs.__routeHandler__.refs.browser
-    return unless browser_ref
+      browser_ref = @refs.appRouteHandler.refs.__routeHandler__.refs.browser
+      return unless browser_ref
 
-    # same route, refresh manually
-    browser_ref.refresh()
+      # same route, refresh manually
+      browser_ref.refresh()
+    ).catch (err) ->
+      console.log(err)
+
+
+  build: ->
+    new Promise (resolve, reject) =>
+      request.post json: true, url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/preview", (err, status, resp) =>
+        return reject(err) if err
+        return reject(resp.error) unless resp.success
+
+        resolve(resp.files)
+
 
   transitionWithCodeModeHistory: (route, with_history_route) ->
     editor_path = @refs.appRouteHandler.refs.__routeHandler__.props.params.splat

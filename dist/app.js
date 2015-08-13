@@ -1,4 +1,4 @@
-var $, Header, Navigation, React, RouteHandler, Router, _, jade;
+var $, Header, Navigation, Promise, React, RouteHandler, Router, _, jade, request;
 
 React = require('react/addons');
 
@@ -7,6 +7,10 @@ jade = require('jade-memory-fs');
 _ = require('lodash');
 
 $ = window.jQuery = window.$ = require('jquery');
+
+request = require('request');
+
+Promise = require('bluebird');
 
 require('./materialize');
 
@@ -34,13 +38,37 @@ module.exports = React.createClass({
     return this.transitionWithCodeModeHistory('code', '/code/*?');
   },
   previewClick: function() {
-    var browser_ref;
-    this.transitionWithCodeModeHistory('preview', 'preview-with-history');
-    browser_ref = this.refs.appRouteHandler.refs.__routeHandler__.refs.browser;
-    if (!browser_ref) {
-      return;
-    }
-    return browser_ref.refresh();
+    return this.build().then((function(_this) {
+      return function(resp) {
+        var browser_ref;
+        _this.transitionWithCodeModeHistory('preview', 'preview-with-history');
+        browser_ref = _this.refs.appRouteHandler.refs.__routeHandler__.refs.browser;
+        if (!browser_ref) {
+          return;
+        }
+        return browser_ref.refresh();
+      };
+    })(this))["catch"](function(err) {
+      return console.log(err);
+    });
+  },
+  build: function() {
+    return new Promise((function(_this) {
+      return function(resolve, reject) {
+        return request.post({
+          json: true,
+          url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/preview"
+        }, function(err, status, resp) {
+          if (err) {
+            return reject(err);
+          }
+          if (!resp.success) {
+            return reject(resp.error);
+          }
+          return resolve(resp.files);
+        });
+      };
+    })(this));
   },
   transitionWithCodeModeHistory: function(route, with_history_route) {
     var editor_path;
