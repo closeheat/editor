@@ -78,12 +78,6 @@ Header = React.createClass
     #
     # @setState(tour_step: tour_step)
 
-  update: ->
-    fs.writeFileSync(@props.index_filename, @props.editor_content)
-    @refs.browser.refresh(@props.index_html)
-    @goToStep(3) if @state.loaded
-
-    @trackEverything('browser_editor/preview')
 
   deploy: ->
     @trackEverything('browser_editor/publish')
@@ -138,13 +132,13 @@ Header = React.createClass
             <div className="nav-wrapper">
               <ul className="left">
                 <li>
-                  <a href="javascript:void(0)" onClick={@update}><i className="mdi-image-remove-red-eye left"></i>Preview</a>
+                  <a href="javascript:void(0)" onClick={@props.onCodeClick}><i className="mdi-image-remove-red-eye left"></i>Code</a>
                 </li>
                 <li>
-                  <a href="javascript:void(0)" onClick={@deploy}><i className="mdi-content-send left"></i>Publish</a>
+                  <a href="javascript:void(0)" onClick={@props.onPreviewClick}><i className="mdi-content-send left"></i>Preview Changes</a>
                 </li>
                 <li>
-                  <a href={edit_other_files_url} onClick={=> @trackEverything('browser_editor/edit_other')} target='_blank'><i className="mdi-action-view-module left"></i>Edit other files</a>
+                  <a href="javascript:void(0)" onClick={@props.onPublishClick}><i className="mdi-content-send left"></i>Publish</a>
                 </li>
               </ul>
             </div>

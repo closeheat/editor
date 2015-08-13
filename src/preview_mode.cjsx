@@ -7,7 +7,7 @@ React.createClass
     <div>
       <div className='row'>
         <div className='col browser-col full m12'>
-          <Browser initial_content={@props.browser_content} base={@props.base} ref='browser' />
+          <Browser ref='browser' />
         </div>
       </div>
     </div>

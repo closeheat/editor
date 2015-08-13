@@ -57,11 +57,12 @@ module.exports = Core = (function() {
       "name": 'file-manager',
       "handler": TabManager
     })), React.createElement(Route, {
-      "name": 'new-tab',
-      "path": '/new-tab',
+      "name": 'preview',
+      "path": '/preview',
       "handler": PreviewMode
     }), React.createElement(Route, {
-      "name": 'preview',
+      "name": 'preview-with-history',
+      "path": '/preview/*?',
       "handler": PreviewMode
     }), React.createElement(DefaultRoute, {
       "handler": CodeMode

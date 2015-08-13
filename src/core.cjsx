@@ -28,8 +28,8 @@ class Core
         <Route name='file' path='*?' handler={TabManager} />
         <DefaultRoute name='file-manager' handler={TabManager}/>
       </Route>
-      <Route name='new-tab' path='/new-tab' handler={PreviewMode} />
-      <Route name='preview' handler={PreviewMode} />
+      <Route name='preview' path='/preview' handler={PreviewMode} />
+      <Route name='preview-with-history' path='/preview/*?' handler={PreviewMode} />
       <DefaultRoute handler={CodeMode} />
     </Route>
     # <DefaultRoute handler={Home} />

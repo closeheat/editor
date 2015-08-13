@@ -87,14 +87,6 @@ module.exports = Header = React.createClass({
     }
   },
   goToStep: function(tour_step) {},
-  update: function() {
-    fs.writeFileSync(this.props.index_filename, this.props.editor_content);
-    this.refs.browser.refresh(this.props.index_html);
-    if (this.state.loaded) {
-      this.goToStep(3);
-    }
-    return this.trackEverything('browser_editor/preview');
-  },
   deploy: function() {
     this.trackEverything('browser_editor/publish');
     this.setState({
@@ -167,25 +159,20 @@ module.exports = Header = React.createClass({
       "className": "left"
     }, React.createElement("li", null, React.createElement("a", {
       "href": "javascript:void(0)",
-      "onClick": this.update
+      "onClick": this.props.onCodeClick
     }, React.createElement("i", {
       "className": "mdi-image-remove-red-eye left"
-    }), "Preview")), React.createElement("li", null, React.createElement("a", {
+    }), "Code")), React.createElement("li", null, React.createElement("a", {
       "href": "javascript:void(0)",
-      "onClick": this.deploy
+      "onClick": this.props.onPreviewClick
     }, React.createElement("i", {
       "className": "mdi-content-send left"
-    }), "Publish")), React.createElement("li", null, React.createElement("a", {
-      "href": edit_other_files_url,
-      "onClick": ((function(_this) {
-        return function() {
-          return _this.trackEverything('browser_editor/edit_other');
-        };
-      })(this)),
-      "target": '_blank'
+    }), "Preview Changes")), React.createElement("li", null, React.createElement("a", {
+      "href": "javascript:void(0)",
+      "onClick": this.props.onPublishClick
     }, React.createElement("i", {
-      "className": "mdi-action-view-module left"
-    }), "Edit other files")))))), React.createElement("div", {
+      "className": "mdi-content-send left"
+    }), "Publish")))))), React.createElement("div", {
       "className": 'col browser-col full m7'
     }, React.createElement("nav", null, React.createElement("div", {
       "className": "nav-wrapper"

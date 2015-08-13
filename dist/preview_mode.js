@@ -11,8 +11,6 @@ module.exports = React.createClass({
     }, React.createElement("div", {
       "className": 'col browser-col full m12'
     }, React.createElement(Browser, {
-      "initial_content": this.props.browser_content,
-      "base": this.props.base,
       "ref": 'browser'
     }))));
   }
