@@ -4,7 +4,7 @@ React = require('react');
 
 module.exports = Browser = React.createClass({
   refresh: function() {
-    return document.getElementById('browser').src = 'http://web.closeheatapp.com';
+    return document.getElementById('browser').src = this.props.browser_url;
   },
   render: function() {
     return React.createElement("div", {
@@ -12,7 +12,7 @@ module.exports = Browser = React.createClass({
     }, React.createElement("iframe", {
       "id": 'browser',
       "name": 'browser-frame',
-      "src": 'http://web.closeheatapp.com'
+      "src": this.props.browser_url
     }));
   }
 });

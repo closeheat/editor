@@ -14,13 +14,12 @@ class Filesystem
     @addFiles()
 
   addFiles: ->
-    @getFiles().then (files) =>
-      @createDirs(files)
+    @getInitialData().then (data) =>
+      # check data.success
+      @createDirs(data.files)
 
-      # compatible_files = _.select files, (file) ->
-      #   file.path.match(/\.jade|md|html$/)
-      #
-      Promise.all(@addFileContents(files))
+      Promise.all(@addFileContents(data.files)).then ->
+        data
 
   createDirs: (files) ->
     files_in_dirs = _.select files, (file) ->
@@ -32,20 +31,19 @@ class Filesystem
       dir_path = _.initial(file_dir_split).join('/')
       fs.mkdirpSync("/#{dir_path}")
 
-  getFiles: ->
+  getInitialData: ->
     new Promise (resolve, reject) =>
-      request.post url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/initial", (err, status, resp) ->
+      request.get json: true, url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/init", (err, status, resp) ->
         return reject(err) if err
 
-        files = JSON.parse(resp).files
-        resolve(files)
+        resolve(resp)
 
   addFileContents: (files) ->
     result = []
 
     _.each files, (file) =>
       promise = new Promise (resolve, reject) =>
-        fs.writeFileSync("/#{file.path}", file.content)
+        fs.writeFileSync(fs.join('/', file.path), file.content || 'not-modifiable')
         resolve()
 
       result.push(promise)

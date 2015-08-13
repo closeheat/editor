@@ -20,10 +20,12 @@ module.exports = Filesystem = (function() {
   };
 
   Filesystem.prototype.addFiles = function() {
-    return this.getFiles().then((function(_this) {
-      return function(files) {
-        _this.createDirs(files);
-        return Promise.all(_this.addFileContents(files));
+    return this.getInitialData().then((function(_this) {
+      return function(data) {
+        _this.createDirs(data.files);
+        return Promise.all(_this.addFileContents(data.files)).then(function() {
+          return data;
+        });
       };
     })(this));
   };
@@ -43,18 +45,17 @@ module.exports = Filesystem = (function() {
     });
   };
 
-  Filesystem.prototype.getFiles = function() {
+  Filesystem.prototype.getInitialData = function() {
     return new Promise((function(_this) {
       return function(resolve, reject) {
-        return request.post({
-          url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/initial"
+        return request.get({
+          json: true,
+          url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/init"
         }, function(err, status, resp) {
-          var files;
           if (err) {
             return reject(err);
           }
-          files = JSON.parse(resp).files;
-          return resolve(files);
+          return resolve(resp);
         });
       };
     })(this));
@@ -67,7 +68,7 @@ module.exports = Filesystem = (function() {
       return function(file) {
         var promise;
         promise = new Promise(function(resolve, reject) {
-          fs.writeFileSync("/" + file.path, file.content);
+          fs.writeFileSync(fs.join('/', file.path), file.content || 'not-modifiable');
           return resolve();
         });
         return result.push(promise);

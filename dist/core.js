@@ -33,9 +33,12 @@ module.exports = Core = (function() {
 
   Core.prototype.load = function() {
     return this.filesystem.load().then((function(_this) {
-      return function() {
+      return function(data) {
+        _this.data = data;
         return Router.run(_this.routes(), function(Handler) {
-          return React.render(React.createElement(Handler, null), document.body);
+          return React.render(React.createElement(Handler, {
+            "browser_url": _this.data.browser_url
+          }), document.body);
         });
       };
     })(this));
@@ -44,9 +47,7 @@ module.exports = Core = (function() {
   Core.prototype.routes = function() {
     return React.createElement(Route, {
       "handler": App,
-      "path": '/',
-      "base": this.base,
-      "server": this.server
+      "path": '/'
     }, React.createElement(Route, {
       "name": 'code',
       "path": '/code',

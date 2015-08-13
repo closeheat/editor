@@ -19,12 +19,14 @@ class Core
     @filesystem = new Filesystem()
 
   load: ->
-    @filesystem.load().then =>
-      Router.run @routes(), (Handler) ->
-        React.render(<Handler/>, document.body)
+    @filesystem.load().then (data) =>
+      @data = data
+
+      Router.run @routes(), (Handler) =>
+        React.render(<Handler browser_url={@data.browser_url} />, document.body)
 
   routes: ->
-    <Route handler={App} path='/' base={@base} server={@server} >
+    <Route handler={App} path='/'>
       <Route name='code' path='/code' handler={CodeMode}>
         <Route name='file' path='*?' handler={TabManager} />
         <DefaultRoute name='file-manager' handler={TabManager}/>

@@ -32,39 +32,14 @@ React.createClass
   codeClick: ->
     @transitionWithCodeModeHistory('code', '/code/*?')
   previewClick: ->
-    @build().then((resp) =>
-      @transitionWithCodeModeHistory('preview', 'preview-with-history')
+    @transitionWithCodeModeHistory('preview', 'preview-with-history')
+    @setState(clean_files: @serializedFiles())
 
-      @setState(clean_files: @serializedFiles())
+    browser_ref = @refs.appRouteHandler.refs.__routeHandler__.refs.browser
+    return unless browser_ref
 
-      browser_ref = @refs.appRouteHandler.refs.__routeHandler__.refs.browser
-      return unless browser_ref
-
-      # same route, refresh manually
-      browser_ref.refresh()
-    ).catch (err) ->
-      console.log(err)
-
-  build: ->
-    new Promise (resolve, reject) =>
-      $.ajax(
-        dataType: 'json'
-        method: 'POST'
-        data: { files: @changedFiles() }
-        url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/preview"
-      ).then((resp) ->
-        return reject(resp.error) unless resp.success
-
-        resolve()
-      ).fail (err) ->
-        reject(err)
-
-  changedFiles: ->
-    _.reject @serializedFiles(), (new_file) =>
-      clean_file = _.detect @state.clean_files, (file) ->
-        file.path == new_file.path
-
-      clean_file.content == new_file.content
+    # same route, refresh manually
+    browser_ref.refresh()
 
   serializedFiles: ->
     result = flatten(fs.data, { delimiter: '/' })
@@ -88,13 +63,35 @@ React.createClass
   publishClick: ->
     @transitionWithCodeModeHistory('publish', '/publish/*?')
 
+  changedFiles: ->
+    _.reject @serializedFiles(), (new_file) =>
+      clean_file = _.detect @state.clean_files, (file) ->
+        file.path == new_file.path
+
+      clean_file.content == new_file.content
+
+  build: ->
+    new Promise (resolve, reject) =>
+      $.ajax(
+        dataType: 'json'
+        method: 'POST'
+        data: { files: @changedFiles() }
+        url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/preview"
+      ).then((resp) ->
+        return reject(resp.error) unless resp.success
+
+        resolve()
+      ).fail (err) ->
+        reject(err)
+
   render: ->
     <main>
       <Header onCodeClick={@codeClick} onPreviewClick={@previewClick} onPublishClick={@publishClick} />
 
       <RouteHandler
-        base={@props.base}
+        browser_url={@props.browser_url}
         editorChange={@editorChange}
         onRouteChange={@routeChange}
+        build={@build}
         ref='appRouteHandler'/>
     </main>

@@ -40,54 +40,16 @@ module.exports = React.createClass({
     return this.transitionWithCodeModeHistory('code', '/code/*?');
   },
   previewClick: function() {
-    return this.build().then((function(_this) {
-      return function(resp) {
-        var browser_ref;
-        _this.transitionWithCodeModeHistory('preview', 'preview-with-history');
-        _this.setState({
-          clean_files: _this.serializedFiles()
-        });
-        browser_ref = _this.refs.appRouteHandler.refs.__routeHandler__.refs.browser;
-        if (!browser_ref) {
-          return;
-        }
-        return browser_ref.refresh();
-      };
-    })(this))["catch"](function(err) {
-      return console.log(err);
+    var browser_ref;
+    this.transitionWithCodeModeHistory('preview', 'preview-with-history');
+    this.setState({
+      clean_files: this.serializedFiles()
     });
-  },
-  build: function() {
-    return new Promise((function(_this) {
-      return function(resolve, reject) {
-        return $.ajax({
-          dataType: 'json',
-          method: 'POST',
-          data: {
-            files: _this.changedFiles()
-          },
-          url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/preview"
-        }).then(function(resp) {
-          if (!resp.success) {
-            return reject(resp.error);
-          }
-          return resolve();
-        }).fail(function(err) {
-          return reject(err);
-        });
-      };
-    })(this));
-  },
-  changedFiles: function() {
-    return _.reject(this.serializedFiles(), (function(_this) {
-      return function(new_file) {
-        var clean_file;
-        clean_file = _.detect(_this.state.clean_files, function(file) {
-          return file.path === new_file.path;
-        });
-        return clean_file.content === new_file.content;
-      };
-    })(this));
+    browser_ref = this.refs.appRouteHandler.refs.__routeHandler__.refs.browser;
+    if (!browser_ref) {
+      return;
+    }
+    return browser_ref.refresh();
   },
   serializedFiles: function() {
     var result;
@@ -118,15 +80,48 @@ module.exports = React.createClass({
   publishClick: function() {
     return this.transitionWithCodeModeHistory('publish', '/publish/*?');
   },
+  changedFiles: function() {
+    return _.reject(this.serializedFiles(), (function(_this) {
+      return function(new_file) {
+        var clean_file;
+        clean_file = _.detect(_this.state.clean_files, function(file) {
+          return file.path === new_file.path;
+        });
+        return clean_file.content === new_file.content;
+      };
+    })(this));
+  },
+  build: function() {
+    return new Promise((function(_this) {
+      return function(resolve, reject) {
+        return $.ajax({
+          dataType: 'json',
+          method: 'POST',
+          data: {
+            files: _this.changedFiles()
+          },
+          url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/preview"
+        }).then(function(resp) {
+          if (!resp.success) {
+            return reject(resp.error);
+          }
+          return resolve();
+        }).fail(function(err) {
+          return reject(err);
+        });
+      };
+    })(this));
+  },
   render: function() {
     return React.createElement("main", null, React.createElement(Header, {
       "onCodeClick": this.codeClick,
       "onPreviewClick": this.previewClick,
       "onPublishClick": this.publishClick
     }), React.createElement(RouteHandler, {
-      "base": this.props.base,
+      "browser_url": this.props.browser_url,
       "editorChange": this.editorChange,
       "onRouteChange": this.routeChange,
+      "build": this.build,
       "ref": 'appRouteHandler'
     }));
   }
