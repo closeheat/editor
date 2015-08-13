@@ -1,8 +1,6 @@
-var Link, React, RouteHandler, Router, Tab, _;
+var Link, React, RouteHandler, Router, Tabs;
 
 React = require('react/addons');
-
-_ = require('lodash');
 
 Router = require('react-router');
 
@@ -10,7 +8,7 @@ RouteHandler = Router.RouteHandler;
 
 Link = Router.Link;
 
-Tab = require('./tab');
+Tabs = require('./tabs');
 
 module.exports = React.createClass({
   getInitialState: function() {
@@ -33,13 +31,8 @@ module.exports = React.createClass({
       "className": 'col editor-col full m12'
     }, React.createElement("div", {
       "className": 'editor'
-    }, React.createElement("ul", null, _.map(this.state.tabs, function(tab) {
-      return React.createElement(Tab, React.__spread({}, tab));
-    }), React.createElement(Link, {
-      "to": 'file',
-      "params": {
-        splat: ''
-      }
-    }, React.createElement("div", null, "New tab"))), React.createElement(RouteHandler, React.__spread({}, this.props))))));
+    }, React.createElement("ul", null, React.createElement(Tabs, {
+      "full_path": this.props.params.splat
+    })), React.createElement(RouteHandler, React.__spread({}, this.props))))));
   }
 });

@@ -7,12 +7,19 @@ Router = require('react-router');
 Link = Router.Link;
 
 module.exports = React.createClass({
+  activeClass: function() {
+    if (this.props.active) {
+      return 'active';
+    }
+  },
   render: function() {
-    return React.createElement("li", null, React.createElement(Link, {
+    return React.createElement("li", {
+      "className": this.activeClass()
+    }, React.createElement(Link, {
       "to": 'file',
       "params": {
-        splat: this.props.path
+        splat: this.props.href
       }
-    }, React.createElement("div", null, this.props.path)));
+    }, this.props.path));
   }
 });

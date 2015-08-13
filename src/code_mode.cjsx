@@ -1,11 +1,10 @@
 React = require 'react/addons'
-_ = require 'lodash'
 
 Router = require 'react-router'
 RouteHandler = Router.RouteHandler
 Link = Router.Link
 
-Tab = require('./tab')
+Tabs = require('./tabs')
 
 module.exports =
 React.createClass
@@ -26,12 +25,7 @@ React.createClass
         <div className='col editor-col full m12'>
           <div className='editor'>
             <ul>
-              {_.map @state.tabs, (tab) ->
-                <Tab {...tab}/>
-              }
-              <Link to='file' params={{ splat: '' }}>
-                <div>New tab</div>
-              </Link>
+              <Tabs full_path={@props.params.splat} />
             </ul>
             <RouteHandler {...@props}/>
           </div>
