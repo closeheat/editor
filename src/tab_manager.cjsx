@@ -17,7 +17,7 @@ React.createClass
     catch e
       false
   renderFileManager: ->
-    <FileManager path={@props.active_tab_path} newHref={@props.newHref}/>
+    <FileManager path={@props.active_tab_path} reuseTabHref={@props.reuseTabHref} newTabHref={@props.newTabHref}/>
   render: ->
     if @isFile()
       @renderEditor()

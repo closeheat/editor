@@ -15,14 +15,24 @@ module.exports = React.createClass({
       return function(parent_data, filename) {
         return {
           type: _this.locationType(parent_data),
-          path: fs.join(_this.props.path, filename).replace(/^\//, ''),
           name: filename
         };
       };
     })(this));
-    return _.reject(result, function(file) {
+    result = _.reject(result, function(file) {
       return file.type === 'folder-marker';
     });
+    return _.map(result, (function(_this) {
+      return function(file) {
+        file.href = _this.fileOrDirHref(file.type, file.name);
+        return file;
+      };
+    })(this));
+  },
+  fileOrDirHref: function(type, filename) {
+    var path;
+    path = fs.join(this.props.path || '', filename).replace(/^\//, '');
+    return this.props.reuseTabHref(path);
   },
   filesystemObject: function() {
     return fs.data[this.props.path] || fs.data;
@@ -48,7 +58,7 @@ module.exports = React.createClass({
         return React.createElement("li", null, React.createElement(Link, {
           "to": 'file',
           "params": {
-            splat: _this.props.newHref(file.path)
+            splat: file.href
           }
         }, file.type, " - ", file.name));
       };

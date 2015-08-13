@@ -69,7 +69,7 @@ module.exports = React.createClass({
     });
     return tab_paths.join('&');
   },
-  newHref: function(path) {
+  newTabHref: function(path) {
     var new_active_tab, unique_tabs;
     new_active_tab = {
       path: path,
@@ -80,15 +80,24 @@ module.exports = React.createClass({
     });
     return this.href(unique_tabs, new_active_tab);
   },
-  navigateHref: function(path) {
-    var new_tabs;
+  reuseTabHref: function(path) {
+    var new_tabs, unique_tabs, with_active_tab;
     new_tabs = _.map(this.tabs(), function(tab) {
       if (tab.active) {
         tab.path = path;
       }
       return tab;
     });
-    return this.joinTabPaths(new_tabs);
+    unique_tabs = _.uniq(new_tabs, function(tab) {
+      return tab.path;
+    });
+    with_active_tab = _.map(unique_tabs, function(tab) {
+      if (tab.path === path) {
+        tab.active = true;
+      }
+      return tab;
+    });
+    return this.joinTabPaths(with_active_tab);
   },
   render: function() {
     return React.createElement("div", null, React.createElement("div", {
@@ -99,10 +108,11 @@ module.exports = React.createClass({
       "className": 'editor'
     }, React.createElement("ul", null, React.createElement(Tabs, {
       "tabs": this.tabs(),
-      "new_tab_href": this.newHref('/')
+      "new_tab_href": this.newTabHref('/')
     })), React.createElement(RouteHandler, {
       "active_tab_path": this.activeTabPath(),
-      "newHref": this.navigateHref,
+      "reuseTabHref": this.reuseTabHref,
+      "newTabHref": this.newTabHref,
       "editorChange": this.props.editorChange
     })))));
   }

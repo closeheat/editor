@@ -31,7 +31,8 @@ module.exports = React.createClass({
   renderFileManager: function() {
     return React.createElement(FileManager, {
       "path": this.props.active_tab_path,
-      "newHref": this.props.newHref
+      "reuseTabHref": this.props.reuseTabHref,
+      "newTabHref": this.props.newTabHref
     });
   },
   render: function() {

@@ -10,12 +10,22 @@ React.createClass
     result = _.map @filesystemObject(), (parent_data, filename) =>
       {
         type: @locationType(parent_data),
-        path: fs.join(_this.props.path, filename).replace(/^\//, ''),
         name: filename,
       }
 
-    _.reject result, (file) ->
+    result = _.reject result, (file) ->
       file.type == 'folder-marker'
+
+    _.map result, (file) =>
+      file.href = @fileOrDirHref(file.type, file.name)
+      file
+
+  fileOrDirHref: (type, filename) ->
+    path = fs.join(@props.path || '', filename).replace(/^\//, '')
+
+    # debugger
+    # if type == 'folder'
+    @props.reuseTabHref(path)
 
   filesystemObject: ->
     fs.data[@props.path] || fs.data
@@ -37,7 +47,7 @@ React.createClass
             <ul>
             {_.map @folderFiles(), (file) =>
               <li>
-                <Link to='file' params={{ splat: @props.newHref(file.path) }}>
+                <Link to='file' params={{ splat: file.href }}>
                   {file.type} - {file.name}
                 </Link>
               </li>

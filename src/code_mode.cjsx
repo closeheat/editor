@@ -51,7 +51,7 @@ React.createClass
 
     tab_paths.join('&')
 
-  newHref: (path) ->
+  newTabHref: (path) ->
     new_active_tab =
       path: path
       active: true
@@ -61,12 +61,19 @@ React.createClass
 
     @href(unique_tabs, new_active_tab)
 
-  navigateHref: (path) ->
+  reuseTabHref: (path) ->
     new_tabs = _.map @tabs(), (tab) ->
       tab.path = path if tab.active
       tab
 
-    @joinTabPaths(new_tabs)
+    unique_tabs = _.uniq new_tabs, (tab) ->
+      tab.path
+
+    with_active_tab = _.map unique_tabs, (tab) ->
+      tab.active = true if tab.path == path
+      tab
+
+    @joinTabPaths(with_active_tab)
 
   render: ->
     <div>
@@ -74,9 +81,9 @@ React.createClass
         <div className='col editor-col full m12'>
           <div className='editor'>
             <ul>
-              <Tabs tabs={@tabs()} new_tab_href={@newHref('/')} />
+              <Tabs tabs={@tabs()} new_tab_href={@newTabHref('/')} />
             </ul>
-            <RouteHandler active_tab_path={@activeTabPath()} newHref={@navigateHref} editorChange={@props.editorChange} />
+            <RouteHandler active_tab_path={@activeTabPath()} reuseTabHref={@reuseTabHref} newTabHref={@newTabHref} editorChange={@props.editorChange} />
           </div>
         </div>
       </div>
