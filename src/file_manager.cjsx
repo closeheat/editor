@@ -1,13 +1,17 @@
 React = require 'react/addons'
 _ = require 'lodash'
 
+Router = require 'react-router'
+Link = Router.Link
+
 module.exports =
 React.createClass
   folderFiles: ->
-    result = _.map @filesystemObject(), (location, path) =>
+    result = _.map @filesystemObject(), (parent_data, filename) =>
       {
-        type: @locationType(location),
-        path: path,
+        type: @locationType(parent_data),
+        path: fs.join(_this.props.path, filename).replace(/^\//, ''),
+        name: filename,
       }
 
     _.reject result, (file) ->
@@ -31,9 +35,11 @@ React.createClass
         <div className='col editor-col full m12'>
           <div className='editor'>
             <ul>
-            {_.map @folderFiles(), (file) ->
+            {_.map @folderFiles(), (file) =>
               <li>
-                {file.type} - {file.path}
+                <Link to='file' params={{ splat: @props.newHref(file.path) }}>
+                  {file.type} - {file.name}
+                </Link>
               </li>
             }
             </ul>

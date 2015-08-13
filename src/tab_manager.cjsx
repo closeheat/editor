@@ -1,4 +1,5 @@
 React = require 'react/addons'
+_ = require 'lodash'
 
 Editor = require('./editor')
 FileManager = require('./file_manager')
@@ -6,19 +7,17 @@ FileManager = require('./file_manager')
 module.exports =
 React.createClass
   renderEditor: ->
-    content = fs.readFileSync("/#{@path()}").toString()
+    content = fs.readFileSync("/#{@props.active_tab_path}").toString()
 
-    <Editor value={content} path={@path()} onChange={@props.editorChange} />
+    <Editor value={content} path={@props.active_tab_path} onChange={@props.editorChange} />
   isFile: ->
     try
-      fs.readFileSync("/#{@path()}")
+      fs.readFileSync("/#{@props.active_tab_path}")
       true
     catch e
       false
-  path: ->
-    @props.params.splat
   renderFileManager: ->
-    <FileManager path={@path()} />
+    <FileManager path={@props.active_tab_path} newHref={@props.newHref}/>
   render: ->
     if @isFile()
       @renderEditor()

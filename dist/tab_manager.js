@@ -1,6 +1,8 @@
-var Editor, FileManager, React;
+var Editor, FileManager, React, _;
 
 React = require('react/addons');
+
+_ = require('lodash');
 
 Editor = require('./editor');
 
@@ -9,29 +11,27 @@ FileManager = require('./file_manager');
 module.exports = React.createClass({
   renderEditor: function() {
     var content;
-    content = fs.readFileSync("/" + (this.path())).toString();
+    content = fs.readFileSync("/" + this.props.active_tab_path).toString();
     return React.createElement(Editor, {
       "value": content,
-      "path": this.path(),
+      "path": this.props.active_tab_path,
       "onChange": this.props.editorChange
     });
   },
   isFile: function() {
     var e;
     try {
-      fs.readFileSync("/" + (this.path()));
+      fs.readFileSync("/" + this.props.active_tab_path);
       return true;
     } catch (_error) {
       e = _error;
       return false;
     }
   },
-  path: function() {
-    return this.props.params.splat;
-  },
   renderFileManager: function() {
     return React.createElement(FileManager, {
-      "path": this.path()
+      "path": this.props.active_tab_path,
+      "newHref": this.props.newHref
     });
   },
   render: function() {
