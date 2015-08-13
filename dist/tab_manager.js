@@ -11,7 +11,7 @@ FileManager = require('./file_manager');
 module.exports = React.createClass({
   renderEditor: function() {
     var content;
-    content = fs.readFileSync("/" + this.props.active_tab_path).toString();
+    content = fs.readFileSync(fs.join('/', this.props.active_tab_path)).toString();
     return React.createElement(Editor, {
       "value": content,
       "path": this.props.active_tab_path,

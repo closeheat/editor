@@ -13,7 +13,7 @@ React.createClass
   getInitialState: ->
     loaded: false
   onChange: (new_content) ->
-    @props.onChange(new_content)
+    @props.onChange(@props.path, new_content)
   mode: ->
     ext = @props.path.match(/\.(.*)$/)[1] || 'html'
 

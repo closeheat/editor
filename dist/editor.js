@@ -23,7 +23,7 @@ module.exports = React.createClass({
     };
   },
   onChange: function(new_content) {
-    return this.props.onChange(new_content);
+    return this.props.onChange(this.props.path, new_content);
   },
   mode: function() {
     var ext, result;

@@ -32,8 +32,10 @@ React.createClass
   rawIndex: ->
     fs.readFileSync(@indexFilename()).toString()
 
-  editorChange: (new_content) ->
-    @setState(editor_content: new_content)
+  editorChange: (path, new_content) ->
+    fs.writeFileSync(fs.join('/', path), new_content)
+    # debugger
+    # @setState(editor_content: new_content)
 
     # @goToStep(2) if @state.loaded
     @setState(loaded: true) if new_content == @state.editor_content

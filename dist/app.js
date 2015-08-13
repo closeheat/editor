@@ -45,10 +45,8 @@ module.exports = React.createClass({
   rawIndex: function() {
     return fs.readFileSync(this.indexFilename()).toString();
   },
-  editorChange: function(new_content) {
-    this.setState({
-      editor_content: new_content
-    });
+  editorChange: function(path, new_content) {
+    fs.writeFileSync(fs.join('/', path), new_content);
     if (new_content === this.state.editor_content) {
       return this.setState({
         loaded: true

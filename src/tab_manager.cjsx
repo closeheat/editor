@@ -7,7 +7,7 @@ FileManager = require('./file_manager')
 module.exports =
 React.createClass
   renderEditor: ->
-    content = fs.readFileSync("/#{@props.active_tab_path}").toString()
+    content = fs.readFileSync(fs.join('/', @props.active_tab_path)).toString()
 
     <Editor value={content} path={@props.active_tab_path} onChange={@props.editorChange} />
   isFile: ->
