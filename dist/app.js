@@ -1,8 +1,10 @@
-var $, Header, Navigation, Promise, React, RouteHandler, Router, _, jade, request;
+var $, Header, Navigation, Promise, React, RouteHandler, Router, _, flatten, jade, request;
 
 React = require('react/addons');
 
 jade = require('jade-memory-fs');
+
+flatten = require('flat');
 
 _ = require('lodash');
 
@@ -25,7 +27,7 @@ Header = require('./header');
 module.exports = React.createClass({
   getInitialState: function() {
     return {
-      code_editor_path: ''
+      clean_files: this.serializedFiles()
     };
   },
   mixins: [Navigation],
@@ -42,6 +44,9 @@ module.exports = React.createClass({
       return function(resp) {
         var browser_ref;
         _this.transitionWithCodeModeHistory('preview', 'preview-with-history');
+        _this.setState({
+          clean_files: _this.serializedFiles()
+        });
         browser_ref = _this.refs.appRouteHandler.refs.__routeHandler__.refs.browser;
         if (!browser_ref) {
           return;
@@ -55,20 +60,49 @@ module.exports = React.createClass({
   build: function() {
     return new Promise((function(_this) {
       return function(resolve, reject) {
-        return request.post({
-          json: true,
+        return $.ajax({
+          dataType: 'json',
+          method: 'POST',
+          data: {
+            files: _this.changedFiles()
+          },
           url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/preview"
-        }, function(err, status, resp) {
-          if (err) {
-            return reject(err);
-          }
+        }).then(function(resp) {
           if (!resp.success) {
             return reject(resp.error);
           }
-          return resolve(resp.files);
+          return resolve();
+        }).fail(function(err) {
+          return reject(err);
         });
       };
     })(this));
+  },
+  changedFiles: function() {
+    return _.reject(this.serializedFiles(), (function(_this) {
+      return function(new_file) {
+        var clean_file;
+        clean_file = _.detect(_this.state.clean_files, function(file) {
+          return file.path === new_file.path;
+        });
+        return clean_file.content === new_file.content;
+      };
+    })(this));
+  },
+  serializedFiles: function() {
+    var result;
+    result = flatten(fs.data, {
+      delimiter: '/'
+    });
+    result = _.omit(result, function(content, path) {
+      return content === true;
+    });
+    return _.map(result, function(content, path) {
+      return {
+        path: path,
+        content: content.toString()
+      };
+    });
   },
   transitionWithCodeModeHistory: function(route, with_history_route) {
     var editor_path;

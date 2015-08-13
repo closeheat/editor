@@ -1,5 +1,8 @@
 React = require 'react/addons'
 jade = require 'jade-memory-fs'
+# glob = require 'glob'
+# walk    = require('walk')
+flatten = require('flat')
 _ = require 'lodash'
 $ = window.jQuery = window.$ = require 'jquery'
 request = require 'request'
@@ -16,7 +19,7 @@ module.exports =
 React.createClass
   getInitialState: ->
     {
-      code_editor_path: ''
+      clean_files: @serializedFiles()
     }
   mixins: [Navigation],
   editorChange: (path, new_content) ->
@@ -32,6 +35,8 @@ React.createClass
     @build().then((resp) =>
       @transitionWithCodeModeHistory('preview', 'preview-with-history')
 
+      @setState(clean_files: @serializedFiles())
+
       browser_ref = @refs.appRouteHandler.refs.__routeHandler__.refs.browser
       return unless browser_ref
 
@@ -40,15 +45,37 @@ React.createClass
     ).catch (err) ->
       console.log(err)
 
-
   build: ->
     new Promise (resolve, reject) =>
-      request.post json: true, url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/preview", (err, status, resp) =>
-        return reject(err) if err
+      $.ajax(
+        dataType: 'json'
+        method: 'POST'
+        data: { files: @changedFiles() }
+        url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/preview"
+      ).then((resp) ->
         return reject(resp.error) unless resp.success
 
-        resolve(resp.files)
+        resolve()
+      ).fail (err) ->
+        reject(err)
 
+  changedFiles: ->
+    _.reject @serializedFiles(), (new_file) =>
+      clean_file = _.detect @state.clean_files, (file) ->
+        file.path == new_file.path
+
+      clean_file.content == new_file.content
+
+  serializedFiles: ->
+    result = flatten(fs.data, { delimiter: '/' })
+    result = _.omit result, (content, path) ->
+      content == true
+
+    _.map result, (content, path) ->
+      {
+        path: path,
+        content: content.toString(),
+      }
 
   transitionWithCodeModeHistory: (route, with_history_route) ->
     editor_path = @refs.appRouteHandler.refs.__routeHandler__.props.params.splat
