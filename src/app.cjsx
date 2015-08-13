@@ -86,6 +86,7 @@ React.createClass
       @transitionTo(route)
 
   publishClick: ->
+    @transitionWithCodeModeHistory('publish', '/publish/*?')
 
   render: ->
     <main>

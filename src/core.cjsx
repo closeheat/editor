@@ -11,6 +11,7 @@ App = require './app'
 CodeMode = require './code_mode'
 PreviewMode = require './preview_mode'
 TabManager = require './tab_manager'
+Publish = require './publish'
 
 module.exports =
 class Core
@@ -27,9 +28,13 @@ class Core
       <Route name='code' path='/code' handler={CodeMode}>
         <Route name='file' path='*?' handler={TabManager} />
         <DefaultRoute name='file-manager' handler={TabManager}/>
+
       </Route>
       <Route name='preview' path='/preview' handler={PreviewMode} />
       <Route name='preview-with-history' path='/preview/*?' handler={PreviewMode} />
+
+      <Route name='publish' path='/publish' handler={Publish} />
+      <Route name='publish-with-history' path='/publish/*?' handler={Publish} />
       <DefaultRoute handler={CodeMode} />
     </Route>
     # <DefaultRoute handler={Home} />

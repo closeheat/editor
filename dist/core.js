@@ -1,4 +1,4 @@
-var $, App, CodeMode, Core, DefaultRoute, Filesystem, PreviewMode, React, Route, Router, TabManager, md;
+var $, App, CodeMode, Core, DefaultRoute, Filesystem, PreviewMode, Publish, React, Route, Router, TabManager, md;
 
 md = require('marked');
 
@@ -21,6 +21,8 @@ CodeMode = require('./code_mode');
 PreviewMode = require('./preview_mode');
 
 TabManager = require('./tab_manager');
+
+Publish = require('./publish');
 
 module.exports = Core = (function() {
   function Core(base, server) {
@@ -64,6 +66,14 @@ module.exports = Core = (function() {
       "name": 'preview-with-history',
       "path": '/preview/*?',
       "handler": PreviewMode
+    }), React.createElement(Route, {
+      "name": 'publish',
+      "path": '/publish',
+      "handler": Publish
+    }), React.createElement(Route, {
+      "name": 'publish-with-history',
+      "path": '/publish/*?',
+      "handler": Publish
     }), React.createElement(DefaultRoute, {
       "handler": CodeMode
     }));

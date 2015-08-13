@@ -115,7 +115,9 @@ module.exports = React.createClass({
       return this.transitionTo(route);
     }
   },
-  publishClick: function() {},
+  publishClick: function() {
+    return this.transitionWithCodeModeHistory('publish', '/publish/*?');
+  },
   render: function() {
     return React.createElement("main", null, React.createElement(Header, {
       "onCodeClick": this.codeClick,
