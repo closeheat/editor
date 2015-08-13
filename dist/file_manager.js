@@ -7,7 +7,7 @@ _ = require('lodash');
 module.exports = React.createClass({
   folderFiles: function() {
     var result;
-    result = _.map(fs.data[this.props.path], (function(_this) {
+    result = _.map(this.filesystemObject(), (function(_this) {
       return function(location, path) {
         return {
           type: _this.locationType(location),
@@ -19,8 +19,11 @@ module.exports = React.createClass({
       return file.type === 'folder-marker';
     });
   },
+  filesystemObject: function() {
+    return fs.data[this.props.path] || fs.data;
+  },
   locationType: function(location) {
-    if (_.isObject(location)) {
+    if (_.isPlainObject(location)) {
       return 'folder';
     } else if (location === true) {
       return 'folder-marker';

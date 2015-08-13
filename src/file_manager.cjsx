@@ -4,7 +4,7 @@ _ = require 'lodash'
 module.exports =
 React.createClass
   folderFiles: ->
-    result = _.map fs.data[@props.path], (location, path) =>
+    result = _.map @filesystemObject(), (location, path) =>
       {
         type: @locationType(location),
         path: path,
@@ -13,9 +13,11 @@ React.createClass
     _.reject result, (file) ->
       file.type == 'folder-marker'
 
+  filesystemObject: ->
+    fs.data[@props.path] || fs.data
 
   locationType: (location) ->
-    if _.isObject(location)
+    if _.isPlainObject(location)
       'folder'
     else if location == true
       # "": true inside all folders for some reason
