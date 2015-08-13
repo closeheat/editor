@@ -33,12 +33,11 @@ React.createClass
     fs.readFileSync(@indexFilename()).toString()
 
   editorChange: (path, new_content) ->
-    fs.writeFileSync(fs.join('/', path), new_content)
-    # debugger
-    # @setState(editor_content: new_content)
+    bug_message = 'If you see this - a bug occured. Could you send us a message by clicking Support in the top?'
+    fs.writeFileSync(fs.join('/', path), new_content || bug_message)
 
     # @goToStep(2) if @state.loaded
-    @setState(loaded: true) if new_content == @state.editor_content
+    # @setState(loaded: true) if new_content == @state.editor_content
 
   render: ->
     <main>

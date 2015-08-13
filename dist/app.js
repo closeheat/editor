@@ -46,12 +46,9 @@ module.exports = React.createClass({
     return fs.readFileSync(this.indexFilename()).toString();
   },
   editorChange: function(path, new_content) {
-    fs.writeFileSync(fs.join('/', path), new_content);
-    if (new_content === this.state.editor_content) {
-      return this.setState({
-        loaded: true
-      });
-    }
+    var bug_message;
+    bug_message = 'If you see this - a bug occured. Could you send us a message by clicking Support in the top?';
+    return fs.writeFileSync(fs.join('/', path), new_content || bug_message);
   },
   render: function() {
     return React.createElement("main", null, React.createElement(Header, null), React.createElement(RouteHandler, {
