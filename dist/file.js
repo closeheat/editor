@@ -17,6 +17,9 @@ module.exports = React.createClass({
     return result;
   },
   onClick: function() {
+    if (this.uneditableFile()) {
+      return;
+    }
     return this.transitionTo('file', {
       splat: this.props.file.href
     });
@@ -38,12 +41,23 @@ module.exports = React.createClass({
       }, "class");
     }
   },
+  uneditableFile: function() {
+    return this.props.file.type === 'file' && !this.props.file.editable;
+  },
+  editableClass: function() {
+    if (this.uneditableFile()) {
+      return 'file-list-uneditable';
+    }
+  },
   render: function() {
     return React.createElement("tr", {
-      "onClick": this.onClick
+      "onClick": this.onClick,
+      "className": this.editableClass()
     }, React.createElement("td", {
       "className": 'file-list-icon'
-    }, this.icon()), React.createElement("td", null, this.props.file.name), React.createElement("td", {
+    }, this.icon()), React.createElement("td", {
+      "className": 'file-list-name'
+    }, this.props.file.name), React.createElement("td", {
       "className": 'file-list-kind'
     }, this.kind()));
   }

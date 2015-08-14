@@ -148,6 +148,13 @@ body {
       font-size: 40px;
     }
 
+    .file-list-uneditable {
+      .file-list-name,
+      .file-list-icon i {
+        color: $grey;
+      }
+    }
+
     .file-list-kind {
       color: $grey;
       text-transform: uppercase;

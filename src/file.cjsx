@@ -11,6 +11,8 @@ React.createClass
     result += ' tab-active' if @props.active
     result
   onClick: ->
+    return if @uneditableFile()
+
     @transitionTo('file', splat: @props.file.href)
   kind: ->
     return 'Folder' if @props.file.type == 'dir'
@@ -22,12 +24,18 @@ React.createClass
     else
       <i className='material-icons'>class</i>
 
+  uneditableFile: ->
+    @props.file.type == 'file' && !@props.file.editable
+
+  editableClass: ->
+    'file-list-uneditable' if @uneditableFile()
+
   render: ->
-    <tr onClick={@onClick}>
+    <tr onClick={@onClick} className={@editableClass()}>
       <td className='file-list-icon'>
         {@icon()}
       </td>
-      <td>
+      <td className='file-list-name'>
         {@props.file.name}
       </td>
       <td className='file-list-kind'>

@@ -8171,6 +8171,8 @@ body {
   .editor-wrapper .file-list .file-list-icon i {
     color: #EE4340;
     font-size: 40px; }
+  .editor-wrapper .file-list .file-list-uneditable .file-list-name, .editor-wrapper .file-list .file-list-uneditable .file-list-icon i {
+    color: #C1C6D1; }
   .editor-wrapper .file-list .file-list-kind {
     color: #C1C6D1;
     text-transform: uppercase;
