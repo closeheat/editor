@@ -115,6 +115,7 @@ module.exports = React.createClass({
       "editorChange": this.editorChange,
       "onRouteChange": this.routeChange,
       "build": this.build,
+      "files_changed": !_.isEmpty(this.changedFiles()),
       "ref": 'appRouteHandler'
     }));
   }

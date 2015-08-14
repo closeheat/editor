@@ -76,6 +76,7 @@ React.createClass
     _.first(routes[1].name.split('-'))
 
   render: ->
+    # debugger
     <main className='editor-wrapper'>
       <Header website_url={@props.website_url} active_mode={@activeMode()} onCodeClick={@codeClick} onPreviewClick={@previewClick} onPublishClick={@publishClick} />
 
@@ -85,5 +86,6 @@ React.createClass
         editorChange={@editorChange}
         onRouteChange={@routeChange}
         build={@build}
+        files_changed={!_.isEmpty(@changedFiles())}
         ref='appRouteHandler'/>
     </main>
