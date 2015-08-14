@@ -54,7 +54,7 @@ module.exports = React.createClass({
   },
   href: function(tabs, new_active_tab) {
     var new_tab_list;
-    new_tab_list = _.map(tabs, function(tab) {
+    new_tab_list = _.map(_.cloneDeep(tabs), function(tab) {
       var updated_tab;
       updated_tab = tab;
       updated_tab.active = updated_tab.path === new_active_tab.path;

@@ -28,7 +28,7 @@ module.exports = React.createClass({
         splat: this.props.new_tab_href
       }
     }, React.createElement("li", {
-      "className": 'tab tab-new col s3'
+      "className": 'tab tab-new col s2'
     }, React.createElement("div", null, "+ New tab"))));
   }
 });

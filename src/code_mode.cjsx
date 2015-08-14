@@ -39,8 +39,7 @@ React.createClass
       @fullPath()
 
   href: (tabs, new_active_tab) ->
-    # _.cloneDeep
-    new_tab_list = _.map tabs, (tab) ->
+    new_tab_list = _.map _.cloneDeep(tabs), (tab) ->
       updated_tab = tab
       updated_tab.active = updated_tab.path == new_active_tab.path
       updated_tab

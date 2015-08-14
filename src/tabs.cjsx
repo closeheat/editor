@@ -14,7 +14,7 @@ React.createClass
         <Tab href={tab.href} path={tab.path} active={tab.active}/>
       }
       <Link to='file' params={{ splat: @props.new_tab_href }}>
-        <li className='tab tab-new col s3'>
+        <li className='tab tab-new col s2'>
           <div>+ New tab</div>
         </li>
       </Link>

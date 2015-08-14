@@ -7,7 +7,7 @@ Link = Router.Link
 module.exports =
 React.createClass
   activeClass: ->
-    result = 'tab col m3'
+    result = 'tab col m2'
     result += ' tab-active' if @props.active
     result
   render: ->

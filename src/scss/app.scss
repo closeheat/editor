@@ -1,9 +1,11 @@
 $primary-color: #1A1E2D;
 $secondary-color: #F5534E;
 @import 'materialize';
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600);
 
 html {
   height: 100%;
+  font-family: 'Open Sans', sans-serif;
 }
 
 body {
@@ -33,18 +35,29 @@ body {
   }
 
   .tabs-row {
+    $tab-bg-color: #EBEAEB;
+    $tab-text-color: #9D9D9D;
+    $tab-active-bg-color: #F3F4F4;
+    $tab-active-text-color: #5B5B5B;
+    $tabs-row-bg-color: #F6F6F6;
+    $tab-border-color: hsla(0, 0%, 62%, .2);
+
+    background-color: $tabs-row-bg-color;
+    border-bottom: 1px solid $tab-border-color;
     margin: 0;
 
     .tab {
-      background-color: #C2C0C2;
-      color: #9D9D9D;
+      background-color: $tab-bg-color;
+      color: $tab-text-color;
       height: 35px;
       line-height: 35px;
+      border-right: 1px solid $tab-border-color;
+      font-size: 12px;
     }
 
     .tab-active {
-      background-color: #D3D1D3;
-      color: #5B5B5B;
+      background-color: $tab-active-bg-color;
+      color: $tab-active-text-color;
     }
   }
 }
