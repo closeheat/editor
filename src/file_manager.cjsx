@@ -13,12 +13,26 @@ React.createClass
       file.name = file.path
       file
 
+  upHref: ->
+    path_parts = @props.path.split('/')
+    up_path = _.dropRight(path_parts)
+    @props.reuseTabHref(up_path)
+  goUp: ->
+    unless @props.path
+      return <div></div>
+
+    <li>
+      <Link to='file' params={{ splat: @upHref() }}>
+        Up
+      </Link>
+    </li>
   render: ->
     <div>
       <div className='row'>
         <div className='col editor-col full m12'>
           <div className='editor'>
             <ul>
+            {@goUp()}
             {_.map @folderFiles(), (file) =>
               <li>
                 <Link to='file' params={{ splat: file.href }}>

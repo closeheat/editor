@@ -68,7 +68,7 @@ React.createClass
         return reject(err) if err
         return reject(resp.error) unless resp.success
 
-        @setState(clean_files: @serializedFiles())
+        @setState(clean_files: _.cloneDeep(Filesystem.ls()))
         resolve()
 
   render: ->

@@ -88,7 +88,7 @@ module.exports = React.createClass({
             return reject(resp.error);
           }
           _this.setState({
-            clean_files: _this.serializedFiles()
+            clean_files: _.cloneDeep(Filesystem.ls())
           });
           return resolve();
         });

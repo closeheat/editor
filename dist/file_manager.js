@@ -20,6 +20,23 @@ module.exports = React.createClass({
       };
     })(this));
   },
+  upHref: function() {
+    var path_parts, up_path;
+    path_parts = this.props.path.split('/');
+    up_path = _.dropRight(path_parts);
+    return this.props.reuseTabHref(up_path);
+  },
+  goUp: function() {
+    if (!this.props.path) {
+      return React.createElement("div", null);
+    }
+    return React.createElement("li", null, React.createElement(Link, {
+      "to": 'file',
+      "params": {
+        splat: this.upHref()
+      }
+    }, "Up"));
+  },
   render: function() {
     return React.createElement("div", null, React.createElement("div", {
       "className": 'row'
@@ -27,7 +44,7 @@ module.exports = React.createClass({
       "className": 'col editor-col full m12'
     }, React.createElement("div", {
       "className": 'editor'
-    }, React.createElement("ul", null, _.map(this.folderFiles(), (function(_this) {
+    }, React.createElement("ul", null, this.goUp(), _.map(this.folderFiles(), (function(_this) {
       return function(file) {
         return React.createElement("li", null, React.createElement(Link, {
           "to": 'file',
