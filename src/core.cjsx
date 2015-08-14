@@ -4,7 +4,7 @@ React = require 'react'
 
 Router = require 'react-router'
 Route = Router.Route
-DefaultRoute = Router.DefaultRoute
+Redirect = Router.Redirect
 
 InitialLoader = require './initial_loader'
 App = require './app'
@@ -29,16 +29,15 @@ class Core
   routes: ->
     <Route handler={App} path='/'>
       <Route name='code' path='/code' handler={CodeMode}>
-        <Route name='file' path='*?' handler={TabManager} />
-        <DefaultRoute name='file-manager' handler={TabManager}/>
-
+        <Route name='file' path='/code/*?' handler={TabManager} />
       </Route>
       <Route name='preview' path='/preview' handler={PreviewMode} />
       <Route name='preview-with-history' path='/preview/*?' handler={PreviewMode} />
 
       <Route name='publish' path='/publish' handler={Publish} />
       <Route name='publish-with-history' path='/publish/*?' handler={Publish} />
-      <DefaultRoute handler={CodeMode} />
+      <Redirect from='' to='/code/' />
+      <Redirect from="/code" to="/code/" />
     </Route>
     # <DefaultRoute handler={Home} />
     # <Route name="about" handler={About} />

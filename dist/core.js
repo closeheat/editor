@@ -1,4 +1,4 @@
-var $, App, CodeMode, Core, DefaultRoute, InitialLoader, PreviewMode, Publish, React, Route, Router, TabManager, md;
+var $, App, CodeMode, Core, InitialLoader, PreviewMode, Publish, React, Redirect, Route, Router, TabManager, md;
 
 md = require('marked');
 
@@ -10,7 +10,7 @@ Router = require('react-router');
 
 Route = Router.Route;
 
-DefaultRoute = Router.DefaultRoute;
+Redirect = Router.Redirect;
 
 InitialLoader = require('./initial_loader');
 
@@ -56,10 +56,7 @@ module.exports = Core = (function() {
       "handler": CodeMode
     }, React.createElement(Route, {
       "name": 'file',
-      "path": '*?',
-      "handler": TabManager
-    }), React.createElement(DefaultRoute, {
-      "name": 'file-manager',
+      "path": '/code/*?',
       "handler": TabManager
     })), React.createElement(Route, {
       "name": 'preview',
@@ -77,8 +74,12 @@ module.exports = Core = (function() {
       "name": 'publish-with-history',
       "path": '/publish/*?',
       "handler": Publish
-    }), React.createElement(DefaultRoute, {
-      "handler": CodeMode
+    }), React.createElement(Redirect, {
+      "from": '',
+      "to": '/code/'
+    }), React.createElement(Redirect, {
+      "from": "/code",
+      "to": "/code/"
     }));
   };
 

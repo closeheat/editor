@@ -8137,11 +8137,25 @@ body {
   margin: 0; }
   .editor-wrapper .tabs-row .tab {
     background-color: #EBEAEB;
-    color: #9D9D9D;
     height: 35px;
     line-height: 35px;
     border-right: 1px solid rgba(158, 158, 158, 0.2);
     font-size: 12px; }
+  .editor-wrapper .tabs-row a.tab-name {
+    display: inline-block;
+    color: #9D9D9D;
+    width: 90%; }
+  .editor-wrapper .tabs-row a.tab-close i {
+    font-size: 12px;
+    color: #9D9D9D;
+    width: 10%;
+    display: inline-block; }
+    .editor-wrapper .tabs-row a.tab-close i:hover {
+      color: #EE4340; }
+  .editor-wrapper .tabs-row .tab-new a {
+    color: #9D9D9D;
+    display: inline-block;
+    width: 100%; }
   .editor-wrapper .tabs-row .tab-active {
     background-color: #F3F4F4;
     color: #5B5B5B; }

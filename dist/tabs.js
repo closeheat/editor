@@ -18,17 +18,18 @@ module.exports = React.createClass({
       return function(tab) {
         return React.createElement(Tab, {
           "href": tab.href,
+          "close_href": tab.close_href,
           "path": tab.path,
           "active": tab.active
         });
       };
-    })(this)), React.createElement(Link, {
+    })(this)), React.createElement("li", {
+      "className": 'tab tab-new col s2'
+    }, React.createElement(Link, {
       "to": 'file',
       "params": {
         splat: this.props.new_tab_href
       }
-    }, React.createElement("li", {
-      "className": 'tab tab-new col s2'
     }, React.createElement("div", null, "+ New tab"))));
   }
 });

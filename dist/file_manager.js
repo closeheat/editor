@@ -30,7 +30,7 @@ module.exports = React.createClass({
     return this.props.reuseTabHref(up_path);
   },
   pathParts: function() {
-    return this.props.path.split('/');
+    return (this.props.path || '').split('/');
   },
   render: function() {
     return React.createElement("div", null, React.createElement("div", {

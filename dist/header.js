@@ -51,7 +51,7 @@ module.exports = Header = React.createClass({
       "onClick": this.props.onPublishClick
     }, React.createElement("i", {
       "className": 'material-icons'
-    }, "navigation"), "Publish"), React.createElement("div", {
+    }, "publish"), "Publish"), React.createElement("div", {
       "className": 'header-support col s1 center-align'
     }, React.createElement("a", {
       "href": "mailto:domas@closeheat?subject=I'm having a problem with the editor"

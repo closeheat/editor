@@ -19,7 +19,7 @@ React.createClass
     up_path = _.dropRight(@pathParts())
     @props.reuseTabHref(up_path)
   pathParts: ->
-    @props.path.split('/')
+    (@props.path || '').split('/')
   render: ->
     <div>
       <div className='row'>

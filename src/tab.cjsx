@@ -11,8 +11,11 @@ React.createClass
     result += ' tab-active' if @props.active
     result
   render: ->
-    <Link to='file' params={{ splat: @props.href }}>
-      <li className={@activeClass()}>
+    <li className={@activeClass()}>
+      <Link className='tab-name' to='file' params={{ splat: @props.href }}>
         {@props.path}
-      </li>
-    </Link>
+      </Link>
+      <Link className='tab-close' to='file' params={{ splat: @props.close_href }}>
+        <i className='material-icons'>close</i>
+      </Link>
+    </li>

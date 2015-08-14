@@ -78,7 +78,7 @@ Header = React.createClass
           </a>
         </div>
         <div className={@activeModeClass('publish', 's2')} onClick={@props.onPublishClick}>
-          <i className='material-icons'>navigation</i>
+          <i className='material-icons'>publish</i>
           Publish
         </div>
         <div className='header-support col s1 center-align'>

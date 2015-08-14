@@ -16,13 +16,22 @@ module.exports = React.createClass({
     return result;
   },
   render: function() {
-    return React.createElement(Link, {
+    return React.createElement("li", {
+      "className": this.activeClass()
+    }, React.createElement(Link, {
+      "className": 'tab-name',
       "to": 'file',
       "params": {
         splat: this.props.href
       }
-    }, React.createElement("li", {
-      "className": this.activeClass()
-    }, this.props.path));
+    }, this.props.path), React.createElement(Link, {
+      "className": 'tab-close',
+      "to": 'file',
+      "params": {
+        splat: this.props.close_href
+      }
+    }, React.createElement("i", {
+      "className": 'material-icons'
+    }, "close")));
   }
 });

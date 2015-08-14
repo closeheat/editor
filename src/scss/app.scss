@@ -97,11 +97,33 @@ body {
 
     .tab {
       background-color: $tab-bg-color;
-      color: $tab-text-color;
       height: 35px;
       line-height: 35px;
       border-right: 1px solid $tab-border-color;
       font-size: 12px;
+    }
+
+    a.tab-name {
+      display: inline-block;
+      color: $tab-text-color;
+      width: 90%;
+    }
+
+    a.tab-close i {
+      font-size: 12px;
+      color: $tab-text-color;
+      width: 10%;
+      display: inline-block;
+
+      &:hover {
+        color: $red;
+      }
+    }
+
+    .tab-new a {
+      color: $tab-text-color;
+      display: inline-block;
+      width: 100%;
     }
 
     .tab-active {
