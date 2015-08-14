@@ -17,22 +17,26 @@ React.createClass
     @execSequence(new_props)
   execSequence: (props) ->
     if props.files_changed
-      props.build()
+      props.build().catch (err) =>
+        @props.handleError(err)
     else
-      @execPublish().then =>
+      @execPublish().then( (resp) =>
+        return @props.handleError(resp.error) unless resp.success
+
         @setState(published: true)
+      ).catch (err) =>
+        @props.handleError(err)
 
   execPublish: ->
     new Promise (resolve, reject) =>
-      request.post url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/publish", (err, status, resp) ->
+      request.post json: true, url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/publish", (err, status, resp) ->
         return reject(err) if err
 
-        resolve()
+        resolve(resp)
   render: ->
     if @props.files_changed
       <Loader title='Building your website...'/>
     else if @state.published
       <Published website_url={@props.website_url}/>
     else
-      debugger
       <Loader title='Publishing your website...'/>

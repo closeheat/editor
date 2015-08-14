@@ -21,6 +21,10 @@ module.exports = InitialLoader = (function() {
         Filesystem.create(data.files);
         return data;
       };
+    })(this))["catch"]((function(_this) {
+      return function(err) {
+        return alert(err);
+      };
     })(this));
   };
 

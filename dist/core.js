@@ -1,4 +1,4 @@
-var $, App, CodeMode, Core, InitialLoader, PreviewMode, Publish, React, Redirect, Route, Router, TabManager, md;
+var $, App, CodeMode, Core, ErrorHandler, InitialLoader, PreviewMode, Publish, React, Redirect, Route, Router, TabManager, md;
 
 md = require('marked');
 
@@ -23,6 +23,8 @@ PreviewMode = require('./preview_mode');
 TabManager = require('./tab_manager');
 
 Publish = require('./publish');
+
+ErrorHandler = require('./error_handler');
 
 module.exports = Core = (function() {
   function Core(base, server) {
@@ -74,6 +76,14 @@ module.exports = Core = (function() {
       "name": 'publish-with-history',
       "path": '/publish/*?',
       "handler": Publish
+    }), React.createElement(Route, {
+      "name": 'error',
+      "path": '/error',
+      "handler": ErrorHandler
+    }), React.createElement(Route, {
+      "name": 'error-with-history',
+      "path": '/error/*?',
+      "handler": ErrorHandler
     }), React.createElement(Redirect, {
       "from": '',
       "to": '/code/'

@@ -38,15 +38,17 @@ React.createClass
     browser_ref.refresh()
 
   transitionWithCodeModeHistory: (route, with_history_route) ->
-    editor_path = @refs.appRouteHandler.refs.__routeHandler__.props.params.splat
-
-    if editor_path
-      @transitionTo(with_history_route, splat: editor_path)
-    else
+    if _.isEmpty(@context.router.getCurrentParams())
       @transitionTo(route)
+    else
+      @transitionTo(with_history_route, @context.router.getCurrentParams())
 
   publishClick: ->
     @transitionWithCodeModeHistory('publish', '/publish/*?')
+
+  handleError: (msg) ->
+    @setState(error: msg)
+    @transitionWithCodeModeHistory('error', '/error/*?')
 
   changedFiles: ->
     _.reject Filesystem.ls(), (new_file) =>
@@ -76,7 +78,6 @@ React.createClass
     _.first(routes[1].name.split('-'))
 
   render: ->
-    # debugger
     <main className='editor-wrapper'>
       <Header website_url={@props.website_url} active_mode={@activeMode()} onCodeClick={@codeClick} onPreviewClick={@previewClick} onPublishClick={@publishClick} />
 
@@ -84,8 +85,10 @@ React.createClass
         browser_url={@props.browser_url}
         website_url={@props.website_url}
         editorChange={@editorChange}
-        onRouteChange={@routeChange}
         build={@build}
         files_changed={!_.isEmpty(@changedFiles())}
+        handleError={@handleError}
+        error={@state.error}
+        transitionWithCodeModeHistory={@transitionWithCodeModeHistory}
         ref='appRouteHandler'/>
     </main>

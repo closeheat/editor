@@ -47,18 +47,20 @@ module.exports = React.createClass({
     return browser_ref.refresh();
   },
   transitionWithCodeModeHistory: function(route, with_history_route) {
-    var editor_path;
-    editor_path = this.refs.appRouteHandler.refs.__routeHandler__.props.params.splat;
-    if (editor_path) {
-      return this.transitionTo(with_history_route, {
-        splat: editor_path
-      });
-    } else {
+    if (_.isEmpty(this.context.router.getCurrentParams())) {
       return this.transitionTo(route);
+    } else {
+      return this.transitionTo(with_history_route, this.context.router.getCurrentParams());
     }
   },
   publishClick: function() {
     return this.transitionWithCodeModeHistory('publish', '/publish/*?');
+  },
+  handleError: function(msg) {
+    this.setState({
+      error: msg
+    });
+    return this.transitionWithCodeModeHistory('error', '/error/*?');
   },
   changedFiles: function() {
     return _.reject(Filesystem.ls(), (function(_this) {
@@ -113,9 +115,11 @@ module.exports = React.createClass({
       "browser_url": this.props.browser_url,
       "website_url": this.props.website_url,
       "editorChange": this.editorChange,
-      "onRouteChange": this.routeChange,
       "build": this.build,
       "files_changed": !_.isEmpty(this.changedFiles()),
+      "handleError": this.handleError,
+      "error": this.state.error,
+      "transitionWithCodeModeHistory": this.transitionWithCodeModeHistory,
       "ref": 'appRouteHandler'
     }));
   }

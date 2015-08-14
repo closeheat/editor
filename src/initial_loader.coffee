@@ -11,11 +11,14 @@ class InitialLoader
     @addFiles()
 
   addFiles: ->
-    @getInitialData().then (data) =>
+    @getInitialData().then((data) =>
       # check data.success
       Filesystem.create(data.files)
 
       data
+    ).catch (err) =>
+      # TODO: handle error before React loads
+      alert(err)
 
   getInitialData: ->
     new Promise (resolve, reject) =>

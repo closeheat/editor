@@ -12,6 +12,7 @@ CodeMode = require './code_mode'
 PreviewMode = require './preview_mode'
 TabManager = require './tab_manager'
 Publish = require './publish'
+ErrorHandler = require './error_handler'
 
 module.exports =
 class Core
@@ -31,11 +32,16 @@ class Core
       <Route name='code' path='/code' handler={CodeMode}>
         <Route name='file' path='/code/*?' handler={TabManager} />
       </Route>
+
       <Route name='preview' path='/preview' handler={PreviewMode} />
       <Route name='preview-with-history' path='/preview/*?' handler={PreviewMode} />
 
       <Route name='publish' path='/publish' handler={Publish} />
       <Route name='publish-with-history' path='/publish/*?' handler={Publish} />
+
+      <Route name='error' path='/error' handler={ErrorHandler} />
+      <Route name='error-with-history' path='/error/*?' handler={ErrorHandler} />
+
       <Redirect from='' to='/code/' />
       <Redirect from="/code" to="/code/" />
     </Route>

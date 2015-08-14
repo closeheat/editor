@@ -1,5 +1,6 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600);
 @import url(https://fonts.googleapis.com/icon?family=Material+Icons);
+@import url(http://fonts.googleapis.com/css?family=Source+Code+Pro);
 .materialize-red.lighten-5 {
   background-color: #fdeaeb !important; }
 
@@ -8201,7 +8202,7 @@ body {
     color: #C1C6D1;
     text-transform: uppercase;
     font-size: 11px; }
-.editor-wrapper .action-title, .editor-wrapper .published .published-title {
+.editor-wrapper .action-title, .editor-wrapper .published .published-title, .editor-wrapper .error .error-title {
   font-size: 12px;
   color: #9D9D9D;
   text-align: center;
@@ -8236,6 +8237,25 @@ body {
       font-size: 12px;
       text-transform: none;
       color: rgba(255, 255, 255, 0.7); }
+.editor-wrapper .error {
+  height: calc(100vh - 50px);
+  background-color: #FDFDFD; }
+  .editor-wrapper .error .error-container {
+    border: 1px solid rgba(193, 199, 209, 0.1);
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 20px 30px 60px; }
+  .editor-wrapper .error .error-title {
+    text-align: left;
+    font-size: 12px;
+    background-color: #EE4340;
+    color: #fafafa;
+    padding: 10px 20px; }
+  .editor-wrapper .error .error-content {
+    padding: 30px 0;
+    font-size: 12px;
+    color: #9D9D9D;
+    font-family: 'Source Code Pro', 'Open Sans', sans-serif; }
 
 .browser {
   height: calc(100vh - 50px); }

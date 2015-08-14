@@ -15,13 +15,18 @@ module.exports = React.createClass({
   componentDidMount: function() {
     return this.props.build().then((function(_this) {
       return function(resp) {
+        if (!resp.success) {
+          return _this.props.handleError(resp.error);
+        }
         return _this.setState({
           build_finished: true
         });
       };
-    })(this))["catch"](function(err) {
-      return console.log(err);
-    });
+    })(this))["catch"]((function(_this) {
+      return function(err) {
+        return _this.props.handleError(err);
+      };
+    })(this));
   },
   browser: function() {
     return React.createElement("div", null, React.createElement("div", {
@@ -38,7 +43,7 @@ module.exports = React.createClass({
       return this.browser();
     } else {
       return React.createElement(Loader, {
-        "title": 'Hang tight... Building your website...'
+        "title": 'Hang in tight... Building your website...'
       });
     }
   }

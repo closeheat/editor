@@ -10,9 +10,11 @@ React.createClass
     }
   componentDidMount: ->
     @props.build().then((resp) =>
+      return @props.handleError(resp.error) unless resp.success
+
       @setState(build_finished: true)
-    ).catch (err) ->
-      console.log(err)
+    ).catch (err) =>
+      @props.handleError(err)
   browser: ->
     <div>
       <div className='row'>
@@ -25,4 +27,4 @@ React.createClass
     if @state.build_finished
       @browser()
     else
-      <Loader title='Hang tight... Building your website...'/>
+      <Loader title='Hang in tight... Building your website...'/>

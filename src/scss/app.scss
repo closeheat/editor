@@ -3,6 +3,7 @@ $secondary-color: #F5534E;
 @import 'materialize';
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600);
 @import url(https://fonts.googleapis.com/icon?family=Material+Icons);
+@import url(http://fonts.googleapis.com/css?family=Source+Code+Pro);
 $red: #EE4340;
 $hover-red-bg: hsla(1, 84%, 59%, .1);
 $hover-red-text: hsla(1, 84%, 49%, 1);
@@ -20,6 +21,8 @@ $tab-active-text-color: #5B5B5B;
 $tabs-row-bg-color: #F6F6F6;
 $tab-border-color: hsla(0, 0%, 62%, .2);
 $tab-hover-bg-color: #F0EFEF;
+
+$error-title-color: hsla(0, 0%, 98%, 1);
 
 html {
   height: 100%;
@@ -265,6 +268,35 @@ body {
         text-transform: none;
         color: hsla(0, 0%, 100%, .7);
       }
+    }
+  }
+
+  .error {
+    height: calc(100vh - 50px);
+    background-color: #FDFDFD;
+
+    .error-container {
+      border: 1px solid $even-lighter-grey;
+      background-color: #fff;
+      border-radius: 5px;
+      padding: 20px 30px 60px;
+    }
+
+    .error-title {
+      @extend .action-title;
+
+      text-align: left;
+      font-size: 12px;
+      background-color: $red;
+      color: $error-title-color;
+      padding: 10px 20px;
+    }
+
+    .error-content {
+      padding: 30px 0;
+      font-size: 12px;
+      color: $tab-text-color;
+      font-family: 'Source Code Pro', 'Open Sans', sans-serif;
     }
   }
 }

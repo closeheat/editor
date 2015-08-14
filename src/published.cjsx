@@ -32,9 +32,3 @@ React.createClass
         </div>
       </div>
     </div>
-          # <div className='published-url'>
-          #   <div className='published-url-text'>Page available at</div>
-          #   <a href={@props.website_url} target='_blank' className='published-url-link'>
-          #     {@props.website_url.replace('http://', '')}
-          #   </a>
-          # </div>
