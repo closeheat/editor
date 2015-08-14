@@ -1,8 +1,10 @@
-var Browser, React;
+var Browser, Loader, React;
 
 React = require('react/addons');
 
 Browser = require('./browser');
+
+Loader = require('./loader');
 
 module.exports = React.createClass({
   getInitialState: function() {
@@ -21,9 +23,6 @@ module.exports = React.createClass({
       return console.log(err);
     });
   },
-  building: function() {
-    return React.createElement("h1", null, "Building");
-  },
   browser: function() {
     return React.createElement("div", null, React.createElement("div", {
       "className": 'row'
@@ -38,7 +37,9 @@ module.exports = React.createClass({
     if (this.state.build_finished) {
       return this.browser();
     } else {
-      return this.building();
+      return React.createElement(Loader, {
+        "title": 'Hang tight... Building your website...'
+      });
     }
   }
 });

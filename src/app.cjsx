@@ -77,7 +77,7 @@ React.createClass
 
   render: ->
     <main className='editor-wrapper'>
-      <Header active_mode={@activeMode()} onCodeClick={@codeClick} onPreviewClick={@previewClick} onPublishClick={@publishClick} />
+      <Header website_url={@props.website_url} active_mode={@activeMode()} onCodeClick={@codeClick} onPreviewClick={@previewClick} onPublishClick={@publishClick} />
 
       <RouteHandler
         browser_url={@props.browser_url}

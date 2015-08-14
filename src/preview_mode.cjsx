@@ -1,5 +1,6 @@
 React = require 'react/addons'
 Browser = require('./browser')
+Loader = require('./loader')
 
 module.exports =
 React.createClass
@@ -12,9 +13,6 @@ React.createClass
       @setState(build_finished: true)
     ).catch (err) ->
       console.log(err)
-  building: ->
-    <h1>Building</h1>
-
   browser: ->
     <div>
       <div className='row'>
@@ -27,4 +25,4 @@ React.createClass
     if @state.build_finished
       @browser()
     else
-      @building()
+      <Loader title='Hang tight... Building your website...'/>

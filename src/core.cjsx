@@ -21,9 +21,10 @@ class Core
   load: ->
     @initial_loader.loadFilesAndData().then (data) =>
       @data = data
+      @data.website_url = 'http://demo-312312.closeheatapp.com'
 
       Router.run @routes(), (Handler) =>
-        React.render(<Handler browser_url={@data.browser_url} />, document.body)
+        React.render(<Handler website_url={@data.website_url} browser_url={@data.browser_url} />, document.body)
 
   routes: ->
     <Route handler={App} path='/'>

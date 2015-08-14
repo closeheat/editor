@@ -63,23 +63,28 @@ Header = React.createClass
 
     <div>
       <div className='row header-row'>
-        <div className='header-modes'>
-          <div className={@activeModeClass('code', 's2')} onClick={@props.onCodeClick}>
-            <i className='material-icons'>code</i>
-            Code
-          </div>
-          <div className={@activeModeClass('preview', 's2')} onClick={@props.onPreviewClick}>
-            <i className='material-icons'>navigation</i>
-            Preview Changes
-          </div>
+        <div className={@activeModeClass('code', 's2')} onClick={@props.onCodeClick}>
+          <i className='material-icons'>code</i>
+          Code
         </div>
-        <div className={@activeModeClass('publish', 'offset-s5 s1')} onClick={@props.onPublishClick}>
+        <div className={@activeModeClass('preview', 's2')} onClick={@props.onPreviewClick}>
+          <i className='material-icons'>navigation</i>
+          Preview Changes
+        </div>
+        <div className='header-website-url col s4 center-align' onClick={@props.onPublishClick}>
+          <a href={@props.website_url} target='_blank'>
+            {@props.website_url.replace('http://', '')}
+            <i className='material-icons'>open_in_new</i>
+          </a>
+        </div>
+        <div className={@activeModeClass('publish', 's2')} onClick={@props.onPublishClick}>
           <i className='material-icons'>navigation</i>
           Publish
         </div>
-        <div className='col s1 header-mode center-align' onClick={@props.onPublishClick}>
-          <i className='material-icons'>navigation</i>
-          Support
+        <div className='header-support col s1 center-align'>
+          <a href="mailto:domas@closeheat?subject=I'm having a problem with the editor">
+            Support
+          </a>
         </div>
         <div className='col s1 header-mode center-align' onClick={@props.onPublishClick}>
           <a className='header-avatar'>

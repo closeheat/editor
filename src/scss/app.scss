@@ -11,6 +11,15 @@ $light-grey: hsla(221, 15%, 79%, .2);
 $even-lighter-grey: hsla(221, 15%, 79%, .1);
 $white: #fff;
 $darker-white: hsla(0, 0%, 90%, 1);
+$whiter-grey: hsla(0, 0%, 90%, .3);
+
+$tab-bg-color: #EBEAEB;
+$tab-text-color: #9D9D9D;
+$tab-active-bg-color: #F3F4F4;
+$tab-active-text-color: #5B5B5B;
+$tabs-row-bg-color: #F6F6F6;
+$tab-border-color: hsla(0, 0%, 62%, .2);
+
 
 html {
   height: 100%;
@@ -25,23 +34,37 @@ body {
   .header-row {
     background-color: $primary-color;
     margin-bottom: 0;
-  }
-
-  .header-mode {
-    height: 50px;
-    line-height: 50px;
-    color: $white;
 
     i {
       display: inline-block;
       font-size: 20px;
-      padding: 0 10px;
+      padding-right: 10px;
     }
+  }
 
-    font-size: 14px;
-    -webkit-padding-start: 0;
-    -webkit-margin-after: 0;
-    -webkit-margin-before: 0;
+  .header-website-url a {
+    @extend .header-item;
+
+    color: $whiter-grey;
+  }
+
+  .header-support a {
+    @extend .header-item;
+
+    color: $whiter-grey;
+    text-transform: uppercase;
+  }
+
+  .header-item {
+    height: 50px;
+    line-height: 50px;
+    font-size: 11px;
+  }
+
+  .header-mode {
+    @extend .header-item;
+    text-transform: uppercase;
+    color: #fdfdfd;
 
     &:hover {
       background-color: $hover-red-bg;
@@ -59,9 +82,6 @@ body {
     }
   }
 
-  .header-cols {
-  }
-
   .header-avatar img {
     width: 10px;
   }
@@ -71,13 +91,6 @@ body {
   }
 
   .tabs-row {
-    $tab-bg-color: #EBEAEB;
-    $tab-text-color: #9D9D9D;
-    $tab-active-bg-color: #F3F4F4;
-    $tab-active-text-color: #5B5B5B;
-    $tabs-row-bg-color: #F6F6F6;
-    $tab-border-color: hsla(0, 0%, 62%, .2);
-
     background-color: $tabs-row-bg-color;
     border-bottom: 1px solid $tab-border-color;
     margin: 0;
@@ -161,13 +174,35 @@ body {
       font-size: 11px;
     }
   }
+
+  .loader {
+    height: calc(100vh - 50px);
+    background-color: #FDFDFD;
+
+    $spinner-size: 250px;
+    .loader-spinner {
+      height: $spinner-size;
+      width: $spinner-size;
+    }
+
+    .loader-title {
+      font-size: 12px;
+      color: $tab-text-color;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .loader-container {
+      margin: 0 auto;
+    }
+  }
 }
 
 .browser {
-  height: calc(100vh - 64px);
+  height: calc(100vh - 50px);
 
   iframe {
-    height: calc(100vh - 64px);
+    height: calc(100vh - 50px);
     width: 100%;
     border: none;
   }

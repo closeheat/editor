@@ -104,6 +104,7 @@ module.exports = React.createClass({
     return React.createElement("main", {
       "className": 'editor-wrapper'
     }, React.createElement(Header, {
+      "website_url": this.props.website_url,
       "active_mode": this.activeMode(),
       "onCodeClick": this.codeClick,
       "onPreviewClick": this.previewClick,

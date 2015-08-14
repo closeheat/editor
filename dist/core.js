@@ -35,8 +35,10 @@ module.exports = Core = (function() {
     return this.initial_loader.loadFilesAndData().then((function(_this) {
       return function(data) {
         _this.data = data;
+        _this.data.website_url = 'http://demo-312312.closeheatapp.com';
         return Router.run(_this.routes(), function(Handler) {
           return React.render(React.createElement(Handler, {
+            "website_url": _this.data.website_url,
             "browser_url": _this.data.browser_url
           }), document.body);
         });

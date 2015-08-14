@@ -1,10 +1,12 @@
-var Promise, React, request;
+var Loader, Promise, React, request;
 
 React = require('react/addons');
 
 Promise = require('bluebird');
 
 request = require('request');
+
+Loader = require('./loader');
 
 module.exports = React.createClass({
   getInitialState: function() {
@@ -39,7 +41,9 @@ module.exports = React.createClass({
     if (this.state.published) {
       return React.createElement("h2", null, "Published");
     } else {
-      return React.createElement("h1", null, "Publishing");
+      return React.createElement(Loader, {
+        "title": 'Publishing your website...'
+      });
     }
   }
 });

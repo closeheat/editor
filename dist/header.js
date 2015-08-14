@@ -29,8 +29,6 @@ module.exports = Header = React.createClass({
     return React.createElement("div", null, React.createElement("div", {
       "className": 'row header-row'
     }, React.createElement("div", {
-      "className": 'header-modes'
-    }, React.createElement("div", {
       "className": this.activeModeClass('code', 's2'),
       "onClick": this.props.onCodeClick
     }, React.createElement("i", {
@@ -40,17 +38,24 @@ module.exports = Header = React.createClass({
       "onClick": this.props.onPreviewClick
     }, React.createElement("i", {
       "className": 'material-icons'
-    }, "navigation"), "Preview Changes")), React.createElement("div", {
-      "className": this.activeModeClass('publish', 'offset-s5 s1'),
+    }, "navigation"), "Preview Changes"), React.createElement("div", {
+      "className": 'header-website-url col s4 center-align',
+      "onClick": this.props.onPublishClick
+    }, React.createElement("a", {
+      "href": this.props.website_url,
+      "target": '_blank'
+    }, this.props.website_url.replace('http://', ''), React.createElement("i", {
+      "className": 'material-icons'
+    }, "open_in_new"))), React.createElement("div", {
+      "className": this.activeModeClass('publish', 's2'),
       "onClick": this.props.onPublishClick
     }, React.createElement("i", {
       "className": 'material-icons'
     }, "navigation"), "Publish"), React.createElement("div", {
-      "className": 'col s1 header-mode center-align',
-      "onClick": this.props.onPublishClick
-    }, React.createElement("i", {
-      "className": 'material-icons'
-    }, "navigation"), "Support"), React.createElement("div", {
+      "className": 'header-support col s1 center-align'
+    }, React.createElement("a", {
+      "href": "mailto:domas@closeheat?subject=I'm having a problem with the editor"
+    }, "Support")), React.createElement("div", {
       "className": 'col s1 header-mode center-align',
       "onClick": this.props.onPublishClick
     }, React.createElement("a", {

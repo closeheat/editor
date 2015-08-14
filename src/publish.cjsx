@@ -2,6 +2,8 @@ React = require 'react/addons'
 Promise = require 'bluebird'
 request = require 'request'
 
+Loader = require('./loader')
+
 module.exports =
 React.createClass
   getInitialState: ->
@@ -21,4 +23,4 @@ React.createClass
     if @state.published
       <h2>Published</h2>
     else
-      <h1>Publishing</h1>
+      <Loader title='Publishing your website...'/>
