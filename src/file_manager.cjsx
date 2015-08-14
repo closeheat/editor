@@ -4,6 +4,8 @@ _ = require 'lodash'
 Router = require 'react-router'
 Link = Router.Link
 Filesystem = require './filesystem'
+File = require './file'
+FileUp = require './file_up'
 
 module.exports =
 React.createClass
@@ -14,34 +16,37 @@ React.createClass
       file
 
   upHref: ->
-    path_parts = @props.path.split('/')
-    up_path = _.dropRight(path_parts)
+    up_path = _.dropRight(@pathParts())
     @props.reuseTabHref(up_path)
-  goUp: ->
-    unless @props.path
-      return <div></div>
-
-    <li>
-      <Link to='file' params={{ splat: @upHref() }}>
-        Up
-      </Link>
-    </li>
+  pathParts: ->
+    @props.path.split('/')
   render: ->
     <div>
       <div className='row'>
-        <div className='col editor-col full m12'>
-          <div className='editor'>
-            <ul>
-            {@goUp()}
-            {_.map @folderFiles(), (file) =>
+        <div className='col m12'>
+          <ul className='file-list-path'>
+            <li className='file-list-start'>Files</li>
+
+            {_.map @pathParts(), (part) ->
               <li>
-                <Link to='file' params={{ splat: file.href }}>
-                  {file.type} - {file.name}
-                </Link>
+                <span className='file-list-sep'>/</span>
+                <span className='file-list-name'>{part}</span>
               </li>
             }
-            </ul>
-          </div>
+          </ul>
+
+          <table className='file-list'>
+            <tbody>
+              <tr>
+                <th colSpan=2>Name</th>
+                <th>Kind</th>
+              </tr>
+              <FileUp show={!!@props.path} href={@upHref()}/>
+              {_.map @folderFiles(), (file) =>
+                <File file={file} active={@props.active} />
+              }
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

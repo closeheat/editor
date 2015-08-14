@@ -1,4 +1,4 @@
-var Filesystem, Link, React, Router, _;
+var File, FileUp, Filesystem, Link, React, Router, _;
 
 React = require('react/addons');
 
@@ -9,6 +9,10 @@ Router = require('react-router');
 Link = Router.Link;
 
 Filesystem = require('./filesystem');
+
+File = require('./file');
+
+FileUp = require('./file_up');
 
 module.exports = React.createClass({
   folderFiles: function() {
@@ -21,37 +25,41 @@ module.exports = React.createClass({
     })(this));
   },
   upHref: function() {
-    var path_parts, up_path;
-    path_parts = this.props.path.split('/');
-    up_path = _.dropRight(path_parts);
+    var up_path;
+    up_path = _.dropRight(this.pathParts());
     return this.props.reuseTabHref(up_path);
   },
-  goUp: function() {
-    if (!this.props.path) {
-      return React.createElement("div", null);
-    }
-    return React.createElement("li", null, React.createElement(Link, {
-      "to": 'file',
-      "params": {
-        splat: this.upHref()
-      }
-    }, "Up"));
+  pathParts: function() {
+    return this.props.path.split('/');
   },
   render: function() {
     return React.createElement("div", null, React.createElement("div", {
       "className": 'row'
     }, React.createElement("div", {
-      "className": 'col editor-col full m12'
-    }, React.createElement("div", {
-      "className": 'editor'
-    }, React.createElement("ul", null, this.goUp(), _.map(this.folderFiles(), (function(_this) {
+      "className": 'col m12'
+    }, React.createElement("ul", {
+      "className": 'file-list-path'
+    }, React.createElement("li", {
+      "className": 'file-list-start'
+    }, "Files"), _.map(this.pathParts(), function(part) {
+      return React.createElement("li", null, React.createElement("span", {
+        "className": 'file-list-sep'
+      }, "\x2F"), React.createElement("span", {
+        "className": 'file-list-name'
+      }, part));
+    })), React.createElement("table", {
+      "className": 'file-list'
+    }, React.createElement("tbody", null, React.createElement("tr", null, React.createElement("th", {
+      "colSpan": 2
+    }, "Name"), React.createElement("th", null, "Kind")), React.createElement(FileUp, {
+      "show": !!this.props.path,
+      "href": this.upHref()
+    }), _.map(this.folderFiles(), (function(_this) {
       return function(file) {
-        return React.createElement("li", null, React.createElement(Link, {
-          "to": 'file',
-          "params": {
-            splat: file.href
-          }
-        }, file.type, " - ", file.name));
+        return React.createElement(File, {
+          "file": file,
+          "active": _this.props.active
+        });
       };
     })(this)))))));
   }

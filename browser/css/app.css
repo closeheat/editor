@@ -8123,6 +8123,33 @@ body {
   .editor-wrapper .tabs-row .tab-active {
     background-color: #F3F4F4;
     color: #5B5B5B; }
+.editor-wrapper .file-list-path {
+  font-size: 12px; }
+  .editor-wrapper .file-list-path li {
+    display: inline-block; }
+  .editor-wrapper .file-list-path .file-list-start {
+    color: #EE4340; }
+  .editor-wrapper .file-list-path .file-list-sep {
+    color: #C1C6D1;
+    padding: 0 10px; }
+.editor-wrapper .file-list {
+  font-size: 14px; }
+  .editor-wrapper .file-list tr:hover:not(:first-child) {
+    background-color: rgba(193, 199, 209, 0.1); }
+  .editor-wrapper .file-list th {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #C1C6D1;
+    font-weight: normal;
+    padding-left: 0; }
+  .editor-wrapper .file-list td {
+    border-top: 1px solid rgba(193, 199, 209, 0.2);
+    padding: 25px 0; }
+    .editor-wrapper .file-list td:first-child {
+      width: 15%;
+      padding-left: 20px; }
+    .editor-wrapper .file-list td:nth-child(2) {
+      width: 40%; }
 
 .browser {
   height: calc(100vh - 64px); }

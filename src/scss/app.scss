@@ -2,6 +2,10 @@ $primary-color: #1A1E2D;
 $secondary-color: #F5534E;
 @import 'materialize';
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600);
+$red: #EE4340;
+$grey: #C1C6D1;
+$light-grey: hsla(221, 15%, 79%, .2);
+$even-lighter-grey: hsla(221, 15%, 79%, .1);
 
 html {
   height: 100%;
@@ -58,6 +62,53 @@ body {
     .tab-active {
       background-color: $tab-active-bg-color;
       color: $tab-active-text-color;
+    }
+  }
+
+  .file-list-path {
+    font-size: 12px;
+
+    li {
+      display: inline-block;
+    }
+
+    .file-list-start {
+      color: $red;
+    }
+
+    .file-list-sep {
+      color: $grey;
+      padding: 0 10px;
+    }
+  }
+
+  .file-list {
+    font-size: 14px;
+
+    tr:hover:not(:first-child) {
+      background-color: $even-lighter-grey;
+    }
+
+    th {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: $grey;
+      font-weight: normal;
+      padding-left: 0;
+    }
+
+    td {
+      border-top: 1px solid $light-grey;
+      padding: 25px 0;
+
+      &:first-child {
+        width: 15%;
+        padding-left: 20px;
+      }
+
+      &:nth-child(2) {
+        width: 40%;
+      }
     }
   }
 }
