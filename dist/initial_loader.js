@@ -9,9 +9,7 @@ Promise = require('bluebird');
 Filesystem = require('./filesystem');
 
 module.exports = InitialLoader = (function() {
-  function InitialLoader() {
-    Filesystem.create();
-  }
+  function InitialLoader() {}
 
   InitialLoader.prototype.loadFilesAndData = function() {
     return this.addFiles();
@@ -20,10 +18,8 @@ module.exports = InitialLoader = (function() {
   InitialLoader.prototype.addFiles = function() {
     return this.getInitialData().then((function(_this) {
       return function(data) {
-        Filesystem.createDirs(data.files);
-        return Promise.all(_this.addFileContents(data.files)).then(function() {
-          return data;
-        });
+        Filesystem.create(data.files);
+        return data;
       };
     })(this));
   };
@@ -40,14 +36,6 @@ module.exports = InitialLoader = (function() {
           }
           return resolve(resp);
         });
-      };
-    })(this));
-  };
-
-  InitialLoader.prototype.addFileContents = function(files) {
-    return _.each(files, (function(_this) {
-      return function(file) {
-        return Filesystem.write(file);
       };
     })(this));
   };

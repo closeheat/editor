@@ -21,7 +21,7 @@ React.createClass
     }
   mixins: [Navigation],
   editorChange: (path, new_content) ->
-    bug_message = 'If you see this - a bug occured. Could you send us a message by clicking Support in the top?'
+    # bug_message = 'If you see this - a bug occured. Could you send us a message by clicking Support in the top?'
     Filesystem.write(path, new_content)
     # fs.writeFileSync(fs.join('/', path), new_content || bug_message)
 

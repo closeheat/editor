@@ -7,65 +7,66 @@ traverse = require('traverse');
 module.exports = Filesystem = (function() {
   function Filesystem() {}
 
-  Filesystem.create = function() {
-    return window.fs = {};
+  Filesystem.create = function(files) {
+    return window.fs = files;
   };
 
-  Filesystem.createDirs = function(files) {
-    var files_in_dirs;
-    files_in_dirs = _.select(files, function(file) {
-      var file_dir_split;
-      file_dir_split = file.path.split('/');
-      return file_dir_split.length > 1;
+  Filesystem.ls = function(path) {
+    if (!path) {
+      return window.fs;
+    }
+    return _.select(window.fs, function(file) {
+      return file.path.match(RegExp("^" + path));
     });
-    return _.each(files_in_dirs, (function(_this) {
-      return function(file) {
-        var dir_path, file_dir_split;
-        file_dir_split = file.path.split('/');
-        dir_path = _.initial(file_dir_split).join('/');
-        return _this.createDir(dir_path);
-      };
-    })(this));
   };
 
-  Filesystem.createDir = function(dir_path) {
-    if (!fs[dir_path]) {
-      return fs[dir_path] = {};
+  Filesystem.read = function(path) {
+    var file_on_path;
+    file_on_path = _.detect(this.ls(), function(file) {
+      return file.path === path;
+    });
+    if (file_on_path) {
+      return file_on_path;
     }
+    return {
+      type: 'dir',
+      path: path,
+      files: this.dirFiles(path)
+    };
   };
 
-  Filesystem.write = function(file) {
-    var dir;
-    dir = this.readDir(file.path);
-    return dir[this.filename(file.path)] = file;
-  };
-
-  Filesystem.readDir = function(path) {
-    if (this.dirnameKey(path) === '') {
-      return fs;
-    }
-    return _.get(fs, this.dirnameKey(path));
-  };
-
-  Filesystem.filename = function(path) {
-    var path_parts;
-    path_parts = path.split('/');
-    return _.last(path_parts);
-  };
-
-  Filesystem.dirnameKey = function(path) {
-    var path_parts;
-    path_parts = path.split('/');
-    return path_parts.slice(0, -1).join('.');
-  };
-
-  Filesystem.ls = function() {
+  Filesystem.dirFiles = function(path) {
     var result;
     result = [];
-    return traverse(fs).map(function(node) {
-      if (_.isString(node.path)) {
-        return result.push(node);
+    _.each(this.ls(path), function(file) {
+      var name, relative_to_dir;
+      relative_to_dir = file.path.replace(RegExp("^" + path + "\\/"), '');
+      if (relative_to_dir.match('/')) {
+        name = _.first(relative_to_dir.split('/'));
+        return result.push({
+          type: 'dir',
+          path: name
+        });
+      } else {
+        return result.push(_.merge(file, {
+          type: 'file'
+        }));
       }
+    });
+    return _.uniq(result, function(file) {
+      return file.path;
+    });
+  };
+
+  Filesystem.write = function(path, new_content) {
+    var file;
+    file = this.read(path);
+    return file.content = new_content;
+  };
+
+  Filesystem.isFile = function(path) {
+    return _.detect(this.ls(), function(file) {
+      return file.path === path;
     });
   };
 

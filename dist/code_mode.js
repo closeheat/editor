@@ -110,7 +110,7 @@ module.exports = React.createClass({
       "className": 'col m12 code-mode-cols'
     }, React.createElement(Tabs, {
       "tabs": this.tabs(),
-      "new_tab_href": this.newTabHref('/')
+      "new_tab_href": this.newTabHref('')
     }), React.createElement(RouteHandler, {
       "active_tab_path": this.activeTabPath(),
       "reuseTabHref": this.reuseTabHref,

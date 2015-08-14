@@ -32,8 +32,6 @@ module.exports = React.createClass({
   },
   mixins: [Navigation],
   editorChange: function(path, new_content) {
-    var bug_message;
-    bug_message = 'If you see this - a bug occured. Could you send us a message by clicking Support in the top?';
     return Filesystem.write(path, new_content);
   },
   codeClick: function() {

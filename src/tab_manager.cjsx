@@ -3,23 +3,18 @@ _ = require 'lodash'
 
 Editor = require('./editor')
 FileManager = require('./file_manager')
+Filesystem = require('./filesystem')
 
 module.exports =
 React.createClass
-  renderEditor: ->
-    content = fs.readFileSync(fs.join('/', @props.active_tab_path)).toString()
-
-    <Editor value={content} path={@props.active_tab_path} onChange={@props.editorChange} />
-  isFile: ->
-    try
-      fs.readFileSync("/#{@props.active_tab_path}")
-      true
-    catch e
-      false
-  renderFileManager: ->
-    <FileManager path={@props.active_tab_path} reuseTabHref={@props.reuseTabHref} newTabHref={@props.newTabHref}/>
+  renderEditor: (file) ->
+    <Editor value={file.content} path={@props.active_tab_path} onChange={@props.editorChange} />
+  renderFileManager: (dir) ->
+    <FileManager dir={dir} path={@props.active_tab_path} reuseTabHref={@props.reuseTabHref} newTabHref={@props.newTabHref}/>
   render: ->
-    if @isFile()
-      @renderEditor()
+    file_or_dir = Filesystem.read(@props.active_tab_path)
+
+    if file_or_dir.type == 'dir'
+      @renderFileManager(file_or_dir)
     else
-      @renderFileManager()
+      @renderEditor(file_or_dir)

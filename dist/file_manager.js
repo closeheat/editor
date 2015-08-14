@@ -1,4 +1,4 @@
-var Link, React, Router, _;
+var Filesystem, Link, React, Router, _;
 
 React = require('react/addons');
 
@@ -8,43 +8,17 @@ Router = require('react-router');
 
 Link = Router.Link;
 
+Filesystem = require('./filesystem');
+
 module.exports = React.createClass({
   folderFiles: function() {
-    var result;
-    result = _.map(this.filesystemObject(), (function(_this) {
-      return function(parent_data, filename) {
-        return {
-          type: _this.locationType(parent_data),
-          name: filename
-        };
-      };
-    })(this));
-    result = _.reject(result, function(file) {
-      return file.type === 'folder-marker';
-    });
-    return _.map(result, (function(_this) {
+    return _.map(this.props.dir.files, (function(_this) {
       return function(file) {
-        file.href = _this.fileOrDirHref(file.type, file.name);
+        file.href = _this.props.reuseTabHref(file.path);
+        file.name = file.path;
         return file;
       };
     })(this));
-  },
-  fileOrDirHref: function(type, filename) {
-    var path;
-    path = fs.join(this.props.path || '', filename).replace(/^\//, '');
-    return this.props.reuseTabHref(path);
-  },
-  filesystemObject: function() {
-    return fs.data[this.props.path] || fs.data;
-  },
-  locationType: function(location) {
-    if (_.isPlainObject(location)) {
-      return 'folder';
-    } else if (location === true) {
-      return 'folder-marker';
-    } else {
-      return 'file';
-    }
   },
   render: function() {
     return React.createElement("div", null, React.createElement("div", {

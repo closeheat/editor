@@ -83,7 +83,7 @@ React.createClass
     <div>
       <div className='row'>
         <div className='col m12 code-mode-cols'>
-          <Tabs tabs={@tabs()} new_tab_href={@newTabHref('/')} />
+          <Tabs tabs={@tabs()} new_tab_href={@newTabHref('')} />
 
           <RouteHandler active_tab_path={@activeTabPath()} reuseTabHref={@reuseTabHref} newTabHref={@newTabHref} editorChange={@props.editorChange} />
         </div>

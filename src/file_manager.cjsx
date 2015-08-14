@@ -3,39 +3,15 @@ _ = require 'lodash'
 
 Router = require 'react-router'
 Link = Router.Link
+Filesystem = require './filesystem'
 
 module.exports =
 React.createClass
   folderFiles: ->
-    result = _.map @filesystemObject(), (parent_data, filename) =>
-      {
-        type: @locationType(parent_data),
-        name: filename,
-      }
-
-    result = _.reject result, (file) ->
-      file.type == 'folder-marker'
-
-    _.map result, (file) =>
-      file.href = @fileOrDirHref(file.type, file.name)
+    _.map @props.dir.files, (file) =>
+      file.href = @props.reuseTabHref(file.path)
+      file.name = file.path
       file
-
-  fileOrDirHref: (type, filename) ->
-    path = fs.join(@props.path || '', filename).replace(/^\//, '')
-
-    @props.reuseTabHref(path)
-
-  filesystemObject: ->
-    fs.data[@props.path] || fs.data
-
-  locationType: (location) ->
-    if _.isPlainObject(location)
-      'folder'
-    else if location == true
-      # "": true inside all folders for some reason
-      'folder-marker'
-    else
-      'file'
 
   render: ->
     <div>

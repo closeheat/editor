@@ -1,4 +1,4 @@
-var Editor, FileManager, React, _;
+var Editor, FileManager, Filesystem, React, _;
 
 React = require('react/addons');
 
@@ -8,38 +8,31 @@ Editor = require('./editor');
 
 FileManager = require('./file_manager');
 
+Filesystem = require('./filesystem');
+
 module.exports = React.createClass({
-  renderEditor: function() {
-    var content;
-    content = fs.readFileSync(fs.join('/', this.props.active_tab_path)).toString();
+  renderEditor: function(file) {
     return React.createElement(Editor, {
-      "value": content,
+      "value": file.content,
       "path": this.props.active_tab_path,
       "onChange": this.props.editorChange
     });
   },
-  isFile: function() {
-    var e;
-    try {
-      fs.readFileSync("/" + this.props.active_tab_path);
-      return true;
-    } catch (_error) {
-      e = _error;
-      return false;
-    }
-  },
-  renderFileManager: function() {
+  renderFileManager: function(dir) {
     return React.createElement(FileManager, {
+      "dir": dir,
       "path": this.props.active_tab_path,
       "reuseTabHref": this.props.reuseTabHref,
       "newTabHref": this.props.newTabHref
     });
   },
   render: function() {
-    if (this.isFile()) {
-      return this.renderEditor();
+    var file_or_dir;
+    file_or_dir = Filesystem.read(this.props.active_tab_path);
+    if (file_or_dir.type === 'dir') {
+      return this.renderFileManager(file_or_dir);
     } else {
-      return this.renderFileManager();
+      return this.renderEditor(file_or_dir);
     }
   }
 });
