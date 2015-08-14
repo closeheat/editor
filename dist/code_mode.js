@@ -20,10 +20,11 @@ module.exports = React.createClass({
     var tabs;
     tabs = _.map(this.tabPaths(), (function(_this) {
       return function(tab_path) {
-        var tab_data;
+        var path, tab_data;
+        path = tab_path.replace(/\*$/, '');
         return tab_data = {
-          path: tab_path.replace(/\*$/, ''),
-          active: tab_path === _this.activeTabPath()
+          path: path,
+          active: path === _this.activeTabPath()
         };
       };
     })(this));
@@ -35,7 +36,10 @@ module.exports = React.createClass({
     })(this));
   },
   tabPaths: function() {
-    return (this.fullPath() || '').split('&');
+    if (!this.fullPath()) {
+      return [];
+    }
+    return this.fullPath().split('&');
   },
   activeTabPath: function() {
     var active_with_asterix;
@@ -103,17 +107,15 @@ module.exports = React.createClass({
     return React.createElement("div", null, React.createElement("div", {
       "className": 'row'
     }, React.createElement("div", {
-      "className": 'col editor-col full m12'
-    }, React.createElement("div", {
-      "className": 'editor'
-    }, React.createElement("ul", null, React.createElement(Tabs, {
+      "className": 'col m12 code-mode-cols'
+    }, React.createElement(Tabs, {
       "tabs": this.tabs(),
       "new_tab_href": this.newTabHref('/')
-    })), React.createElement(RouteHandler, {
+    }), React.createElement(RouteHandler, {
       "active_tab_path": this.activeTabPath(),
       "reuseTabHref": this.reuseTabHref,
       "newTabHref": this.newTabHref,
       "editorChange": this.props.editorChange
-    })))));
+    }))));
   }
 });

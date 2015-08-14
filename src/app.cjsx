@@ -84,7 +84,7 @@ React.createClass
         resolve()
 
   render: ->
-    <main>
+    <main className='editor-wrapper'>
       <Header onCodeClick={@codeClick} onPreviewClick={@previewClick} onPublishClick={@publishClick} />
 
       <RouteHandler

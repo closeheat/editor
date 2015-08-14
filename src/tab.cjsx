@@ -7,10 +7,12 @@ Link = Router.Link
 module.exports =
 React.createClass
   activeClass: ->
-    'active' if @props.active
+    result = 'tab col m3'
+    result += ' tab-active' if @props.active
+    result
   render: ->
-    <li className={@activeClass()}>
-      <Link to='file' params={{ splat: @props.href }}>
+    <Link to='file' params={{ splat: @props.href }}>
+      <li className={@activeClass()}>
         {@props.path}
-      </Link>
-    </li>
+      </li>
+    </Link>

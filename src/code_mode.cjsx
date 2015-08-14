@@ -13,9 +13,11 @@ React.createClass
     @props.params.splat
   tabs: ->
     tabs = _.map @tabPaths(), (tab_path) =>
+      path = tab_path.replace(/\*$/, '')
+
       tab_data = {
-        path: tab_path.replace(/\*$/, ''),
-        active: tab_path == @activeTabPath(),
+        path: path,
+        active: path == @activeTabPath(),
       }
 
     _.map tabs, (tab) =>
@@ -23,7 +25,9 @@ React.createClass
       tab
 
   tabPaths: ->
-    (@fullPath() || '').split('&')
+    return [] unless @fullPath()
+
+    @fullPath().split('&')
 
   activeTabPath: ->
     active_with_asterix = _.detect @tabPaths(), (tab_path) ->
@@ -35,6 +39,7 @@ React.createClass
       @fullPath()
 
   href: (tabs, new_active_tab) ->
+    # _.cloneDeep
     new_tab_list = _.map tabs, (tab) ->
       updated_tab = tab
       updated_tab.active = updated_tab.path == new_active_tab.path
@@ -78,13 +83,10 @@ React.createClass
   render: ->
     <div>
       <div className='row'>
-        <div className='col editor-col full m12'>
-          <div className='editor'>
-            <ul>
-              <Tabs tabs={@tabs()} new_tab_href={@newTabHref('/')} />
-            </ul>
-            <RouteHandler active_tab_path={@activeTabPath()} reuseTabHref={@reuseTabHref} newTabHref={@newTabHref} editorChange={@props.editorChange} />
-          </div>
+        <div className='col m12 code-mode-cols'>
+          <Tabs tabs={@tabs()} new_tab_href={@newTabHref('/')} />
+
+          <RouteHandler active_tab_path={@activeTabPath()} reuseTabHref={@reuseTabHref} newTabHref={@newTabHref} editorChange={@props.editorChange} />
         </div>
       </div>
     </div>

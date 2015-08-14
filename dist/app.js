@@ -113,7 +113,9 @@ module.exports = React.createClass({
     })(this));
   },
   render: function() {
-    return React.createElement("main", null, React.createElement(Header, {
+    return React.createElement("main", {
+      "className": 'editor-wrapper'
+    }, React.createElement(Header, {
       "onCodeClick": this.codeClick,
       "onPreviewClick": this.previewClick,
       "onPublishClick": this.publishClick

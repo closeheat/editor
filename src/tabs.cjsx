@@ -9,11 +9,13 @@ Tab = require('./tab')
 module.exports =
 React.createClass
   render: ->
-    <div>
+    <ul className='row tabs-row'>
       {_.map @props.tabs, (tab) =>
         <Tab href={tab.href} path={tab.path} active={tab.active}/>
       }
       <Link to='file' params={{ splat: @props.new_tab_href }}>
-        <div>New tab</div>
+        <li className='tab tab-new col s3'>
+          <div>+ New tab</div>
+        </li>
       </Link>
-    </div>
+    </ul>
