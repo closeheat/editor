@@ -29,7 +29,7 @@ module.exports = React.createClass({
     }))))), React.createElement("div", {
       "className": 'row'
     }, React.createElement("div", {
-      "className": 'loader-title'
+      "className": 'action-title'
     }, this.props.title))));
   }
 });

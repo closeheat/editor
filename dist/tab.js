@@ -24,7 +24,7 @@ module.exports = React.createClass({
       "params": {
         splat: this.props.href
       }
-    }, this.props.path), React.createElement(Link, {
+    }, this.props.path || 'Files'), React.createElement(Link, {
       "className": 'tab-close',
       "to": 'file',
       "params": {

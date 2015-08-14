@@ -111,6 +111,7 @@ module.exports = React.createClass({
       "onPublishClick": this.publishClick
     }), React.createElement(RouteHandler, {
       "browser_url": this.props.browser_url,
+      "website_url": this.props.website_url,
       "editorChange": this.editorChange,
       "onRouteChange": this.routeChange,
       "build": this.build,

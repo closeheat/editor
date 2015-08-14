@@ -19,7 +19,7 @@ React.createClass
           </div>
         </div>
         <div className='row'>
-          <div className='loader-title'>{@props.title}</div>
+          <div className='action-title'>{@props.title}</div>
         </div>
       </div>
     </div>

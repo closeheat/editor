@@ -81,6 +81,7 @@ React.createClass
 
       <RouteHandler
         browser_url={@props.browser_url}
+        website_url={@props.website_url}
         editorChange={@editorChange}
         onRouteChange={@routeChange}
         build={@build}

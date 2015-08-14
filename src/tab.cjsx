@@ -13,7 +13,7 @@ React.createClass
   render: ->
     <li className={@activeClass()}>
       <Link className='tab-name' to='file' params={{ splat: @props.href }}>
-        {@props.path}
+        {@props.path || 'Files'}
       </Link>
       <Link className='tab-close' to='file' params={{ splat: @props.close_href }}>
         <i className='material-icons'>close</i>

@@ -3,6 +3,7 @@ Promise = require 'bluebird'
 request = require 'request'
 
 Loader = require('./loader')
+Published = require('./published')
 
 module.exports =
 React.createClass
@@ -21,6 +22,6 @@ React.createClass
         resolve()
   render: ->
     if @state.published
-      <h2>Published</h2>
+      <Published website_url={@props.website_url}/>
     else
       <Loader title='Publishing your website...'/>

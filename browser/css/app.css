@@ -8111,6 +8111,8 @@ body {
 .editor-wrapper .header-support a {
   color: rgba(230, 230, 230, 0.3);
   text-transform: uppercase; }
+  .editor-wrapper .header-support a:hover {
+    color: #e6e6e6; }
 .editor-wrapper .header-item, .editor-wrapper .header-website-url a, .editor-wrapper .header-support a, .editor-wrapper .header-mode {
   height: 50px;
   line-height: 50px;
@@ -8141,6 +8143,8 @@ body {
     line-height: 35px;
     border-right: 1px solid rgba(158, 158, 158, 0.2);
     font-size: 12px; }
+    .editor-wrapper .tabs-row .tab:hover {
+      background-color: #F0EFEF; }
   .editor-wrapper .tabs-row a.tab-name {
     display: inline-block;
     color: #9D9D9D;
@@ -8159,6 +8163,8 @@ body {
   .editor-wrapper .tabs-row .tab-active {
     background-color: #F3F4F4;
     color: #5B5B5B; }
+    .editor-wrapper .tabs-row .tab-active:hover {
+      background-color: #F3F4F4; }
 .editor-wrapper .file-list-path {
   font-size: 12px; }
   .editor-wrapper .file-list-path li {
@@ -8195,19 +8201,41 @@ body {
     color: #C1C6D1;
     text-transform: uppercase;
     font-size: 11px; }
+.editor-wrapper .action-title, .editor-wrapper .published .published-title {
+  font-size: 12px;
+  color: #9D9D9D;
+  text-align: center;
+  text-transform: uppercase; }
 .editor-wrapper .loader {
   height: calc(100vh - 50px);
   background-color: #FDFDFD; }
   .editor-wrapper .loader .loader-spinner {
     height: 250px;
     width: 250px; }
-  .editor-wrapper .loader .loader-title {
-    font-size: 12px;
-    color: #9D9D9D;
-    text-align: center;
-    text-transform: uppercase; }
   .editor-wrapper .loader .loader-container {
     margin: 0 auto; }
+.editor-wrapper .published {
+  height: calc(100vh - 50px);
+  background-color: #FDFDFD; }
+  .editor-wrapper .published .published-icon i {
+    font-size: 150px;
+    color: #EE4340; }
+  .editor-wrapper .published .published-container {
+    margin: 0 auto; }
+  .editor-wrapper .published .published-title {
+    font-size: 12px; }
+  .editor-wrapper .published .published-open-page {
+    margin-top: 30px;
+    box-shadow: none;
+    line-height: 20px;
+    padding-top: 7px; }
+    .editor-wrapper .published .published-open-page .published-open-page-icon i {
+      font-size: 12px;
+      padding-left: 10px; }
+    .editor-wrapper .published .published-open-page .published-open-page-url {
+      font-size: 12px;
+      text-transform: none;
+      color: rgba(255, 255, 255, 0.7); }
 
 .browser {
   height: calc(100vh - 50px); }

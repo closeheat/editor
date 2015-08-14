@@ -1,4 +1,4 @@
-var Loader, Promise, React, request;
+var Loader, Promise, Published, React, request;
 
 React = require('react/addons');
 
@@ -7,6 +7,8 @@ Promise = require('bluebird');
 request = require('request');
 
 Loader = require('./loader');
+
+Published = require('./published');
 
 module.exports = React.createClass({
   getInitialState: function() {
@@ -39,7 +41,9 @@ module.exports = React.createClass({
   },
   render: function() {
     if (this.state.published) {
-      return React.createElement("h2", null, "Published");
+      return React.createElement(Published, {
+        "website_url": this.props.website_url
+      });
     } else {
       return React.createElement(Loader, {
         "title": 'Publishing your website...'
