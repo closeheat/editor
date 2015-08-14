@@ -21,9 +21,30 @@ module.exports = React.createClass({
       splat: this.props.file.href
     });
   },
+  kind: function() {
+    if (this.props.file.type === 'dir') {
+      return 'Folder';
+    }
+    return this.props.file.path.match(/\.([0-9a-z]+)$/i)[1];
+  },
+  icon: function() {
+    if (this.props.file.type === 'dir') {
+      return React.createElement("i", {
+        "className": 'material-icons'
+      }, "folder_open");
+    } else {
+      return React.createElement("i", {
+        "className": 'material-icons'
+      }, "class");
+    }
+  },
   render: function() {
     return React.createElement("tr", {
       "onClick": this.onClick
-    }, React.createElement("td", null, this.props.file.type), React.createElement("td", null, this.props.file.name), React.createElement("td", null, this.props.file.type));
+    }, React.createElement("td", {
+      "className": 'file-list-icon'
+    }, this.icon()), React.createElement("td", null, this.props.file.name), React.createElement("td", {
+      "className": 'file-list-kind'
+    }, this.kind()));
   }
 });

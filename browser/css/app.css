@@ -1,4 +1,5 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600);
+@import url(https://fonts.googleapis.com/icon?family=Material+Icons);
 .materialize-red.lighten-5 {
   background-color: #fdeaeb !important; }
 
@@ -8146,10 +8147,17 @@ body {
     border-top: 1px solid rgba(193, 199, 209, 0.2);
     padding: 25px 0; }
     .editor-wrapper .file-list td:first-child {
-      width: 15%;
-      padding-left: 20px; }
+      text-align: center;
+      width: 10%; }
     .editor-wrapper .file-list td:nth-child(2) {
-      width: 40%; }
+      width: 300px; }
+  .editor-wrapper .file-list .file-list-icon i {
+    color: #EE4340;
+    font-size: 40px; }
+  .editor-wrapper .file-list .file-list-kind {
+    color: #C1C6D1;
+    text-transform: uppercase;
+    font-size: 11px; }
 
 .browser {
   height: calc(100vh - 64px); }
