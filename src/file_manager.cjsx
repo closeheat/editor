@@ -23,8 +23,6 @@ React.createClass
   fileOrDirHref: (type, filename) ->
     path = fs.join(@props.path || '', filename).replace(/^\//, '')
 
-    # debugger
-    # if type == 'folder'
     @props.reuseTabHref(path)
 
   filesystemObject: ->

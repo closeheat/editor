@@ -1,7 +1,4 @@
 React = require 'react/addons'
-jade = require 'jade-memory-fs'
-# glob = require 'glob'
-# walk    = require('walk')
 flatten = require('flat')
 _ = require 'lodash'
 $ = window.jQuery = window.$ = require 'jquery'
@@ -14,17 +11,19 @@ RouteHandler = Router.RouteHandler
 Navigation = Router.Navigation
 
 Header = require './header'
+Filesystem = require './filesystem'
 
 module.exports =
 React.createClass
   getInitialState: ->
     {
-      clean_files: @serializedFiles()
+      clean_files: _.cloneDeep(Filesystem.ls())
     }
   mixins: [Navigation],
   editorChange: (path, new_content) ->
     bug_message = 'If you see this - a bug occured. Could you send us a message by clicking Support in the top?'
-    fs.writeFileSync(fs.join('/', path), new_content || bug_message)
+    Filesystem.write(path, new_content)
+    # fs.writeFileSync(fs.join('/', path), new_content || bug_message)
 
     # @goToStep(2) if @state.loaded
     # @setState(loaded: true) if new_content == @state.editor_content
@@ -40,17 +39,6 @@ React.createClass
     # same route, refresh manually
     browser_ref.refresh()
 
-  serializedFiles: ->
-    result = flatten(fs.data, { delimiter: '/' })
-    result = _.omit result, (content, path) ->
-      content == true
-
-    _.map result, (content, path) ->
-      {
-        path: path,
-        content: content.toString(),
-      }
-
   transitionWithCodeModeHistory: (route, with_history_route) ->
     editor_path = @refs.appRouteHandler.refs.__routeHandler__.props.params.splat
 
@@ -63,7 +51,7 @@ React.createClass
     @transitionWithCodeModeHistory('publish', '/publish/*?')
 
   changedFiles: ->
-    _.reject @serializedFiles(), (new_file) =>
+    _.reject Filesystem.ls(), (new_file) =>
       clean_file = _.detect @state.clean_files, (file) ->
         file.path == new_file.path
 

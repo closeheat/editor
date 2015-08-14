@@ -1,80 +1,72 @@
-var Filesystem, Promise, _, request;
+var Filesystem, _, traverse;
 
 _ = require('lodash');
 
-request = require('request');
-
-Promise = require('bluebird');
+traverse = require('traverse');
 
 module.exports = Filesystem = (function() {
-  function Filesystem() {
-    require('jade-memory-fs');
-  }
+  function Filesystem() {}
 
-  Filesystem.prototype.files = function() {
-    return fs.data();
+  Filesystem.create = function() {
+    return window.fs = {};
   };
 
-  Filesystem.prototype.load = function() {
-    return this.addFiles();
-  };
-
-  Filesystem.prototype.addFiles = function() {
-    return this.getInitialData().then((function(_this) {
-      return function(data) {
-        _this.createDirs(data.files);
-        return Promise.all(_this.addFileContents(data.files)).then(function() {
-          return data;
-        });
-      };
-    })(this));
-  };
-
-  Filesystem.prototype.createDirs = function(files) {
+  Filesystem.createDirs = function(files) {
     var files_in_dirs;
     files_in_dirs = _.select(files, function(file) {
       var file_dir_split;
       file_dir_split = file.path.split('/');
       return file_dir_split.length > 1;
     });
-    return _.each(files_in_dirs, function(file) {
-      var dir_path, file_dir_split;
-      file_dir_split = file.path.split('/');
-      dir_path = _.initial(file_dir_split).join('/');
-      return fs.mkdirpSync("/" + dir_path);
-    });
-  };
-
-  Filesystem.prototype.getInitialData = function() {
-    return new Promise((function(_this) {
-      return function(resolve, reject) {
-        return request.get({
-          json: true,
-          url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/init"
-        }, function(err, status, resp) {
-          if (err) {
-            return reject(err);
-          }
-          return resolve(resp);
-        });
+    return _.each(files_in_dirs, (function(_this) {
+      return function(file) {
+        var dir_path, file_dir_split;
+        file_dir_split = file.path.split('/');
+        dir_path = _.initial(file_dir_split).join('/');
+        return _this.createDir(dir_path);
       };
     })(this));
   };
 
-  Filesystem.prototype.addFileContents = function(files) {
+  Filesystem.createDir = function(dir_path) {
+    if (!fs[dir_path]) {
+      return fs[dir_path] = {};
+    }
+  };
+
+  Filesystem.write = function(file) {
+    var dir;
+    dir = this.readDir(file.path);
+    return dir[this.filename(file.path)] = file;
+  };
+
+  Filesystem.readDir = function(path) {
+    if (this.dirnameKey(path) === '') {
+      return fs;
+    }
+    return _.get(fs, this.dirnameKey(path));
+  };
+
+  Filesystem.filename = function(path) {
+    var path_parts;
+    path_parts = path.split('/');
+    return _.last(path_parts);
+  };
+
+  Filesystem.dirnameKey = function(path) {
+    var path_parts;
+    path_parts = path.split('/');
+    return path_parts.slice(0, -1).join('.');
+  };
+
+  Filesystem.ls = function() {
     var result;
     result = [];
-    _.each(files, (function(_this) {
-      return function(file) {
-        var promise;
-        promise = new Promise(function(resolve, reject) {
-          fs.writeFileSync(fs.join('/', file.path), file.content || 'not-modifiable');
-          return resolve();
-        });
-        return result.push(promise);
-      };
-    })(this));
-    return result;
+    return traverse(fs).map(function(node) {
+      if (_.isString(node.path)) {
+        return result.push(node);
+      }
+    });
   };
 
   return Filesystem;

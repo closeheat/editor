@@ -6,7 +6,7 @@ Router = require 'react-router'
 Route = Router.Route
 DefaultRoute = Router.DefaultRoute
 
-Filesystem = require './filesystem'
+InitialLoader = require './initial_loader'
 App = require './app'
 CodeMode = require './code_mode'
 PreviewMode = require './preview_mode'
@@ -16,10 +16,10 @@ Publish = require './publish'
 module.exports =
 class Core
   constructor: (@base, @server) ->
-    @filesystem = new Filesystem()
+    @initial_loader = new InitialLoader()
 
   load: ->
-    @filesystem.load().then (data) =>
+    @initial_loader.loadFilesAndData().then (data) =>
       @data = data
 
       Router.run @routes(), (Handler) =>

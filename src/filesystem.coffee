@@ -1,51 +1,56 @@
 _ = require 'lodash'
-request = require 'request'
-Promise = require 'bluebird'
+traverse = require 'traverse'
 
 module.exports =
 class Filesystem
-  constructor: ->
-    require('jade-memory-fs')
+  @create: ->
+    window.fs = {}
 
-  files: ->
-    fs.data()
-
-  load: ->
-    @addFiles()
-
-  addFiles: ->
-    @getInitialData().then (data) =>
-      # check data.success
-      @createDirs(data.files)
-
-      Promise.all(@addFileContents(data.files)).then ->
-        data
-
-  createDirs: (files) ->
+  @createDirs: (files) ->
     files_in_dirs = _.select files, (file) ->
       file_dir_split = file.path.split('/')
       file_dir_split.length > 1
 
-    _.each files_in_dirs, (file) ->
+    _.each files_in_dirs, (file) =>
       file_dir_split = file.path.split('/')
       dir_path = _.initial(file_dir_split).join('/')
-      fs.mkdirpSync("/#{dir_path}")
 
-  getInitialData: ->
-    new Promise (resolve, reject) =>
-      request.get json: true, url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/init", (err, status, resp) ->
-        return reject(err) if err
+      @createDir(dir_path)
 
-        resolve(resp)
+  @createDir: (dir_path) ->
+    fs[dir_path] = {} unless fs[dir_path]
 
-  addFileContents: (files) ->
+  @write: (file) ->
+    dir = @readDir(file.path)
+    dir[@filename(file.path)] = file
+
+  @readDir: (path) ->
+    return fs if @dirnameKey(path) == ''
+
+    _.get(fs, @dirnameKey(path))
+
+  @filename: (path) ->
+    path_parts = path.split('/')
+    _.last(path_parts)
+
+  @dirnameKey: (path) ->
+    path_parts = path.split('/')
+    path_parts.slice(0, -1).join('.')
+
+  @ls: ->
     result = []
 
-    _.each files, (file) =>
-      promise = new Promise (resolve, reject) =>
-        fs.writeFileSync(fs.join('/', file.path), file.content || 'not-modifiable')
-        resolve()
+    traverse(fs).map (node) ->
+      result.push(node) if _.isString(node.path)
 
-      result.push(promise)
-
-    result
+  # serializedFiles: ->
+  #   debugger
+  #   result = flatten(fs.data, { delimiter: '/' })
+  #   result = _.omit result, (content, path) ->
+  #     content == true
+  #
+  #   _.map result, (content, path) ->
+  #     {
+  #       path: path,
+  #       content: content.toString(),
+  #     }

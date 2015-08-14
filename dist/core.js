@@ -1,4 +1,4 @@
-var $, App, CodeMode, Core, DefaultRoute, Filesystem, PreviewMode, Publish, React, Route, Router, TabManager, md;
+var $, App, CodeMode, Core, DefaultRoute, InitialLoader, PreviewMode, Publish, React, Route, Router, TabManager, md;
 
 md = require('marked');
 
@@ -12,7 +12,7 @@ Route = Router.Route;
 
 DefaultRoute = Router.DefaultRoute;
 
-Filesystem = require('./filesystem');
+InitialLoader = require('./initial_loader');
 
 App = require('./app');
 
@@ -28,11 +28,11 @@ module.exports = Core = (function() {
   function Core(base, server) {
     this.base = base;
     this.server = server;
-    this.filesystem = new Filesystem();
+    this.initial_loader = new InitialLoader();
   }
 
   Core.prototype.load = function() {
-    return this.filesystem.load().then((function(_this) {
+    return this.initial_loader.loadFilesAndData().then((function(_this) {
       return function(data) {
         _this.data = data;
         return Router.run(_this.routes(), function(Handler) {

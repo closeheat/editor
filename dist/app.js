@@ -1,8 +1,6 @@
-var $, Header, Navigation, Promise, React, RouteHandler, Router, _, flatten, jade, request;
+var $, Filesystem, Header, Navigation, Promise, React, RouteHandler, Router, _, flatten, request;
 
 React = require('react/addons');
-
-jade = require('jade-memory-fs');
 
 flatten = require('flat');
 
@@ -24,17 +22,19 @@ Navigation = Router.Navigation;
 
 Header = require('./header');
 
+Filesystem = require('./filesystem');
+
 module.exports = React.createClass({
   getInitialState: function() {
     return {
-      clean_files: this.serializedFiles()
+      clean_files: _.cloneDeep(Filesystem.ls())
     };
   },
   mixins: [Navigation],
   editorChange: function(path, new_content) {
     var bug_message;
     bug_message = 'If you see this - a bug occured. Could you send us a message by clicking Support in the top?';
-    return fs.writeFileSync(fs.join('/', path), new_content || bug_message);
+    return Filesystem.write(path, new_content);
   },
   codeClick: function() {
     return this.transitionWithCodeModeHistory('code', '/code/*?');
@@ -47,21 +47,6 @@ module.exports = React.createClass({
       return;
     }
     return browser_ref.refresh();
-  },
-  serializedFiles: function() {
-    var result;
-    result = flatten(fs.data, {
-      delimiter: '/'
-    });
-    result = _.omit(result, function(content, path) {
-      return content === true;
-    });
-    return _.map(result, function(content, path) {
-      return {
-        path: path,
-        content: content.toString()
-      };
-    });
   },
   transitionWithCodeModeHistory: function(route, with_history_route) {
     var editor_path;
@@ -78,7 +63,7 @@ module.exports = React.createClass({
     return this.transitionWithCodeModeHistory('publish', '/publish/*?');
   },
   changedFiles: function() {
-    return _.reject(this.serializedFiles(), (function(_this) {
+    return _.reject(Filesystem.ls(), (function(_this) {
       return function(new_file) {
         var clean_file;
         clean_file = _.detect(_this.state.clean_files, function(file) {
