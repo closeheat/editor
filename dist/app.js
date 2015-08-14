@@ -95,10 +95,16 @@ module.exports = React.createClass({
       };
     })(this));
   },
+  activeMode: function() {
+    var routes;
+    routes = this.context.router.getCurrentRoutes();
+    return _.first(routes[1].name.split('-'));
+  },
   render: function() {
     return React.createElement("main", {
       "className": 'editor-wrapper'
     }, React.createElement(Header, {
+      "active_mode": this.activeMode(),
       "onCodeClick": this.codeClick,
       "onPreviewClick": this.previewClick,
       "onPublishClick": this.publishClick

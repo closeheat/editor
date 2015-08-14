@@ -4,9 +4,13 @@ $secondary-color: #F5534E;
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600);
 @import url(https://fonts.googleapis.com/icon?family=Material+Icons);
 $red: #EE4340;
+$hover-red-bg: hsla(1, 84%, 59%, .1);
+$hover-red-text: hsla(1, 84%, 49%, 1);
 $grey: #C1C6D1;
 $light-grey: hsla(221, 15%, 79%, .2);
 $even-lighter-grey: hsla(221, 15%, 79%, .1);
+$white: #fff;
+$darker-white: hsla(0, 0%, 90%, 1);
 
 html {
   height: 100%;
@@ -19,20 +23,47 @@ body {
 
 .editor-wrapper {
   .header-row {
+    background-color: $primary-color;
     margin-bottom: 0;
   }
 
+  .header-mode {
+    height: 50px;
+    line-height: 50px;
+    color: $white;
+
+    i {
+      display: inline-block;
+      font-size: 20px;
+      padding: 0 10px;
+    }
+
+    font-size: 14px;
+    -webkit-padding-start: 0;
+    -webkit-margin-after: 0;
+    -webkit-margin-before: 0;
+
+    &:hover {
+      background-color: $hover-red-bg;
+      color: $darker-white;
+    }
+  }
+
+  .header-mode-active {
+    color: $red;
+    border-bottom: 2px solid $red;
+    box-sizing: border-box;
+
+    &:hover {
+      color: $hover-red-text;
+    }
+  }
+
   .header-cols {
-    padding: 0;
+  }
 
-    nav {
-      box-shadow: none;
-    }
-
-    .header-avatar img {
-      width: 30px;
-      line-height: 64px;
-    }
+  .header-avatar img {
+    width: 10px;
   }
 
   .code-mode-cols {

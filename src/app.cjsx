@@ -21,9 +21,7 @@ React.createClass
     }
   mixins: [Navigation],
   editorChange: (path, new_content) ->
-    # bug_message = 'If you see this - a bug occured. Could you send us a message by clicking Support in the top?'
     Filesystem.write(path, new_content)
-    # fs.writeFileSync(fs.join('/', path), new_content || bug_message)
 
     # @goToStep(2) if @state.loaded
     # @setState(loaded: true) if new_content == @state.editor_content
@@ -71,9 +69,15 @@ React.createClass
         @setState(clean_files: _.cloneDeep(Filesystem.ls()))
         resolve()
 
+  activeMode: ->
+    routes = @context.router.getCurrentRoutes()
+
+    # in this setup second route is the important route
+    _.first(routes[1].name.split('-'))
+
   render: ->
     <main className='editor-wrapper'>
-      <Header onCodeClick={@codeClick} onPreviewClick={@previewClick} onPublishClick={@publishClick} />
+      <Header active_mode={@activeMode()} onCodeClick={@codeClick} onPreviewClick={@previewClick} onPublishClick={@publishClick} />
 
       <RouteHandler
         browser_url={@props.browser_url}

@@ -53,37 +53,38 @@ Header = React.createClass
   #       editor_content: @state.editor_content
   #   )
 
+  activeModeClass: (type, cols) ->
+    base = "col #{cols} header-mode center-align"
+    return base unless @props.active_mode == type
+
+    base + ' header-mode-active'
   render: ->
     edit_other_files_url = "http://app.closeheat.com/apps/#{APP_SLUG}/guide/toolkit"
 
     <div>
       <div className='row header-row'>
-        <div className='col s12 header-cols'>
-          <nav>
-            <div className="nav-wrapper">
-              <ul className="left">
-                <li>
-                  <a href="javascript:void(0)" onClick={@props.onCodeClick}><i className="mdi-image-remove-red-eye left"></i>Code</a>
-                </li>
-                <li>
-                  <a href="javascript:void(0)" onClick={@props.onPreviewClick}><i className="mdi-content-send left"></i>Preview Changes</a>
-                </li>
-              </ul>
-              <ul className="right">
-                <li>
-                  <a href="javascript:void(0)" onClick={@props.onPublishClick}><i className="mdi-content-send left"></i>Publish</a>
-                </li>
-                <li>
-                  <a href="javascript:void(0)" onClick={@props.onPublishClick}><i className="mdi-content-send left"></i>Support</a>
-                </li>
-                <li>
-                  <a className='header-avatar'>
-                    <img src="/logo-square.png"/>
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </nav>
+        <div className='header-modes'>
+          <div className={@activeModeClass('code', 's2')} onClick={@props.onCodeClick}>
+            <i className='material-icons'>code</i>
+            Code
+          </div>
+          <div className={@activeModeClass('preview', 's2')} onClick={@props.onPreviewClick}>
+            <i className='material-icons'>navigation</i>
+            Preview Changes
+          </div>
+        </div>
+        <div className={@activeModeClass('publish', 'offset-s5 s1')} onClick={@props.onPublishClick}>
+          <i className='material-icons'>navigation</i>
+          Publish
+        </div>
+        <div className='col s1 header-mode center-align' onClick={@props.onPublishClick}>
+          <i className='material-icons'>navigation</i>
+          Support
+        </div>
+        <div className='col s1 header-mode center-align' onClick={@props.onPublishClick}>
+          <a className='header-avatar'>
+            <img src="/logo-square.png"/>
+          </a>
         </div>
       </div>
 

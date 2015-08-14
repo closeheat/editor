@@ -15,44 +15,49 @@ module.exports = Header = React.createClass({
     return {};
   },
   goToStep: function(tour_step) {},
+  activeModeClass: function(type, cols) {
+    var base;
+    base = "col " + cols + " header-mode center-align";
+    if (this.props.active_mode !== type) {
+      return base;
+    }
+    return base + ' header-mode-active';
+  },
   render: function() {
     var edit_other_files_url;
     edit_other_files_url = "http://app.closeheat.com/apps/" + APP_SLUG + "/guide/toolkit";
     return React.createElement("div", null, React.createElement("div", {
       "className": 'row header-row'
     }, React.createElement("div", {
-      "className": 'col s12 header-cols'
-    }, React.createElement("nav", null, React.createElement("div", {
-      "className": "nav-wrapper"
-    }, React.createElement("ul", {
-      "className": "left"
-    }, React.createElement("li", null, React.createElement("a", {
-      "href": "javascript:void(0)",
+      "className": 'header-modes'
+    }, React.createElement("div", {
+      "className": this.activeModeClass('code', 's2'),
       "onClick": this.props.onCodeClick
     }, React.createElement("i", {
-      "className": "mdi-image-remove-red-eye left"
-    }), "Code")), React.createElement("li", null, React.createElement("a", {
-      "href": "javascript:void(0)",
+      "className": 'material-icons'
+    }, "code"), "Code"), React.createElement("div", {
+      "className": this.activeModeClass('preview', 's2'),
       "onClick": this.props.onPreviewClick
     }, React.createElement("i", {
-      "className": "mdi-content-send left"
-    }), "Preview Changes"))), React.createElement("ul", {
-      "className": "right"
-    }, React.createElement("li", null, React.createElement("a", {
-      "href": "javascript:void(0)",
+      "className": 'material-icons'
+    }, "navigation"), "Preview Changes")), React.createElement("div", {
+      "className": this.activeModeClass('publish', 'offset-s5 s1'),
       "onClick": this.props.onPublishClick
     }, React.createElement("i", {
-      "className": "mdi-content-send left"
-    }), "Publish")), React.createElement("li", null, React.createElement("a", {
-      "href": "javascript:void(0)",
+      "className": 'material-icons'
+    }, "navigation"), "Publish"), React.createElement("div", {
+      "className": 'col s1 header-mode center-align',
       "onClick": this.props.onPublishClick
     }, React.createElement("i", {
-      "className": "mdi-content-send left"
-    }), "Support")), React.createElement("li", null, React.createElement("a", {
+      "className": 'material-icons'
+    }, "navigation"), "Support"), React.createElement("div", {
+      "className": 'col s1 header-mode center-align',
+      "onClick": this.props.onPublishClick
+    }, React.createElement("a", {
       "className": 'header-avatar'
     }, React.createElement("img", {
       "src": "/logo-square.png"
-    })))))))), React.createElement(Tour, {
+    })))), React.createElement(Tour, {
       "step": this.state.tour_step,
       "done": this.state.tour_done
     }));
