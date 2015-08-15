@@ -151,5 +151,6 @@ React.createClass
         transitionWithCodeModeHistory={@transitionWithCodeModeHistory}
         files_changed={@filesChanged()}
         publish={@publish}
+        actionStopped={@actionStopped}
         ref='appRouteHandler'/>
     </main>

@@ -201,6 +201,7 @@ module.exports = React.createClass({
       "transitionWithCodeModeHistory": this.transitionWithCodeModeHistory,
       "files_changed": this.filesChanged(),
       "publish": this.publish,
+      "actionStopped": this.actionStopped,
       "ref": 'appRouteHandler'
     }));
   }
