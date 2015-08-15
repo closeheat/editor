@@ -8246,12 +8246,14 @@ body {
       color: rgba(255, 255, 255, 0.7); }
 .editor-wrapper .error {
   height: calc(100vh - 54px);
-  background-color: #FDFDFD; }
+  background-color: #FDFDFD;
+  padding-top: 30px; }
   .editor-wrapper .error .error-container {
     border: 1px solid rgba(193, 199, 209, 0.1);
     background-color: #fff;
     border-radius: 5px;
-    padding: 20px 30px 60px; }
+    padding: 20px 30px 60px;
+    word-break: break-all; }
   .editor-wrapper .error .error-title {
     text-align: left;
     font-size: 12px;

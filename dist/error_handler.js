@@ -15,18 +15,17 @@ module.exports = React.createClass({
     return {};
   },
   message: function() {
-    var msg;
+    var msg, with_n_as_enter;
     if (!this.props.error) {
       return;
     }
     msg = this.props.error.toString();
-    return msg.replace("\n", '<br>');
+    with_n_as_enter = JSON.stringify(msg).slice(1, -1);
+    return with_n_as_enter.replace(/\\n/g, '<br>');
   },
   render: function() {
     return React.createElement("div", {
-      "className": 'error valign-wrapper'
-    }, React.createElement("div", {
-      "className": 'valign'
+      "className": 'error'
     }, React.createElement("div", {
       "className": 'row'
     }, React.createElement("div", {
@@ -38,6 +37,6 @@ module.exports = React.createClass({
       "dangerouslySetInnerHTML": {
         __html: this.message()
       }
-    })))));
+    }))));
   }
 });

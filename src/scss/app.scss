@@ -291,12 +291,14 @@ body {
   .error {
     height: calc(100vh - 54px);
     background-color: #FDFDFD;
+    padding-top: 30px;
 
     .error-container {
       border: 1px solid $even-lighter-grey;
       background-color: #fff;
       border-radius: 5px;
       padding: 20px 30px 60px;
+      word-break: break-all;
     }
 
     .error-title {
