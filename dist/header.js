@@ -36,47 +36,50 @@ module.exports = Header = React.createClass({
     return this.addTooltips();
   },
   addTooltips: function() {
-    return _.each(['code', 'preview', 'publish', 'avatar'], (function(_this) {
+    var elements;
+    elements = _.map(['code', 'preview', 'publish', 'avatar'], (function(_this) {
       return function(name) {
-        return $(React.findDOMNode(_this.refs[name])).tooltip({
-          delay: 50
-        });
+        return React.findDOMNode(_this.refs[name]);
       };
     })(this));
+    return $(elements).tooltip({
+      delay: 100
+    });
   },
   prettyWebsiteUrl: function() {
     return this.props.website_url.replace('http://', '');
   },
   render: function() {
     var dashboard_url;
-    dashboard_url = "http://app.closeheat.com/apps/" + APP_SLUG + "/builds";
+    dashboard_url = "http://app.closeheat.com/apps/" + APP_SLUG + "/";
     return React.createElement("div", null, React.createElement("div", {
       "className": 'row header-row'
     }, React.createElement("div", {
-      "className": this.activeModeClass('code', 's2'),
+      "className": this.activeModeClass('code', 'label-with-icon s2'),
       "onClick": this.props.onCodeClick,
       "data-tooltip": 'Ctrl+E',
       "ref": 'code'
     }, React.createElement("i", {
       "className": 'material-icons'
     }, "code"), "Code"), React.createElement("div", {
-      "className": this.activeModeClass('preview', 's2'),
+      "className": this.activeModeClass('preview', 'label-with-icon s2 m3'),
       "onClick": this.props.onPreviewClick,
       "data-tooltip": 'Ctrl+S',
       "ref": 'preview'
     }, React.createElement("i", {
       "className": 'material-icons'
     }, "navigation"), "Preview Changes"), React.createElement("div", {
-      "className": 'header-website-url col s4 center-align'
+      "className": 'header-website-url col s4 m3 center-align label-with-icon'
     }, React.createElement("a", {
       "href": this.props.website_url,
-      "target": '_blank'
+      "target": '_blank',
+      "className": 'truncate'
     }, this.prettyWebsiteUrl(), React.createElement("i", {
-      "className": 'material-icons'
+      "className": 'material-icons header-icon-right'
     }, "open_in_new"))), React.createElement("div", {
-      "className": this.activeModeClass('publish', 's2'),
+      "className": this.activeModeClass('publish', 's2 label-with-icon'),
       "onClick": this.props.onPublishClick,
-      "data-tooltip": "Publishes current changes to " + (this.prettyWebsiteUrl()),
+      "data-tooltip": "Publishes changes to " + (this.prettyWebsiteUrl()),
       "ref": 'publish'
     }, React.createElement("i", {
       "className": 'material-icons'

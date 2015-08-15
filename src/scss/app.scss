@@ -25,6 +25,8 @@ $tab-hover-bg-color: #F0EFEF;
 
 $error-title-color: hsla(0, 0%, 98%, 1);
 
+$header-height: 54px;
+
 html {
   height: 100%;
   font-family: 'Open Sans', sans-serif;
@@ -35,15 +37,22 @@ body {
 }
 
 .editor-wrapper {
-  .header-row {
-    background-color: $primary-color;
-    margin-bottom: 0;
-
+  .label-with-icon {
     i {
       display: inline-block;
       font-size: 20px;
       padding-right: 10px;
     }
+
+    span {
+      vertical-align: super;
+    }
+  }
+
+  .header-row {
+    background-color: $primary-color;
+    margin-bottom: 0;
+    height: $header-height;
   }
 
   .header-website-url a {
@@ -64,7 +73,8 @@ body {
   }
 
   .header-item {
-    height: 50px;
+    height: $header-height;
+    // not sure why it shews without 4px
     line-height: 50px;
     font-size: 11px;
   }
@@ -227,7 +237,7 @@ body {
   }
 
   .loader {
-    height: calc(100vh - 50px);
+    height: calc(100vh - 54px);
     background-color: #FDFDFD;
 
     $spinner-size: 250px;
@@ -242,7 +252,7 @@ body {
   }
 
   .published {
-    height: calc(100vh - 50px);
+    height: calc(100vh - 54px);
     background-color: #FDFDFD;
 
     .published-icon i {
@@ -279,7 +289,7 @@ body {
   }
 
   .error {
-    height: calc(100vh - 50px);
+    height: calc(100vh - 54px);
     background-color: #FDFDFD;
 
     .error-container {
@@ -309,10 +319,10 @@ body {
 }
 
 .browser {
-  height: calc(100vh - 50px);
+  height: calc(100vh - 54px);
 
   iframe {
-    height: calc(100vh - 50px);
+    height: calc(100vh - 54px);
     width: 100%;
     border: none;
   }

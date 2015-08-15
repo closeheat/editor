@@ -69,36 +69,38 @@ Header = React.createClass
     @addTooltips()
 
   addTooltips: ->
-    _.each ['code', 'preview', 'publish', 'avatar'], (name) =>
-      $(React.findDOMNode(@refs[name])).tooltip
-        delay: 50
+    elements = _.map ['code', 'preview', 'publish', 'avatar'], (name) =>
+      React.findDOMNode(@refs[name])
+
+    $(elements).tooltip
+      delay: 100
 
   prettyWebsiteUrl: ->
     @props.website_url.replace('http://', '')
 
   render: ->
-    dashboard_url = "http://app.closeheat.com/apps/#{APP_SLUG}/builds"
+    dashboard_url = "http://app.closeheat.com/apps/#{APP_SLUG}/"
 
     <div>
       <div className='row header-row'>
-        <div className={@activeModeClass('code', 's2')} onClick={@props.onCodeClick} data-tooltip='Ctrl+E' ref='code'>
+        <div className={@activeModeClass('code', 'label-with-icon s2')} onClick={@props.onCodeClick} data-tooltip='Ctrl+E' ref='code'>
           <i className='material-icons'>code</i>
           Code
         </div>
-        <div className={@activeModeClass('preview', 's2')} onClick={@props.onPreviewClick} data-tooltip='Ctrl+S' ref='preview'>
+        <div className={@activeModeClass('preview', 'label-with-icon s2 m3')} onClick={@props.onPreviewClick} data-tooltip='Ctrl+S' ref='preview'>
           <i className='material-icons'>navigation</i>
           Preview Changes
         </div>
-        <div className='header-website-url col s4 center-align'>
-          <a href={@props.website_url} target='_blank'>
+        <div className='header-website-url col s4 m3 center-align label-with-icon'>
+          <a href={@props.website_url} target='_blank' className='truncate'>
             {@prettyWebsiteUrl()}
-            <i className='material-icons'>open_in_new</i>
+            <i className='material-icons header-icon-right'>open_in_new</i>
           </a>
         </div>
         <div
-          className={@activeModeClass('publish', 's2')}
+          className={@activeModeClass('publish', 's2 label-with-icon')}
           onClick={@props.onPublishClick}
-          data-tooltip="Publishes current changes to #{@prettyWebsiteUrl()}"
+          data-tooltip="Publishes changes to #{@prettyWebsiteUrl()}"
           ref='publish'>
 
           <i className='material-icons'>publish</i>

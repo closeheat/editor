@@ -31,6 +31,9 @@ React.createClass
 
   onLoad: (editor) ->
     editor.clearSelection()
+    editor.getSession().setTabSize(2)
+    editor.getSession().setUseSoftTabs(true)
+    editor.setHighlightActiveLine(false)
   render: ->
     <AceEditor
       mode={@mode()}

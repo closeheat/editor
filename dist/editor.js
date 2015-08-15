@@ -42,7 +42,10 @@ module.exports = React.createClass({
     };
   },
   onLoad: function(editor) {
-    return editor.clearSelection();
+    editor.clearSelection();
+    editor.getSession().setTabSize(2);
+    editor.getSession().setUseSoftTabs(true);
+    return editor.setHighlightActiveLine(false);
   },
   render: function() {
     return React.createElement(AceEditor, {

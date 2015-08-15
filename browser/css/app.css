@@ -8100,13 +8100,16 @@ html {
 body {
   height: 100%; }
 
+.editor-wrapper .label-with-icon i {
+  display: inline-block;
+  font-size: 20px;
+  padding-right: 10px; }
+.editor-wrapper .label-with-icon span {
+  vertical-align: super; }
 .editor-wrapper .header-row {
   background-color: #1A1E2D;
-  margin-bottom: 0; }
-  .editor-wrapper .header-row i {
-    display: inline-block;
-    font-size: 20px;
-    padding-right: 10px; }
+  margin-bottom: 0;
+  height: 54px; }
 .editor-wrapper .header-website-url a {
   color: rgba(230, 230, 230, 0.3); }
 .editor-wrapper .header-support a {
@@ -8115,7 +8118,7 @@ body {
   .editor-wrapper .header-support a:hover {
     color: #e6e6e6; }
 .editor-wrapper .header-item, .editor-wrapper .header-website-url a, .editor-wrapper .header-support a, .editor-wrapper .header-mode {
-  height: 50px;
+  height: 54px;
   line-height: 50px;
   font-size: 11px; }
 .editor-wrapper .header-mode {
@@ -8212,7 +8215,7 @@ body {
   text-align: center;
   text-transform: uppercase; }
 .editor-wrapper .loader {
-  height: calc(100vh - 50px);
+  height: calc(100vh - 54px);
   background-color: #FDFDFD; }
   .editor-wrapper .loader .loader-spinner {
     height: 250px;
@@ -8220,7 +8223,7 @@ body {
   .editor-wrapper .loader .loader-container {
     margin: 0 auto; }
 .editor-wrapper .published {
-  height: calc(100vh - 50px);
+  height: calc(100vh - 54px);
   background-color: #FDFDFD; }
   .editor-wrapper .published .published-icon i {
     font-size: 150px;
@@ -8242,7 +8245,7 @@ body {
       text-transform: none;
       color: rgba(255, 255, 255, 0.7); }
 .editor-wrapper .error {
-  height: calc(100vh - 50px);
+  height: calc(100vh - 54px);
   background-color: #FDFDFD; }
   .editor-wrapper .error .error-container {
     border: 1px solid rgba(193, 199, 209, 0.1);
@@ -8262,8 +8265,8 @@ body {
     font-family: 'Source Code Pro', 'Open Sans', sans-serif; }
 
 .browser {
-  height: calc(100vh - 50px); }
+  height: calc(100vh - 54px); }
   .browser iframe {
-    height: calc(100vh - 50px);
+    height: calc(100vh - 54px);
     width: 100%;
     border: none; }
