@@ -11,10 +11,14 @@ module.exports = React.createClass({
     if (!this.props.error) {
       this.props.transitionWithCodeModeHistory('code', '/code/*?');
     }
+    this.props.actionStopped();
     return {};
   },
   message: function() {
     var msg;
+    if (!this.props.error) {
+      return;
+    }
     msg = this.props.error.toString();
     return msg.replace("\n", '<br>');
   },

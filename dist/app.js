@@ -27,7 +27,8 @@ Filesystem = require('./filesystem');
 module.exports = React.createClass({
   getInitialState: function() {
     return {
-      clean_files: _.cloneDeep(Filesystem.ls())
+      clean_files: _.cloneDeep(Filesystem.ls()),
+      action_in_progress: false
     };
   },
   mixins: [Navigation],
@@ -39,6 +40,9 @@ module.exports = React.createClass({
   },
   previewClick: function() {
     var browser_ref;
+    if (this.state.action_in_progress) {
+      return;
+    }
     this.transitionWithCodeModeHistory('preview', 'preview-with-history');
     browser_ref = this.refs.appRouteHandler.refs.__routeHandler__.refs.browser;
     if (!browser_ref) {
@@ -54,6 +58,9 @@ module.exports = React.createClass({
     }
   },
   publishClick: function() {
+    if (this.state.action_in_progress) {
+      return;
+    }
     return this.transitionWithCodeModeHistory('publish', '/publish/*?');
   },
   handleError: function(msg) {
@@ -74,6 +81,7 @@ module.exports = React.createClass({
     })(this));
   },
   build: function() {
+    this.actionStarted();
     return new Promise((function(_this) {
       return function(resolve, reject) {
         return request.post({
@@ -92,7 +100,49 @@ module.exports = React.createClass({
           _this.setState({
             clean_files: _.cloneDeep(Filesystem.ls())
           });
+          _this.actionStopped();
           return resolve();
+        });
+      };
+    })(this));
+  },
+  filesChanged: function() {
+    return !_.isEmpty(this.changedFiles());
+  },
+  publish: function() {
+    if (this.filesChanged()) {
+      return this.build().then(this.publish)["catch"]((function(_this) {
+        return function(err) {
+          return _this.handleError(err);
+        };
+      })(this));
+    } else {
+      this.actionStarted();
+      return this.execPublish().then((function(_this) {
+        return function(resp) {
+          if (!resp.success) {
+            return _this.handleError(resp.error);
+          }
+          return _this.actionStopped();
+        };
+      })(this))["catch"]((function(_this) {
+        return function(err) {
+          return _this.handleError(err);
+        };
+      })(this));
+    }
+  },
+  execPublish: function() {
+    return new Promise((function(_this) {
+      return function(resolve, reject) {
+        return request.post({
+          json: true,
+          url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/publish"
+        }, function(err, status, resp) {
+          if (err) {
+            return reject(err);
+          }
+          return resolve(resp);
         });
       };
     })(this));
@@ -102,10 +152,21 @@ module.exports = React.createClass({
     routes = this.context.router.getCurrentRoutes();
     return _.first(routes[1].name.split('-'));
   },
+  actionStarted: function() {
+    return this.setState({
+      action_in_progress: true
+    });
+  },
+  actionStopped: function() {
+    return this.setState({
+      action_in_progress: false
+    });
+  },
   render: function() {
     return React.createElement("main", {
       "className": 'editor-wrapper'
     }, React.createElement(Header, {
+      "action_in_progress": this.state.action_in_progress,
       "website_url": this.props.website_url,
       "active_mode": this.activeMode(),
       "onCodeClick": this.codeClick,
@@ -116,10 +177,11 @@ module.exports = React.createClass({
       "website_url": this.props.website_url,
       "editorChange": this.editorChange,
       "build": this.build,
-      "files_changed": !_.isEmpty(this.changedFiles()),
       "handleError": this.handleError,
       "error": this.state.error,
       "transitionWithCodeModeHistory": this.transitionWithCodeModeHistory,
+      "files_changed": this.filesChanged(),
+      "publish": this.publish,
       "ref": 'appRouteHandler'
     }));
   }

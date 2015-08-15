@@ -54,10 +54,14 @@ Header = React.createClass
   #   )
 
   activeModeClass: (type, cols) ->
-    base = "col #{cols} header-mode center-align"
-    return base unless @props.active_mode == type
+    React.addons.classSet
+      col: true
+      'header-mode': true
+      'center-align': true
+      "#{cols}": true
+      'header-mode-active': @props.active_mode == type
+      'header-in-progress': @props.action_in_progress && type != 'code'
 
-    base + ' header-mode-active'
   render: ->
     edit_other_files_url = "http://app.closeheat.com/apps/#{APP_SLUG}/guide/toolkit"
 

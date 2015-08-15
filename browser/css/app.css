@@ -8124,6 +8124,8 @@ body {
   .editor-wrapper .header-mode:hover {
     background-color: rgba(238, 66, 63, 0.1);
     color: #e6e6e6; }
+.editor-wrapper .header-in-progress {
+  color: #b3b3b3; }
 .editor-wrapper .header-mode-active {
   color: #EE4340;
   border-bottom: 2px solid #EE4340;

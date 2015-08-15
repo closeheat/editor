@@ -12,7 +12,6 @@ class InitialLoader
 
   addFiles: ->
     @getInitialData().then((data) =>
-      # check data.success
       Filesystem.create(data.files)
 
       data

@@ -16,48 +16,16 @@ module.exports = React.createClass({
       published: false
     };
   },
-  componentWillMount: function() {
-    return this.execSequence(this.props);
-  },
-  componentWillReceiveProps: function(new_props) {
-    return this.execSequence(new_props);
-  },
-  execSequence: function(props) {
-    if (props.files_changed) {
-      return props.build()["catch"]((function(_this) {
-        return function(err) {
-          return _this.props.handleError(err);
-        };
-      })(this));
-    } else {
-      return this.execPublish().then((function(_this) {
-        return function(resp) {
-          if (!resp.success) {
-            return _this.props.handleError(resp.error);
-          }
-          return _this.setState({
-            published: true
-          });
-        };
-      })(this))["catch"]((function(_this) {
-        return function(err) {
-          return _this.props.handleError(err);
-        };
-      })(this));
-    }
-  },
-  execPublish: function() {
-    return new Promise((function(_this) {
-      return function(resolve, reject) {
-        return request.post({
-          json: true,
-          url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/publish"
-        }, function(err, status, resp) {
-          if (err) {
-            return reject(err);
-          }
-          return resolve(resp);
+  componentDidMount: function() {
+    return this.props.publish().then((function(_this) {
+      return function(resp) {
+        return _this.setState({
+          published: true
         });
+      };
+    })(this))["catch"]((function(_this) {
+      return function(err) {
+        return _this.props.handleError(err);
       };
     })(this));
   },

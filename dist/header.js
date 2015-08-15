@@ -16,12 +16,18 @@ module.exports = Header = React.createClass({
   },
   goToStep: function(tour_step) {},
   activeModeClass: function(type, cols) {
-    var base;
-    base = "col " + cols + " header-mode center-align";
-    if (this.props.active_mode !== type) {
-      return base;
-    }
-    return base + ' header-mode-active';
+    var obj;
+    return React.addons.classSet((
+      obj = {
+        col: true,
+        'header-mode': true,
+        'center-align': true
+      },
+      obj["" + cols] = true,
+      obj['header-mode-active'] = this.props.active_mode === type,
+      obj['header-in-progress'] = this.props.action_in_progress && type !== 'code',
+      obj
+    ));
   },
   render: function() {
     var edit_other_files_url;

@@ -13,6 +13,7 @@ $even-lighter-grey: hsla(221, 15%, 79%, .1);
 $white: #fff;
 $darker-white: hsla(0, 0%, 90%, 1);
 $whiter-grey: hsla(0, 0%, 90%, .3);
+$header-in-progress-text-color: hsla(0, 0%, 70%, 1);
 
 $tab-bg-color: #EBEAEB;
 $tab-text-color: #9D9D9D;
@@ -77,6 +78,10 @@ body {
       background-color: $hover-red-bg;
       color: $darker-white;
     }
+  }
+
+  .header-in-progress {
+    color: $header-in-progress-text-color;
   }
 
   .header-mode-active {

@@ -15,9 +15,6 @@ module.exports = React.createClass({
   componentDidMount: function() {
     return this.props.build().then((function(_this) {
       return function(resp) {
-        if (!resp.success) {
-          return _this.props.handleError(resp.error);
-        }
         return _this.setState({
           build_finished: true
         });

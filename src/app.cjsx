@@ -17,7 +17,8 @@ module.exports =
 React.createClass
   getInitialState: ->
     {
-      clean_files: _.cloneDeep(Filesystem.ls())
+      clean_files: _.cloneDeep(Filesystem.ls()),
+      action_in_progress: false
     }
   mixins: [Navigation],
   editorChange: (path, new_content) ->
@@ -29,6 +30,8 @@ React.createClass
   codeClick: ->
     @transitionWithCodeModeHistory('code', '/code/*?')
   previewClick: ->
+    return if @state.action_in_progress
+
     @transitionWithCodeModeHistory('preview', 'preview-with-history')
 
     browser_ref = @refs.appRouteHandler.refs.__routeHandler__.refs.browser
@@ -44,6 +47,7 @@ React.createClass
       @transitionTo(with_history_route, @context.router.getCurrentParams())
 
   publishClick: ->
+    return if @state.action_in_progress
     @transitionWithCodeModeHistory('publish', '/publish/*?')
 
   handleError: (msg) ->
@@ -58,6 +62,8 @@ React.createClass
       clean_file.content == new_file.content
 
   build: ->
+    @actionStarted()
+
     new Promise (resolve, reject) =>
       request.post
         json: true
@@ -65,11 +71,36 @@ React.createClass
           files: @changedFiles()
         url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/preview"
       , (err, status, resp) =>
+
         return reject(err) if err
         return reject(resp.error) unless resp.success
 
         @setState(clean_files: _.cloneDeep(Filesystem.ls()))
+        @actionStopped()
         resolve()
+
+  filesChanged: ->
+    !_.isEmpty(@changedFiles())
+
+  publish: ->
+    if @filesChanged()
+      @build().then(@publish).catch (err) =>
+        @handleError(err)
+    else
+      @actionStarted()
+      @execPublish().then( (resp) =>
+        return @handleError(resp.error) unless resp.success
+
+        @actionStopped()
+      ).catch (err) =>
+        @handleError(err)
+
+  execPublish: ->
+    new Promise (resolve, reject) =>
+      request.post json: true, url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/publish", (err, status, resp) ->
+        return reject(err) if err
+
+        resolve(resp)
 
   activeMode: ->
     routes = @context.router.getCurrentRoutes()
@@ -77,18 +108,31 @@ React.createClass
     # in this setup second route is the important route
     _.first(routes[1].name.split('-'))
 
+  actionStarted: ->
+    @setState(action_in_progress: true)
+
+  actionStopped: ->
+    @setState(action_in_progress: false)
+
   render: ->
     <main className='editor-wrapper'>
-      <Header website_url={@props.website_url} active_mode={@activeMode()} onCodeClick={@codeClick} onPreviewClick={@previewClick} onPublishClick={@publishClick} />
+      <Header
+        action_in_progress={@state.action_in_progress}
+        website_url={@props.website_url}
+        active_mode={@activeMode()}
+        onCodeClick={@codeClick}
+        onPreviewClick={@previewClick}
+        onPublishClick={@publishClick} />
 
       <RouteHandler
         browser_url={@props.browser_url}
         website_url={@props.website_url}
         editorChange={@editorChange}
         build={@build}
-        files_changed={!_.isEmpty(@changedFiles())}
         handleError={@handleError}
         error={@state.error}
         transitionWithCodeModeHistory={@transitionWithCodeModeHistory}
+        files_changed={@filesChanged()}
+        publish={@publish}
         ref='appRouteHandler'/>
     </main>

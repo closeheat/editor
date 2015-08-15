@@ -6,9 +6,12 @@ module.exports =
 React.createClass
   getInitialState: ->
     @props.transitionWithCodeModeHistory('code', '/code/*?') unless @props.error
+    @props.actionStopped()
 
     {}
   message: ->
+    return unless @props.error
+
     msg = @props.error.toString()
     msg.replace("\n", '<br>')
   render: ->

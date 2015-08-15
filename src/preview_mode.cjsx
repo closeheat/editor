@@ -10,8 +10,6 @@ React.createClass
     }
   componentDidMount: ->
     @props.build().then((resp) =>
-      return @props.handleError(resp.error) unless resp.success
-
       @setState(build_finished: true)
     ).catch (err) =>
       @props.handleError(err)
