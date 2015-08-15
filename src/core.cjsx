@@ -41,7 +41,7 @@ class Core
       <Route name='error' path='/error' handler={ErrorHandler} />
       <Route name='error-with-history' path='/error/*?' handler={ErrorHandler} />
 
-      <Redirect from='' to='/code/' />
+      <Redirect from='' to='/preview' />
       <Redirect from="/code" to="/code/" />
     </Route>
     # <DefaultRoute handler={Home} />

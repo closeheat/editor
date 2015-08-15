@@ -86,7 +86,7 @@ module.exports = Core = (function() {
       "handler": ErrorHandler
     }), React.createElement(Redirect, {
       "from": '',
-      "to": '/code/'
+      "to": '/preview'
     }), React.createElement(Redirect, {
       "from": "/code",
       "to": "/code/"
