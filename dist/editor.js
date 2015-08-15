@@ -14,6 +14,8 @@ require('brace/mode/coffee');
 
 require('brace/mode/jade');
 
+require('brace/mode/sass');
+
 require('brace/theme/xcode');
 
 module.exports = React.createClass({
@@ -26,15 +28,18 @@ module.exports = React.createClass({
     return this.props.onChange(this.props.path, new_content);
   },
   mode: function() {
-    var ext, result;
+    var ext;
     ext = this.props.path.match(/\.(.*)$/)[1] || 'html';
-    result = _.detect(this.supportedModes(), function(supported_ext) {
-      return supported_ext === ext;
-    });
-    return result || 'html';
+    return this.supportedModes()[ext] || 'html';
   },
   supportedModes: function() {
-    return ['jade', 'html', 'coffee'];
+    return {
+      jade: 'jade',
+      html: 'html',
+      coffee: 'coffee',
+      sass: 'sass',
+      scss: 'sass'
+    };
   },
   onLoad: function(editor) {
     return editor.clearSelection();
@@ -44,7 +49,7 @@ module.exports = React.createClass({
       "mode": this.mode(),
       "theme": 'xcode',
       "name": 'blah1',
-      "height": 'calc(100vh - 64px)',
+      "height": 'calc(100vh - 50px)',
       "width": '100%',
       "onChange": this.onChange,
       "onLoad": this.onLoad,

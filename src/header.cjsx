@@ -62,26 +62,45 @@ Header = React.createClass
       'header-mode-active': @props.active_mode == type
       'header-in-progress': @props.action_in_progress && type != 'code'
 
+  componentDidMount: ->
+    @addTooltips()
+
+  componentDidUpdate: ->
+    @addTooltips()
+
+  addTooltips: ->
+    _.each ['code', 'preview', 'publish', 'avatar'], (name) =>
+      $(React.findDOMNode(@refs[name])).tooltip
+        delay: 50
+
+  prettyWebsiteUrl: ->
+    @props.website_url.replace('http://', '')
+
   render: ->
-    edit_other_files_url = "http://app.closeheat.com/apps/#{APP_SLUG}/guide/toolkit"
+    dashboard_url = "http://app.closeheat.com/apps/#{APP_SLUG}/builds"
 
     <div>
       <div className='row header-row'>
-        <div className={@activeModeClass('code', 's2')} onClick={@props.onCodeClick}>
+        <div className={@activeModeClass('code', 's2')} onClick={@props.onCodeClick} data-tooltip='Ctrl+E' ref='code'>
           <i className='material-icons'>code</i>
           Code
         </div>
-        <div className={@activeModeClass('preview', 's2')} onClick={@props.onPreviewClick}>
+        <div className={@activeModeClass('preview', 's2')} onClick={@props.onPreviewClick} data-tooltip='Ctrl+S' ref='preview'>
           <i className='material-icons'>navigation</i>
           Preview Changes
         </div>
-        <div className='header-website-url col s4 center-align' onClick={@props.onPublishClick}>
+        <div className='header-website-url col s4 center-align'>
           <a href={@props.website_url} target='_blank'>
-            {@props.website_url.replace('http://', '')}
+            {@prettyWebsiteUrl()}
             <i className='material-icons'>open_in_new</i>
           </a>
         </div>
-        <div className={@activeModeClass('publish', 's2')} onClick={@props.onPublishClick}>
+        <div
+          className={@activeModeClass('publish', 's2')}
+          onClick={@props.onPublishClick}
+          data-tooltip="Publishes current changes to #{@prettyWebsiteUrl()}"
+          ref='publish'>
+
           <i className='material-icons'>publish</i>
           Publish
         </div>
@@ -90,9 +109,9 @@ Header = React.createClass
             Support
           </a>
         </div>
-        <div className='col s1 header-mode center-align' onClick={@props.onPublishClick}>
-          <a className='header-avatar'>
-            <img src="/logo-square.png"/>
+        <div className='col s1 center-align'>
+          <a href={dashboard_url} target='_blank' className='header-avatar' ref='avatar' data-tooltip='Dashboard'>
+            <img src={@props.avatar}/>
           </a>
         </div>
       </div>

@@ -16,10 +16,25 @@ Filesystem = require './filesystem'
 module.exports =
 React.createClass
   getInitialState: ->
+    @bindKeys()
+
     {
       clean_files: _.cloneDeep(Filesystem.ls()),
       action_in_progress: false
     }
+
+  bindKeys: ->
+    $(window).bind 'keydown', (event) =>
+      return unless event.ctrlKey or event.metaKey
+
+      switch String.fromCharCode(event.which).toLowerCase()
+        when 's'
+          event.preventDefault()
+          @previewClick()
+        when 'e'
+          event.preventDefault()
+          @codeClick()
+
   mixins: [Navigation],
   editorChange: (path, new_content) ->
     Filesystem.write(path, new_content)
@@ -122,7 +137,9 @@ React.createClass
         active_mode={@activeMode()}
         onCodeClick={@codeClick}
         onPreviewClick={@previewClick}
-        onPublishClick={@publishClick} />
+        onPublishClick={@publishClick}
+        avatar={@props.avatar}
+        />
 
       <RouteHandler
         browser_url={@props.browser_url}

@@ -29,32 +29,55 @@ module.exports = Header = React.createClass({
       obj
     ));
   },
+  componentDidMount: function() {
+    return this.addTooltips();
+  },
+  componentDidUpdate: function() {
+    return this.addTooltips();
+  },
+  addTooltips: function() {
+    return _.each(['code', 'preview', 'publish', 'avatar'], (function(_this) {
+      return function(name) {
+        return $(React.findDOMNode(_this.refs[name])).tooltip({
+          delay: 50
+        });
+      };
+    })(this));
+  },
+  prettyWebsiteUrl: function() {
+    return this.props.website_url.replace('http://', '');
+  },
   render: function() {
-    var edit_other_files_url;
-    edit_other_files_url = "http://app.closeheat.com/apps/" + APP_SLUG + "/guide/toolkit";
+    var dashboard_url;
+    dashboard_url = "http://app.closeheat.com/apps/" + APP_SLUG + "/builds";
     return React.createElement("div", null, React.createElement("div", {
       "className": 'row header-row'
     }, React.createElement("div", {
       "className": this.activeModeClass('code', 's2'),
-      "onClick": this.props.onCodeClick
+      "onClick": this.props.onCodeClick,
+      "data-tooltip": 'Ctrl+E',
+      "ref": 'code'
     }, React.createElement("i", {
       "className": 'material-icons'
     }, "code"), "Code"), React.createElement("div", {
       "className": this.activeModeClass('preview', 's2'),
-      "onClick": this.props.onPreviewClick
+      "onClick": this.props.onPreviewClick,
+      "data-tooltip": 'Ctrl+S',
+      "ref": 'preview'
     }, React.createElement("i", {
       "className": 'material-icons'
     }, "navigation"), "Preview Changes"), React.createElement("div", {
-      "className": 'header-website-url col s4 center-align',
-      "onClick": this.props.onPublishClick
+      "className": 'header-website-url col s4 center-align'
     }, React.createElement("a", {
       "href": this.props.website_url,
       "target": '_blank'
-    }, this.props.website_url.replace('http://', ''), React.createElement("i", {
+    }, this.prettyWebsiteUrl(), React.createElement("i", {
       "className": 'material-icons'
     }, "open_in_new"))), React.createElement("div", {
       "className": this.activeModeClass('publish', 's2'),
-      "onClick": this.props.onPublishClick
+      "onClick": this.props.onPublishClick,
+      "data-tooltip": "Publishes current changes to " + (this.prettyWebsiteUrl()),
+      "ref": 'publish'
     }, React.createElement("i", {
       "className": 'material-icons'
     }, "publish"), "Publish"), React.createElement("div", {
@@ -62,12 +85,15 @@ module.exports = Header = React.createClass({
     }, React.createElement("a", {
       "href": "mailto:domas@closeheat?subject=I'm having a problem with the editor"
     }, "Support")), React.createElement("div", {
-      "className": 'col s1 header-mode center-align',
-      "onClick": this.props.onPublishClick
+      "className": 'col s1 center-align'
     }, React.createElement("a", {
-      "className": 'header-avatar'
+      "href": dashboard_url,
+      "target": '_blank',
+      "className": 'header-avatar',
+      "ref": 'avatar',
+      "data-tooltip": 'Dashboard'
     }, React.createElement("img", {
-      "src": "/logo-square.png"
+      "src": this.props.avatar
     })))), React.createElement(Tour, {
       "step": this.state.tour_step,
       "done": this.state.tour_done

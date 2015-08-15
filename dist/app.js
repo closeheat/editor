@@ -26,10 +26,28 @@ Filesystem = require('./filesystem');
 
 module.exports = React.createClass({
   getInitialState: function() {
+    this.bindKeys();
     return {
       clean_files: _.cloneDeep(Filesystem.ls()),
       action_in_progress: false
     };
+  },
+  bindKeys: function() {
+    return $(window).bind('keydown', (function(_this) {
+      return function(event) {
+        if (!(event.ctrlKey || event.metaKey)) {
+          return;
+        }
+        switch (String.fromCharCode(event.which).toLowerCase()) {
+          case 's':
+            event.preventDefault();
+            return _this.previewClick();
+          case 'e':
+            event.preventDefault();
+            return _this.codeClick();
+        }
+      };
+    })(this));
   },
   mixins: [Navigation],
   editorChange: function(path, new_content) {
@@ -171,7 +189,8 @@ module.exports = React.createClass({
       "active_mode": this.activeMode(),
       "onCodeClick": this.codeClick,
       "onPreviewClick": this.previewClick,
-      "onPublishClick": this.publishClick
+      "onPublishClick": this.publishClick,
+      "avatar": this.props.avatar
     }), React.createElement(RouteHandler, {
       "browser_url": this.props.browser_url,
       "website_url": this.props.website_url,

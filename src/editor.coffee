@@ -6,6 +6,8 @@ _  = require('lodash')
 require('brace/mode/html')
 require('brace/mode/coffee')
 require('brace/mode/jade')
+require('brace/mode/sass')
+
 require('brace/theme/xcode')
 
 module.exports =
@@ -16,18 +18,17 @@ React.createClass
     @props.onChange(@props.path, new_content)
   mode: ->
     ext = @props.path.match(/\.(.*)$/)[1] || 'html'
-
-    result = _.detect @supportedModes(), (supported_ext) ->
-      supported_ext == ext
-
-    result || 'html'
+    @supportedModes()[ext] || 'html'
 
   supportedModes: ->
-    [
-      'jade',
-      'html',
-      'coffee'
-    ]
+    {
+      jade: 'jade',
+      html: 'html',
+      coffee: 'coffee',
+      sass: 'sass',
+      scss: 'sass'
+    }
+
   onLoad: (editor) ->
     editor.clearSelection()
   render: ->
@@ -35,7 +36,7 @@ React.createClass
       mode={@mode()}
       theme='xcode'
       name='blah1'
-      height='calc(100vh - 64px)'
+      height='calc(100vh - 50px)'
       width='100%'
       onChange={@onChange}
       onLoad={@onLoad}

@@ -8133,7 +8133,9 @@ body {
   .editor-wrapper .header-mode-active:hover {
     color: #e61714; }
 .editor-wrapper .header-avatar img {
-  width: 10px; }
+  margin-top: 10px;
+  width: 30px;
+  border-radius: 9999px; }
 .editor-wrapper .code-mode-cols {
   padding: 0; }
 .editor-wrapper .tabs-row {
