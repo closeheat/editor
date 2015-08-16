@@ -1,4 +1,4 @@
-var $, App, CodeMode, Core, ErrorHandler, InitialLoader, PreviewMode, Publish, React, Redirect, Route, Router, TabManager, md;
+var $, App, CodeMode, Core, ErrorHandler, InitialLoader, InlineMode, PreviewMode, Publish, React, Redirect, Route, Router, TabManager, md;
 
 md = require('marked');
 
@@ -25,6 +25,8 @@ TabManager = require('./tab_manager');
 Publish = require('./publish');
 
 ErrorHandler = require('./error_handler');
+
+InlineMode = require('./inline_mode');
 
 module.exports = Core = (function() {
   function Core(base, server) {
@@ -68,6 +70,14 @@ module.exports = Core = (function() {
       "name": 'preview-with-history',
       "path": '/preview/*?',
       "handler": PreviewMode
+    }), React.createElement(Route, {
+      "name": 'inline',
+      "path": '/inline',
+      "handler": InlineMode
+    }), React.createElement(Route, {
+      "name": 'inline-with-history',
+      "path": '/inline/*?',
+      "handler": InlineMode
     }), React.createElement(Route, {
       "name": 'publish',
       "path": '/publish',
