@@ -1,10 +1,12 @@
-var InlineBrowser, Loader, React;
+var Filesystem, InlineBrowser, Loader, React;
 
 React = require('react/addons');
 
 InlineBrowser = require('./inline_browser');
 
 Loader = require('./loader');
+
+Filesystem = require('./filesystem');
 
 module.exports = React.createClass({
   getInitialState: function() {
@@ -24,6 +26,11 @@ module.exports = React.createClass({
         return _this.props.handleError(err);
       };
     })(this));
+  },
+  onChange: function(e) {
+    var a;
+    a = Filesystem;
+    debugger;
   },
   browser: function() {
     return React.createElement("div", null, React.createElement("div", {

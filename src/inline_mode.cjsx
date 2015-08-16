@@ -1,6 +1,7 @@
 React = require 'react/addons'
 InlineBrowser = require('./inline_browser')
 Loader = require('./loader')
+Filesystem = require('./filesystem')
 
 module.exports =
 React.createClass
@@ -13,6 +14,9 @@ React.createClass
       @setState(build_finished: true)
     ).catch (err) =>
       @props.handleError(err)
+  onChange: (e) ->
+    a=Filesystem
+    debugger
   browser: ->
     <div>
       <div className='row'>

@@ -2,38 +2,30 @@ var React, inlineInject;
 
 React = require('react');
 
+window._ = require('lodash');
+
 inlineInject = function() {
-  var $, browser, noContentEditable, sendToEditor;
-  sendToEditor = function(before, after) {
-    return parent.closeheatInlineOnChange.inlineEdited(before, after);
-  };
-  noContentEditable = function(target) {
-    var result;
-    result = target.clone();
-    result.removeAttr('contenteditable');
-    result.removeAttr('data-before');
-    return result;
-  };
-  $ = parent.$;
-  browser = $(window.document);
-  browser.find('h1').prop('contentEditable', true);
-  debugger;
-  browser.on('click', function() {
-    return console.log('aa');
-  });
-  browser.on('focus', '[contenteditable]', function() {
-    console.log('focus');
-    return this.setAttribute('data-before', noContentEditable($(this)).prop('outerHTML'));
-  });
-  return browser.on('blur', '[contenteditable]', function() {
-    console.log('bl');
-    return sendToEditor($(this).data('before'), noContentEditable($(this)).prop('outerHTML'));
+  return window.addEventListener('click', function(e) {
+    var class_name, el, path;
+    path = [];
+    el = e.target;
+    while (true) {
+      class_name = el.className ? '.' + el.className : '';
+      path.unshift(el.nodeName.toLowerCase() + class_name);
+      if (!((el.nodeName.toLowerCase() !== 'html') && (el = el.parentNode))) {
+        break;
+      }
+    }
+    return parent.postMessage({
+      action: 'click',
+      path: path.join(' > ')
+    }, 'http://localhost:4000');
   });
 };
 
 module.exports = React.createClass({
   getInitialState: function() {
-    window.closeheatInlineOnChange = this.props.onChange;
+    window.addEventListener('message', this.props.onChange, false);
     return {};
   },
   iframe: function() {
@@ -49,8 +41,11 @@ module.exports = React.createClass({
       };
     })(this));
   },
+  injectCode: function() {
+    return "inlineInject = " + (inlineInject.toString()) + "; inlineInject()";
+  },
   inject: function() {
-    return this.iframe().contentWindow["eval"]("inlineInject = " + (inlineInject.toString()) + "; inlineInject()");
+    return this.iframe().contentWindow.postMessage(this.injectCode(), 'http://localhost:9000');
   },
   render: function() {
     return React.createElement("div", {
@@ -58,7 +53,7 @@ module.exports = React.createClass({
     }, React.createElement("iframe", {
       "id": 'browser',
       "name": 'browser-frame',
-      "src": 'http://editor.d44ff2f8e27ece72d5034da1ea78ceb3129b5452.demo-d855.staging.closeheat.com' || this.props.browser_url
+      "src": 'http://localhost:9000' || this.props.browser_url
     }));
   }
 });

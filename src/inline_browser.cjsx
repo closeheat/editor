@@ -1,34 +1,35 @@
 React = require 'react'
+window._ = require 'lodash'
 
 inlineInject = ->
-  sendToEditor = (before, after) ->
-    parent.closeheatInlineOnChange.inlineEdited(before, after)
+  window.addEventListener 'click', (e) ->
+    path = []
 
-  noContentEditable = (target) ->
-    result = target.clone()
-    result.removeAttr('contenteditable')
-    result.removeAttr('data-before')
-    result
+    el = e.target
 
-  $ = parent.$
-  browser = $(window.document)
-  browser.find('h1').prop('contentEditable', true)
-  debugger
+    loop
+      class_name = if el.className
+        '.' + el.className
+      else
+        ''
+      path.unshift(el.nodeName.toLowerCase() + class_name)
+      break unless (el.nodeName.toLowerCase() != 'html') && (el = el.parentNode)
 
-  browser.on 'click', ->
-    console.log('aa')
-  browser.on 'focus', '[contenteditable]', ->
-    console.log('focus')
-    @setAttribute('data-before', noContentEditable($(@)).prop('outerHTML'))
+    parent.postMessage(action: 'click', path: path.join(' > '), 'http://localhost:4000')
 
-  browser.on 'blur', '[contenteditable]', ->
-    console.log('bl')
-    sendToEditor($(@).data('before'), noContentEditable($(@)).prop('outerHTML'))
+  # browser.on 'focus', '[contenteditable]', ->
+  #   console.log('focus')
+  #   @setAttribute('data-before', noContentEditable($(@)).prop('outerHTML'))
+  #
+  # browser.on 'blur', '[contenteditable]', ->
+  #   console.log('bl')
+  #   sendToEditor($(@).data('before'), noContentEditable($(@)).prop('outerHTML'))
 
 module.exports =
 React.createClass
   getInitialState: ->
-    window.closeheatInlineOnChange = @props.onChange
+    window.addEventListener('message', @props.onChange, false)
+
     {}
   iframe: ->
     document.getElementById('browser')
@@ -37,11 +38,11 @@ React.createClass
   componentDidMount: ->
     $(@iframe()).load =>
       @inject()
+  injectCode: ->
+    "inlineInject = #{inlineInject.toString()}; inlineInject()"
   inject: ->
-    # b = @iframe()
-    # debugger
-    @iframe().contentWindow.eval("inlineInject = #{inlineInject.toString()}; inlineInject()")
+    @iframe().contentWindow.postMessage(@injectCode(), 'http://localhost:9000')
   render: ->
     <div className='browser'>
-      <iframe id='browser' name='browser-frame' src={'http://editor.d44ff2f8e27ece72d5034da1ea78ceb3129b5452.demo-d855.staging.closeheat.com' || @props.browser_url}></iframe>
+      <iframe id='browser' name='browser-frame' src={'http://localhost:9000' || @props.browser_url}></iframe>
     </div>
