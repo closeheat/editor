@@ -17,6 +17,7 @@ module.exports =
 React.createClass
   getInitialState: ->
     @bindKeys()
+    track('loaded')
 
     {
       clean_files: _.cloneDeep(Filesystem.ls()),
@@ -43,8 +44,10 @@ React.createClass
     # @setState(loaded: true) if new_content == @state.editor_content
 
   codeClick: ->
+    track('code_clicked')
     @transitionWithCodeModeHistory('code', '/code/*?')
   previewClick: ->
+    track('preview_clicked')
     return if @state.action_in_progress
 
     @transitionWithCodeModeHistory('preview', 'preview-with-history')
@@ -56,16 +59,20 @@ React.createClass
     browser_ref.refresh()
 
   transitionWithCodeModeHistory: (route, with_history_route) ->
+    track('transitioned_to', route: route)
+
     if _.isEmpty(@context.router.getCurrentParams())
       @transitionTo(route)
     else
       @transitionTo(with_history_route, @context.router.getCurrentParams())
 
   publishClick: ->
+    track('publish_clicked')
     return if @state.action_in_progress
     @transitionWithCodeModeHistory('publish', '/publish/*?')
 
   handleError: (msg) ->
+    track('error_happened', message: msg)
     @setState(error: msg)
     @transitionWithCodeModeHistory('error', '/error/*?')
 
@@ -77,6 +84,7 @@ React.createClass
       clean_file.content == new_file.content
 
   build: ->
+    track('build_started')
     @actionStarted()
 
     new Promise (resolve, reject) =>
@@ -92,12 +100,15 @@ React.createClass
 
         @setState(clean_files: _.cloneDeep(Filesystem.ls()))
         @actionStopped()
+        track('build_finished')
         resolve()
 
   filesChanged: ->
     !_.isEmpty(@changedFiles())
 
   publish: ->
+    track('publish_started')
+
     if @filesChanged()
       @build().then(@publish).catch (err) =>
         @handleError(err)
@@ -106,6 +117,7 @@ React.createClass
       @execPublish().then( (resp) =>
         return @handleError(resp.error) unless resp.success
 
+        track('publish_finished')
         @actionStopped()
       ).catch (err) =>
         @handleError(err)

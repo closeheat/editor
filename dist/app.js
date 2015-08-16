@@ -27,6 +27,7 @@ Filesystem = require('./filesystem');
 module.exports = React.createClass({
   getInitialState: function() {
     this.bindKeys();
+    track('loaded');
     return {
       clean_files: _.cloneDeep(Filesystem.ls()),
       action_in_progress: false
@@ -54,10 +55,12 @@ module.exports = React.createClass({
     return Filesystem.write(path, new_content);
   },
   codeClick: function() {
+    track('code_clicked');
     return this.transitionWithCodeModeHistory('code', '/code/*?');
   },
   previewClick: function() {
     var browser_ref;
+    track('preview_clicked');
     if (this.state.action_in_progress) {
       return;
     }
@@ -69,6 +72,9 @@ module.exports = React.createClass({
     return browser_ref.refresh();
   },
   transitionWithCodeModeHistory: function(route, with_history_route) {
+    track('transitioned_to', {
+      route: route
+    });
     if (_.isEmpty(this.context.router.getCurrentParams())) {
       return this.transitionTo(route);
     } else {
@@ -76,12 +82,16 @@ module.exports = React.createClass({
     }
   },
   publishClick: function() {
+    track('publish_clicked');
     if (this.state.action_in_progress) {
       return;
     }
     return this.transitionWithCodeModeHistory('publish', '/publish/*?');
   },
   handleError: function(msg) {
+    track('error_happened', {
+      message: msg
+    });
     this.setState({
       error: msg
     });
@@ -99,6 +109,7 @@ module.exports = React.createClass({
     })(this));
   },
   build: function() {
+    track('build_started');
     this.actionStarted();
     return new Promise((function(_this) {
       return function(resolve, reject) {
@@ -119,6 +130,7 @@ module.exports = React.createClass({
             clean_files: _.cloneDeep(Filesystem.ls())
           });
           _this.actionStopped();
+          track('build_finished');
           return resolve();
         });
       };
@@ -128,6 +140,7 @@ module.exports = React.createClass({
     return !_.isEmpty(this.changedFiles());
   },
   publish: function() {
+    track('publish_started');
     if (this.filesChanged()) {
       return this.build().then(this.publish)["catch"]((function(_this) {
         return function(err) {
@@ -141,6 +154,7 @@ module.exports = React.createClass({
           if (!resp.success) {
             return _this.handleError(resp.error);
           }
+          track('publish_finished');
           return _this.actionStopped();
         };
       })(this))["catch"]((function(_this) {

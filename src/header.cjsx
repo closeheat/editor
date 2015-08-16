@@ -24,35 +24,6 @@ Header = React.createClass
     #
     # @setState(tour_step: tour_step)
 
-
-  # deploy: ->
-  #   @trackEverything('browser_editor/publish')
-  #   @setState(tour_done: true, stage: 1)
-  #
-  #   $.ajax(
-  #     url: "#{SERVER_URL}/apps/#{APP_SLUG}/live_deploy"
-  #     method: 'POST'
-  #     dataType: 'json'
-  #     data:
-  #       username: @props.username
-  #       reponame: @props.reponame
-  #       code: @props.raw_index
-  #       index_filename: @props.index_filename
-  #   ).then(@showSuccess).fail(@showError)
-  #
-  #   pusher_user_channel.bind 'app.build', =>
-  #     @setState(stage: 3)
-
-  # trackEverything: (part_url) ->
-  #   $.ajax(
-  #     url: "#{SERVER_URL}/track/#{part_url}"
-  #     method: 'POST'
-  #     dataType: 'json'
-  #     data:
-  #       app_slug: APP_SLUG
-  #       editor_content: @state.editor_content
-  #   )
-
   activeModeClass: (type, cols) ->
     React.addons.classSet
       col: true
@@ -69,7 +40,7 @@ Header = React.createClass
     @addTooltips()
 
   addTooltips: ->
-    elements = _.map ['code', 'preview', 'publish', 'avatar'], (name) =>
+    elements = _.map ['code', 'preview', 'publish', 'website_url', 'avatar'], (name) =>
       React.findDOMNode(@refs[name])
 
     $(elements).tooltip
@@ -91,7 +62,7 @@ Header = React.createClass
           <i className='material-icons'>navigation</i>
           Preview Changes
         </div>
-        <div className='header-website-url col s4 m3 center-align label-with-icon'>
+        <div className='header-website-url col s4 m3 center-align label-with-icon' ref='website_url' data-tooltip='This is your public page URL'>
           <a href={@props.website_url} target='_blank' className='truncate'>
             {@prettyWebsiteUrl()}
             <i className='material-icons header-icon-right'>open_in_new</i>
