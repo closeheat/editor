@@ -8273,5 +8273,5 @@ body {
     width: 100%;
     border: none; }
 
-.full {
+.row .col.full {
   padding: 0; }
