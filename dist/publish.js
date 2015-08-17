@@ -13,14 +13,20 @@ Published = require('./published');
 module.exports = React.createClass({
   getInitialState: function() {
     return {
-      published: false
+      published_to_server: false,
+      published_to_github: false
     };
   },
   componentDidMount: function() {
-    return this.props.publish().then((function(_this) {
+    return this.props.publishToGithub().then((function(_this) {
       return function(resp) {
-        return _this.setState({
-          published: true
+        _this.setState({
+          published_to_github: true
+        });
+        return _this.props.waitForPublishToServer().timeout(15000, _this.timeoutMsg()).then(function() {
+          return _this.setState({
+            published_to_server: true
+          });
         });
       };
     })(this))["catch"]((function(_this) {
@@ -29,18 +35,26 @@ module.exports = React.createClass({
       };
     })(this));
   },
+  timeoutMsg: function() {
+    return "Oops. Looks like we're having problems with publishing apps. <br>Click Support in the top bar!";
+  },
   render: function() {
     if (this.props.files_changed) {
       return React.createElement(Loader, {
         "title": 'Building your website...'
       });
-    } else if (this.state.published) {
+    } else if (this.state.published_to_server) {
       return React.createElement(Published, {
         "website_url": this.props.website_url
       });
+    } else if (this.state.published_to_github) {
+      return React.createElement(Loader, {
+        "title": 'Your files are now in Github.',
+        "subtitle": 'Publishing to server...'
+      });
     } else {
       return React.createElement(Loader, {
-        "title": 'Publishing your website...'
+        "title": 'I am publishing your landing page...'
       });
     }
   }

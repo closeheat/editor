@@ -162,7 +162,7 @@ module.exports = React.createClass({
   filesChanged: function() {
     return !_.isEmpty(this.changedFiles());
   },
-  publish: function() {
+  publishToGithub: function() {
     track('publish_started');
     if (this.filesChanged()) {
       return this.build().then(this.publish)["catch"]((function(_this) {
@@ -177,8 +177,7 @@ module.exports = React.createClass({
           if (!resp.success) {
             return _this.handleError(resp.error);
           }
-          track('publish_finished');
-          return _this.actionStopped();
+          return track('publish_to_github_finished');
         };
       })(this))["catch"]((function(_this) {
         return function(err) {
@@ -186,6 +185,17 @@ module.exports = React.createClass({
         };
       })(this));
     }
+  },
+  waitForPublishToServer: function() {
+    return new Promise((function(_this) {
+      return function(resolve, reject) {
+        return pusher_user_channel.bind('app.build', function() {
+          track('publish_to_server_finished');
+          _this.actionStopped();
+          return resolve();
+        });
+      };
+    })(this));
   },
   execPublish: function() {
     return new Promise((function(_this) {
@@ -237,7 +247,8 @@ module.exports = React.createClass({
       "error": this.state.error,
       "transitionWithCodeModeHistory": this.transitionWithCodeModeHistory,
       "files_changed": this.filesChanged(),
-      "publish": this.publish,
+      "publishToGithub": this.publishToGithub,
+      "waitForPublishToServer": this.waitForPublishToServer,
       "actionStopped": this.actionStopped,
       "ref": 'appRouteHandler'
     }));

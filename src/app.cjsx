@@ -122,7 +122,7 @@ React.createClass
   filesChanged: ->
     !_.isEmpty(@changedFiles())
 
-  publish: ->
+  publishToGithub: ->
     track('publish_started')
 
     if @filesChanged()
@@ -133,16 +133,23 @@ React.createClass
       @execPublish().then( (resp) =>
         return @handleError(resp.error) unless resp.success
 
-        track('publish_finished')
-        @actionStopped()
+        track('publish_to_github_finished')
       ).catch (err) =>
         @handleError(err)
+
+  waitForPublishToServer: ->
+    new Promise (resolve, reject) =>
+      pusher_user_channel.bind 'app.build', =>
+        track('publish_to_server_finished')
+        @actionStopped()
+        resolve()
 
   execPublish: ->
     new Promise (resolve, reject) =>
       request.post json: true, url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/publish", (err, status, resp) ->
         return reject(err) if err
 
+        # published to GitHub
         resolve(resp)
 
   activeMode: ->
@@ -178,7 +185,8 @@ React.createClass
         error={@state.error}
         transitionWithCodeModeHistory={@transitionWithCodeModeHistory}
         files_changed={@filesChanged()}
-        publish={@publish}
+        publishToGithub={@publishToGithub}
+        waitForPublishToServer={@waitForPublishToServer}
         actionStopped={@actionStopped}
         ref='appRouteHandler'/>
     </main>

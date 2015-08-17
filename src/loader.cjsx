@@ -20,6 +20,7 @@ React.createClass
         </div>
         <div className='row'>
           <div className='action-title'>{@props.title}</div>
+          <div className='action-title'>{@props.subtitle}</div>
         </div>
       </div>
     </div>
