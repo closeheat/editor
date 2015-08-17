@@ -165,7 +165,7 @@ module.exports = React.createClass({
   publishToGithub: function() {
     track('publish_started');
     if (this.filesChanged()) {
-      return this.build().then(this.publish)["catch"]((function(_this) {
+      return this.build().then(this.publishToGithub)["catch"]((function(_this) {
         return function(err) {
           return _this.handleError(err);
         };

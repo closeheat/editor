@@ -126,7 +126,7 @@ React.createClass
     track('publish_started')
 
     if @filesChanged()
-      @build().then(@publish).catch (err) =>
+      @build().then(@publishToGithub).catch (err) =>
         @handleError(err)
     else
       @actionStarted()
