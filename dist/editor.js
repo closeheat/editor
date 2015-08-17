@@ -18,6 +18,8 @@ require('brace/mode/sass');
 
 require('brace/theme/xcode');
 
+require('brace/ext/searchbox');
+
 module.exports = React.createClass({
   getInitialState: function() {
     return {
