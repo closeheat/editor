@@ -30,7 +30,8 @@ module.exports = React.createClass({
     track('loaded');
     return {
       clean_files: _.cloneDeep(Filesystem.ls()),
-      action_in_progress: false
+      action_in_progress: false,
+      first_build_done: false
     };
   },
   bindKeys: function() {
@@ -59,17 +60,15 @@ module.exports = React.createClass({
     return this.transitionWithCodeModeHistory('code', '/code/*?');
   },
   previewClick: function() {
-    var browser_ref;
     track('preview_clicked');
     if (this.state.action_in_progress) {
       return;
     }
-    this.transitionWithCodeModeHistory('preview', 'preview-with-history');
-    browser_ref = this.refs.appRouteHandler.refs.__routeHandler__.refs.browser;
-    if (!browser_ref) {
-      return;
+    if (this.context.router.getCurrentPath().match(/^\/preview/)) {
+      return this.buildOrRefresh();
+    } else {
+      return this.transitionWithCodeModeHistory('preview', 'preview-with-history');
     }
-    return browser_ref.refresh();
   },
   transitionWithCodeModeHistory: function(route, with_history_route) {
     track('transitioned_to', {
@@ -109,6 +108,29 @@ module.exports = React.createClass({
     })(this));
   },
   build: function() {
+    return this.buildOrRefresh();
+  },
+  buildOrRefresh: function() {
+    if (this.filesChanged() || !this.state.first_build_done) {
+      return this.execBuild();
+    } else {
+      return this.refreshBrowser();
+    }
+  },
+  refreshBrowser: function() {
+    return new Promise((function(_this) {
+      return function(resolve, reject) {
+        var browser_ref, ref;
+        browser_ref = (ref = _this.refs.appRouteHandler.refs.__routeHandler__) != null ? ref.refs.browser : void 0;
+        if (!browser_ref) {
+          return resolve();
+        }
+        browser_ref.refresh();
+        return resolve();
+      };
+    })(this));
+  },
+  execBuild: function() {
     track('build_started');
     this.actionStarted();
     return new Promise((function(_this) {
@@ -127,7 +149,8 @@ module.exports = React.createClass({
             return reject(resp.error);
           }
           _this.setState({
-            clean_files: _.cloneDeep(Filesystem.ls())
+            clean_files: _.cloneDeep(Filesystem.ls()),
+            first_build_done: true
           });
           _this.actionStopped();
           track('build_finished');

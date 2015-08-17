@@ -21,7 +21,8 @@ React.createClass
 
     {
       clean_files: _.cloneDeep(Filesystem.ls()),
-      action_in_progress: false
+      action_in_progress: false,
+      first_build_done: false
     }
 
   bindKeys: ->
@@ -50,13 +51,10 @@ React.createClass
     track('preview_clicked')
     return if @state.action_in_progress
 
-    @transitionWithCodeModeHistory('preview', 'preview-with-history')
-
-    browser_ref = @refs.appRouteHandler.refs.__routeHandler__.refs.browser
-    return unless browser_ref
-
-    # same route, refresh manually
-    browser_ref.refresh()
+    if @context.router.getCurrentPath().match(/^\/preview/)
+      @buildOrRefresh()
+    else
+      @transitionWithCodeModeHistory('preview', 'preview-with-history')
 
   transitionWithCodeModeHistory: (route, with_history_route) ->
     track('transitioned_to', route: route)
@@ -84,6 +82,24 @@ React.createClass
       clean_file.content == new_file.content
 
   build: ->
+    @buildOrRefresh()
+
+  buildOrRefresh: ->
+    if @filesChanged() or !@state.first_build_done
+      @execBuild()
+    else
+      @refreshBrowser()
+
+  refreshBrowser: ->
+    new Promise (resolve, reject) =>
+      browser_ref = @refs.appRouteHandler.refs.__routeHandler__?.refs.browser
+      return resolve() unless browser_ref
+
+      # same route, refresh manually
+      browser_ref.refresh()
+      resolve()
+
+  execBuild: ->
     track('build_started')
     @actionStarted()
 
@@ -98,7 +114,7 @@ React.createClass
         return reject(err) if err
         return reject(resp.error) unless resp.success
 
-        @setState(clean_files: _.cloneDeep(Filesystem.ls()))
+        @setState(clean_files: _.cloneDeep(Filesystem.ls()), first_build_done: true)
         @actionStopped()
         track('build_finished')
         resolve()
