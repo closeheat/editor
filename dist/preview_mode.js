@@ -40,7 +40,8 @@ module.exports = React.createClass({
       return this.browser();
     } else {
       return React.createElement(Loader, {
-        "title": 'Hang in tight. Building your page preview...'
+        "title": 'Hang in tight.',
+        "subtitle": 'Building your page preview...'
       });
     }
   }

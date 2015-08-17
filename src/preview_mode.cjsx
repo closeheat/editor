@@ -25,4 +25,6 @@ React.createClass
     if @state.build_finished
       @browser()
     else
-      <Loader title='Hang in tight. Building your page preview...'/>
+      <Loader
+        title='Hang in tight.'
+        subtitle='Building your page preview...'/>
