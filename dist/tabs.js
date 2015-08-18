@@ -26,7 +26,7 @@ module.exports = React.createClass({
           flash: false
         });
       };
-    })(this)), 1000);
+    })(this)), 50);
   },
   render: function() {
     return React.createElement("ul", {

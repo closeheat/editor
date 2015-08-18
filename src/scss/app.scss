@@ -156,7 +156,7 @@ body {
     }
 
     @keyframes tab-activation {
-      0% { background-color: #fff; }
+      0% { background-color: hsla(1, 84%, 59%, .5); }
       100% { background-color: $tab-active-bg-color; }
     }
 
@@ -279,21 +279,53 @@ body {
       font-size: 12px;
     }
 
-    .published-open-page {
+    .published-button {
       margin-top: 30px;
       box-shadow: none;
       line-height: 20px;
       padding-top: 7px;
 
-      .published-open-page-icon i {
+      .published-button-icon i {
         font-size: 12px;
         padding-left: 10px;
       }
 
-      .published-open-page-url {
+      .published-button-subtitle {
         font-size: 12px;
         text-transform: none;
         color: hsla(0, 0%, 100%, .7);
+      }
+    }
+
+    @keyframes appear-later {
+      0% { opacity: 0; }
+      35% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    .published-hosting {
+      padding-top: 50px;
+      animation-name: appear-later;
+      animation-duration: 10s;
+
+      .published-hosting-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #4EB876;
+      }
+
+      .published-hosting-free {
+        color: #4EB876;
+        font-weight: 600;
+        padding-left: 3px;
+      }
+
+      .published-hosting-button {
+        @extend .published-button;
+
+        background-color: #4EB876;
+        margin-top: 10px;
+        line-height: 20px;
       }
     }
   }

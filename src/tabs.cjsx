@@ -14,7 +14,7 @@ React.createClass
     }
   onNewTab: ->
     @setState(flash: true)
-    setTimeout((=> @setState(flash: false)), 500)
+    setTimeout((=> @setState(flash: false)), 50)
   render: ->
     <ul className='row tabs-row'>
       {_.map @props.tabs, (tab) =>

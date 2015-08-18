@@ -18,15 +18,36 @@ React.createClass
             </div>
           </div>
 
-          <a href={@props.website_url} target='_blank' className="btn btn-large waves-effect waves-light published-open-page">
+          <a href={@props.website_url} target='_blank' className="btn btn-large waves-effect waves-light published-button">
             <div>
               Open my landing page
-              <span className='published-open-page-icon'>
+              <span className='published-button-icon'>
                 <i className='material-icons'>open_in_new</i>
               </span>
             </div>
-            <div className='published-open-page-url'>
+            <div className='published-button-subtitle'>
               {@props.website_url.replace('http://', '')}
+            </div>
+          </a>
+
+        </div>
+        <div className='row center-align published-hosting'>
+          <div className='published-title'>
+            <div className='published-hosting-title'>Free stuff</div>
+            <div>
+              Do you have your other website's HTML and CSS files?
+            </div>
+            <div>
+              For early users we're hosting it
+              <span className='published-hosting-free'>FREE</span>.
+            </div>
+          </div>
+          <a href='/apps/new_from_github' target='_blank' className="btn btn-small waves-effect waves-light published-hosting-button">
+            <div>
+              I believe - Host my website
+              <span className='published-button-icon'>
+                <i className='material-icons'>open_in_new</i>
+              </span>
             </div>
           </a>
         </div>

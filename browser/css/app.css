@@ -8148,7 +8148,7 @@ body {
   margin: 0;
   @keyframes tab-activation {
     0% {
-      background-color: #fff; }
+      background-color: rgba(238, 66, 63, 0.5); }
 
     100% {
       background-color: #F3F4F4; } }
@@ -8235,7 +8235,17 @@ body {
     margin: 0 auto; }
 .editor-wrapper .published {
   height: calc(100vh - 54px);
-  background-color: #FDFDFD; }
+  background-color: #FDFDFD;
+  @keyframes appear-later {
+    0% {
+      opacity: 0; }
+
+    35% {
+      opacity: 0; }
+
+    100% {
+      opacity: 1; } }
+ }
   .editor-wrapper .published .published-icon i {
     font-size: 150px;
     color: #EE4340; }
@@ -8243,18 +8253,34 @@ body {
     margin: 0 auto; }
   .editor-wrapper .published .published-title {
     font-size: 12px; }
-  .editor-wrapper .published .published-open-page {
+  .editor-wrapper .published .published-button, .editor-wrapper .published .published-hosting .published-hosting-button {
     margin-top: 30px;
     box-shadow: none;
     line-height: 20px;
     padding-top: 7px; }
-    .editor-wrapper .published .published-open-page .published-open-page-icon i {
+    .editor-wrapper .published .published-button .published-button-icon i, .editor-wrapper .published .published-hosting .published-hosting-button .published-button-icon i {
       font-size: 12px;
       padding-left: 10px; }
-    .editor-wrapper .published .published-open-page .published-open-page-url {
+    .editor-wrapper .published .published-button .published-button-subtitle, .editor-wrapper .published .published-hosting .published-hosting-button .published-button-subtitle {
       font-size: 12px;
       text-transform: none;
       color: rgba(255, 255, 255, 0.7); }
+  .editor-wrapper .published .published-hosting {
+    padding-top: 50px;
+    animation-name: appear-later;
+    animation-duration: 10s; }
+    .editor-wrapper .published .published-hosting .published-hosting-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #4EB876; }
+    .editor-wrapper .published .published-hosting .published-hosting-free {
+      color: #4EB876;
+      font-weight: 600;
+      padding-left: 3px; }
+    .editor-wrapper .published .published-hosting .published-hosting-button {
+      background-color: #4EB876;
+      margin-top: 10px;
+      line-height: 20px; }
 .editor-wrapper .error {
   height: calc(100vh - 54px);
   background-color: #FDFDFD;
