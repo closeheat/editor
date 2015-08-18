@@ -34,6 +34,17 @@ module.exports = React.createClass({
       first_build_done: false
     };
   },
+  showFreeHosting: function() {
+    return this.setState({
+      show_free_hosting: true
+    });
+  },
+  hideFreeHosting: function() {
+    return this.setState({
+      show_free_hosting: false,
+      free_hosting_shown: true
+    });
+  },
   bindKeys: function() {
     return $(window).bind('keydown', (function(_this) {
       return function(event) {
@@ -61,6 +72,9 @@ module.exports = React.createClass({
   },
   previewClick: function() {
     track('preview_clicked');
+    if (!this.state.free_hosting_shown) {
+      setTimeout(this.showFreeHosting, 9000);
+    }
     if (this.state.action_in_progress) {
       return;
     }
@@ -227,6 +241,29 @@ module.exports = React.createClass({
       action_in_progress: false
     });
   },
+  freeHosting: function() {
+    if (!this.state.show_free_hosting) {
+      return React.createElement("div", null);
+    }
+    return React.createElement("div", {
+      "className": 'row center-align free-hosting'
+    }, React.createElement("div", {
+      "className": 'free-hosting-title'
+    }, "Free stuff"), React.createElement("div", null, "Do you have your other website\'s HTML and CSS files?"), React.createElement("div", null, "For early users we\'re hosting it", React.createElement("span", {
+      "className": 'free-hosting-free'
+    }, "FREE"), "."), React.createElement("a", {
+      "href": '/apps/new_from_github',
+      "target": '_blank',
+      "className": "btn btn-small waves-effect waves-light free-hosting-button"
+    }, React.createElement("div", null, "I believe - Host my website", React.createElement("span", {
+      "className": 'free-button-icon'
+    }, React.createElement("i", {
+      "className": 'material-icons'
+    }, "open_in_new")))), React.createElement("div", {
+      "onClick": this.hideFreeHosting,
+      "className": 'free-button-hide'
+    }, "No, thanks"));
+  },
   render: function() {
     return React.createElement("main", {
       "className": 'editor-wrapper'
@@ -251,6 +288,6 @@ module.exports = React.createClass({
       "waitForPublishToServer": this.waitForPublishToServer,
       "actionStopped": this.actionStopped,
       "ref": 'appRouteHandler'
-    }));
+    }), this.freeHosting());
   }
 });

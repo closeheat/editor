@@ -25,6 +25,12 @@ React.createClass
       first_build_done: false
     }
 
+  showFreeHosting: ->
+    @setState(show_free_hosting: true)
+
+  hideFreeHosting: ->
+    @setState(show_free_hosting: false, free_hosting_shown: true)
+
   bindKeys: ->
     $(window).bind 'keydown', (event) =>
       return unless event.ctrlKey or event.metaKey
@@ -49,6 +55,7 @@ React.createClass
     @transitionWithCodeModeHistory('code', '/code/*?')
   previewClick: ->
     track('preview_clicked')
+    setTimeout(@showFreeHosting, 9000) unless @state.free_hosting_shown
     return if @state.action_in_progress
 
     if @context.router.getCurrentPath().match(/^\/preview/)
@@ -164,6 +171,30 @@ React.createClass
   actionStopped: ->
     @setState(action_in_progress: false)
 
+  freeHosting: ->
+    return <div></div> unless @state.show_free_hosting
+
+    <div className='row center-align free-hosting'>
+      <div className='free-hosting-title'>Free stuff</div>
+      <div>
+        Do you have your other website's HTML and CSS files?
+      </div>
+      <div>
+        For early users we're hosting it
+        <span className='free-hosting-free'>FREE</span>.
+      </div>
+      <a href='/apps/new_from_github' target='_blank' className="btn btn-small waves-effect waves-light free-hosting-button">
+        <div>
+          I believe - Host my website
+          <span className='free-button-icon'>
+            <i className='material-icons'>open_in_new</i>
+          </span>
+        </div>
+      </a>
+
+      <div onClick={@hideFreeHosting} className='free-button-hide'>No, thanks</div>
+    </div>
+
   render: ->
     <main className='editor-wrapper'>
       <Header
@@ -189,4 +220,6 @@ React.createClass
         waitForPublishToServer={@waitForPublishToServer}
         actionStopped={@actionStopped}
         ref='appRouteHandler'/>
+
+      {@freeHosting()}
     </main>
