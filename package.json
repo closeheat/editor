@@ -16,6 +16,8 @@
     "bluebird": "^2.9.20",
     "brace": "^0.4.0",
     "codemirror": "^5.3.0",
+    "flat": "^1.6.0",
+    "flatten-hash": "0.0.4",
     "hammerjs": "^2.0.4",
     "jade-memory-fs": "0.0.2",
     "jquery": "^2.1.3",
@@ -27,7 +29,10 @@
     "react-ace": "2.0.0",
     "react-bootstrap": "^0.22.6",
     "react-code-mirror": "^3.0.4",
-    "request": "^2.54.0"
+    "react-router": "^0.13.3",
+    "request": "^2.54.0",
+    "traverse": "^0.6.6",
+    "walk": "Nedomas/node-walk"
   },
   "keywords": [
     "closeheat",

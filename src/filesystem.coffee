@@ -1,53 +1,82 @@
 _ = require 'lodash'
-request = require 'request'
-Promise = require 'bluebird'
+traverse = require 'traverse'
 
 module.exports =
 class Filesystem
-  constructor: ->
-    require('jade-memory-fs')
+  @create: (files) ->
+    window.fs = files
 
-  files: ->
-    fs.data()
+  @ls: (path) ->
+    return window.fs unless path
 
-  load: ->
-    @addFiles()
+    _.select window.fs, (file) ->
+      file.path.match(///^#{path}///)
 
-  addFiles: ->
-    @getFiles().then (files) =>
-      @createDirs(files)
+  @read: (path) ->
+    file_on_path = _.detect @ls(), (file) ->
+      file.path == path
 
-      compatible_files = _.select files, (file) ->
-        file.path.match(/\.jade|md|html$/)
+    return file_on_path if file_on_path
 
-      Promise.all(@addFileContents(compatible_files))
+    {
+      type: 'dir',
+      path: path,
+      files: @dirFiles(path)
+    }
 
-  createDirs: (files) ->
-    files_in_dirs = _.select files, (file) ->
-      file_dir_split = file.path.split('/')
-      file_dir_split.length > 1
-
-    _.each files_in_dirs, (file) ->
-      file_dir_split = file.path.split('/')
-      dir_path = _.initial(file_dir_split).join('/')
-      fs.mkdirpSync("/#{dir_path}")
-
-  getFiles: ->
-    new Promise (resolve, reject) =>
-      request.post url: "#{window.location.href}/files", (err, status, resp) ->
-        return reject(err) if err
-
-        files = JSON.parse(resp).editor
-        resolve(files)
-
-  addFileContents: (files) ->
+  @dirFiles: (path) ->
     result = []
 
-    _.each files, (file) =>
-      promise = new Promise (resolve, reject) =>
-        fs.writeFileSync("/#{file.path}", file.content)
-        resolve()
+    _.each @ls(path), (file) ->
+      relative_to_dir = file.path.replace(///^#{path}\////, '')
 
-      result.push(promise)
+      if relative_to_dir.match('/')
+        name = _.first(relative_to_dir.split('/'))
 
-    result
+        result.push
+          type: 'dir',
+          path: name
+      else
+        result.push(_.merge(file, type: 'file'))
+
+    _.uniq result, (file) ->
+      file.path
+
+  @write: (path, new_content) ->
+    file = @read(path)
+    file.content = new_content
+
+  @isFile: (path) ->
+    _.detect @ls(), (file) ->
+      file.path == path
+
+  # @createDirs: (files) ->
+  #   files_in_dirs = _.select files, (file) ->
+  #     file_dir_split = file.path.split('/')
+  #     file_dir_split.length > 1
+  #
+  #   _.each files_in_dirs, (file) =>
+  #     file_dir_split = file.path.split('/')
+  #     dir_path = _.initial(file_dir_split).join('/')
+  #
+  #     @createDir(dir_path)
+
+  # @createDir: (dir_path) ->
+  #   fs[dir_path] = {} unless fs[dir_path]
+
+  # @write: (file) ->
+  #   dir = @readDir(file.path)
+  #   dir[@filename(file.path)] = file
+  #
+  # @readDir: (path) ->
+  #   return fs if @dirnameKey(path) == ''
+  #
+  #   _.get(fs, @dirnameKey(path))
+  #
+  # @filename: (path) ->
+  #   path_parts = path.split('/')
+  #   _.last(path_parts)
+
+  # @dirnameKey: (path) ->
+  #   path_parts = path.split('/')
+  #   path_parts.slice(0, -1).join('.')

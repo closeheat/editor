@@ -1,256 +1,192 @@
 React = require 'react/addons'
-jade = require 'jade-memory-fs'
+flatten = require('flat')
 _ = require 'lodash'
-
 $ = window.jQuery = window.$ = require 'jquery'
+request = require 'request'
+Promise = require 'bluebird'
 require('./materialize')
 
-Browser = require('./browser')
-Editor = require('./editor')
+Router = require 'react-router'
+RouteHandler = Router.RouteHandler
+Navigation = Router.Navigation
 
-PublishStatus = React.createClass
-  currentStage: ->
-    @props.current || 0
-  error: (i) ->
-    return <span/> unless @props.error && @currentStage() == i + 1
-
-    <div className='stage-error'>
-      App name {@props.error}
-    </div>
-  render: ->
-    return <span className='deploy-steps'/> if @currentStage() == 0
-
-    cx = React.addons.classSet
-
-    <ul className="deploy-steps collection">
-      {_.map @props.stages, (stage, i) =>
-        li_classes = (_this) =>
-          cx
-            'collection-item': true
-            success: !_this.props.error && _this.currentStage() > i + 1
-            failure: _this.props.error && _this.currentStage() == i + 1
-
-        icon_classes = (_this) =>
-          cx
-            fa: true
-            icon: true
-            'secondary-content': true
-            'fa-check-circle': !_this.props.error && _this.currentStage() > i + 1
-            'fa-circle-o-notch fa-spin': !_this.props.error && _this.currentStage() == i + 1
-            'fa-exclamation-circle': _this.props.error && _this.currentStage() == i + 1
-
-        <li className={li_classes(@)}>
-          <span className='stage-name'>{stage}</span>
-          <i className={icon_classes(@)}></i>
-          {@error(i)}
-        </li>
-      }
-    </ul>
-
-
-Tour = React.createClass
-  step1: ->
-    <div className='closeheat-tour-code-editor'>
-      Change "NAME" to your actual name for the magic to happen
-    </div>
-  step2: ->
-    <div className='closeheat-tour-preview-button'>
-      Click "Preview" to see your changes
-    </div>
-  step3: ->
-    <div className='closeheat-tour-deploy-button'>
-      Click "Publish" to make your changes available to public
-    </div>
-  render: ->
-    step = @['step' + @props.step]
-
-    if step && !@props.done
-      step()
-    else
-      <div></div>
+Header = require './header'
+Filesystem = require './filesystem'
 
 module.exports =
-App = React.createClass
+React.createClass
   getInitialState: ->
-    tour_step = if TOUR_FINISHED
-      1000
+    @bindKeys()
+    track('loaded')
+
+    {
+      clean_files: _.cloneDeep(Filesystem.ls()),
+      action_in_progress: false,
+      first_build_done: false
+    }
+
+  bindKeys: ->
+    $(window).bind 'keydown', (event) =>
+      return unless event.ctrlKey or event.metaKey
+
+      switch String.fromCharCode(event.which).toLowerCase()
+        when 's'
+          event.preventDefault()
+          @previewClick()
+        when 'e'
+          event.preventDefault()
+          @codeClick()
+
+  mixins: [Navigation],
+  editorChange: (path, new_content) ->
+    Filesystem.write(path, new_content)
+
+    # @goToStep(2) if @state.loaded
+    # @setState(loaded: true) if new_content == @state.editor_content
+
+  codeClick: ->
+    track('code_clicked')
+    @transitionWithCodeModeHistory('code', '/code/*?')
+  previewClick: ->
+    track('preview_clicked')
+    return if @state.action_in_progress
+
+    if @context.router.getCurrentPath().match(/^\/preview/)
+      @buildOrRefresh()
     else
-      1
+      @transitionWithCodeModeHistory('preview', 'preview-with-history')
 
-    browser_content: @indexHTML()
-    editor_content: @rawIndex()
-    tour_step: tour_step
-    stage: 0
+  transitionWithCodeModeHistory: (route, with_history_route) ->
+    track('transitioned_to', route: route)
 
-  noStep: ->
-    @setState(tour_step: 1000)
-  goToStep: (tour_step) ->
-    console.log(tour_step: tour_step, state: @state.tour_step)
-    return if tour_step < @state.tour_step
-
-    @setState(tour_step: tour_step)
-  indexFilename: ->
-    try
-      fs.readFileSync('/index.jade')
-      return '/index.jade'
-    catch e
-      '/index.html'
-  indexHTML: ->
-    return @rawIndex() if @indexFilename() == '/index.html'
-
-    md = require('marked')
-    jade.filters.md = md
-    jade.renderFile(@indexFilename())
-  rawIndex: ->
-    fs.readFileSync(@indexFilename()).toString()
-  update: ->
-    fs.writeFileSync(@indexFilename(), @state.editor_content)
-    @refs.browser.refresh(@indexHTML())
-    @goToStep(3) if @state.loaded
-
-    @trackEverything('browser_editor/preview')
-  showError: (e) ->
-    @setState(publish_error: e)
-  showSuccess: ->
-    @setState(stage: 2)
-
-    _.delay =>
-      @setState(stage: 3)
-    , 9000
-  deploy: ->
-    @trackEverything('browser_editor/publish')
-    @setState(tour_done: true, stage: 1)
-
-    $.ajax(
-      url: "#{SERVER_URL}/apps/#{APP_SLUG}/live_deploy"
-      method: 'POST'
-      dataType: 'json'
-      data:
-        username: @props.username
-        reponame: @props.reponame
-        code: @rawIndex()
-        index_filename: @indexFilename()
-    ).then(@showSuccess).fail(@showError)
-
-    pusher_user_channel.bind 'app.build', =>
-      @setState(stage: 3)
-
-  editorChange: (new_content) ->
-    @setState(editor_content: new_content)
-
-    @goToStep(2) if @state.loaded
-    @setState(loaded: true) if new_content == @state.editor_content
-
-  slideEditor: ->
-    $('.editor-col').toggleClass('disabled')
-    $('.browser-col').toggleClass('active')
-    $('.tour-code-editor').toggleClass('hide')
-
-    @trackEverything('browser_editor/slide')
-  trackEverything: (part_url) ->
-    $.ajax(
-      url: "#{SERVER_URL}/track/#{part_url}"
-      method: 'POST'
-      dataType: 'json'
-      data:
-        app_slug: APP_SLUG
-        editor_content: @state.editor_content
-    )
-  publishingModal: ->
-    <div id="publishing-modal" className="modal">
-      {@publishingContent()}
-      {@publishedFooter()}
-    </div>
-
-  publishingContent: ->
-    return unless @state.stage > 0
-
-    stages = ['Publish to GitHub', 'Publish to server']
-
-    <div className="modal-content">
-      <h4>Publishing</h4>
-      <p>
-        <PublishStatus stages={stages} current={@state.stage} />
-      </p>
-      {@published()}
-    </div>
-
-  published: ->
-    return unless @state.stage == 3
-
-    <p>
-      <span className="green-text">Your changes were succesfully published.</span>
-    </p>
-
-  publishedFooter: ->
-    return unless @state.stage == 3
-
-    <div className='modal-footer'>
-      <a className="modal-action waves-effect waves-light btn green" href={'http://' + APP_SLUG + '.closeheatapp.com'}>Take a look at my changes</a>
-      <button style={{marginRight: '10px'}}className='modal-action waves-effect waves-light btn blue' onClick={@closeModal}>Back to editor</button>
-    </div>
-
-  openModal: ->
-    return if @state.modalOpened
-
-    @setState(modalOpened: true)
-    $('#publishing-modal').openModal()
-
-  closeModal: ->
-    @setState(stage: 0)
-    @setState(modalOpened: false)
-    $('#publishing-modal').closeModal()
-
-  componentDidUpdate: (_prev_props, prev_state) ->
-    return if @state.stage == prev_state.stage
-
-    if @state.stage > 0
-      @openModal()
+    if _.isEmpty(@context.router.getCurrentParams())
+      @transitionTo(route)
     else
-      @closeModal()
+      @transitionTo(with_history_route, @context.router.getCurrentParams())
+
+  publishClick: ->
+    track('publish_clicked')
+    return if @state.action_in_progress
+    @transitionWithCodeModeHistory('publish', '/publish/*?')
+
+  handleError: (msg) ->
+    track('error_happened', message: msg)
+    @setState(error: msg)
+    @transitionWithCodeModeHistory('error', '/error/*?')
+
+  changedFiles: ->
+    _.reject Filesystem.ls(), (new_file) =>
+      clean_file = _.detect @state.clean_files, (file) ->
+        file.path == new_file.path
+
+      clean_file.content == new_file.content
+
+  build: ->
+    @buildOrRefresh()
+
+  buildOrRefresh: ->
+    if @filesChanged() or !@state.first_build_done
+      @execBuild()
+    else
+      @refreshBrowser()
+
+  refreshBrowser: ->
+    new Promise (resolve, reject) =>
+      browser_ref = @refs.appRouteHandler.refs.__routeHandler__?.refs.browser
+      return resolve() unless browser_ref
+
+      # same route, refresh manually
+      browser_ref.refresh()
+      resolve()
+
+  execBuild: ->
+    track('build_started')
+    @actionStarted()
+
+    new Promise (resolve, reject) =>
+      request.post
+        json: true
+        body:
+          files: @changedFiles()
+        url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/preview"
+      , (err, status, resp) =>
+
+        return reject(err) if err
+        return reject(resp.error) unless resp.success
+
+        @setState(clean_files: _.cloneDeep(Filesystem.ls()), first_build_done: true)
+        @actionStopped()
+        track('build_finished')
+        resolve()
+
+  filesChanged: ->
+    !_.isEmpty(@changedFiles())
+
+  publishToGithub: ->
+    track('publish_started')
+
+    if @filesChanged()
+      @build().then(@publishToGithub).catch (err) =>
+        @handleError(err)
+    else
+      @actionStarted()
+      @execPublish().then( (resp) =>
+        return @handleError(resp.error) unless resp.success
+
+        track('publish_to_github_finished')
+      ).catch (err) =>
+        @handleError(err)
+
+  waitForPublishToServer: ->
+    new Promise (resolve, reject) =>
+      pusher_user_channel.bind 'app.build', =>
+        track('publish_to_server_finished')
+        @actionStopped()
+        resolve()
+
+  execPublish: ->
+    new Promise (resolve, reject) =>
+      request.post json: true, url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/publish", (err, status, resp) ->
+        return reject(err) if err
+
+        # published to GitHub
+        resolve(resp)
+
+  activeMode: ->
+    routes = @context.router.getCurrentRoutes()
+
+    # in this setup second route is the important route
+    _.first(routes[1].name.split('-'))
+
+  actionStarted: ->
+    @setState(action_in_progress: true)
+
+  actionStopped: ->
+    @setState(action_in_progress: false)
 
   render: ->
-    edit_other_files_url = "http://app.closeheat.com/apps/#{APP_SLUG}/guide/toolkit"
+    <main className='editor-wrapper'>
+      <Header
+        action_in_progress={@state.action_in_progress}
+        website_url={@props.website_url}
+        active_mode={@activeMode()}
+        onCodeClick={@codeClick}
+        onPreviewClick={@previewClick}
+        onPublishClick={@publishClick}
+        avatar={@props.avatar}
+        />
 
-    <main>
-      <div className='row'>
-        <div className='col editor-col full m5'>
-          <nav>
-            <div className="nav-wrapper">
-              <ul className="left">
-                <li>
-                  <a href="javascript:void(0)" onClick={@update}><i className="mdi-image-remove-red-eye left"></i>Preview</a>
-                </li>
-                <li>
-                  <a href="javascript:void(0)" onClick={@deploy}><i className="mdi-content-send left"></i>Publish</a>
-                </li>
-                <li>
-                  <a href={edit_other_files_url} onClick={=> @trackEverything('browser_editor/edit_other')} target='_blank'><i className="mdi-action-view-module left"></i>Edit other files</a>
-                </li>
-              </ul>
-            </div>
-          </nav>
-          <div className='editor'>
-            <Editor value={@state.editor_content} onChange={@editorChange} index_filename={@indexFilename()} />
-          </div>
-        </div>
-        <div className='col browser-col full m7'>
-          <nav>
-            <div className="nav-wrapper">
-
-              <a href={edit_other_files_url} onClick={=> @trackEverything('browser_editor/click_logo')} target='_blank' className="right brand-logo">
-                <img src="/logo-square.png"/>
-              </a>
-              <ul className="left">
-                <li>
-                  <a href="javascript:void(0)" onClick={@slideEditor} ><i className="mdi-navigation-menu left"></i></a>
-                </li>
-              </ul>
-            </div>
-          </nav>
-          <Browser initial_content={@state.browser_content} base={@props.base} ref='browser' />
-        </div>
-      </div>
-      <Tour step={@state.tour_step} done={@state.tour_done}/>
-      {@publishingModal()}
+      <RouteHandler
+        browser_url={@props.browser_url}
+        website_url={@props.website_url}
+        editorChange={@editorChange}
+        build={@build}
+        handleError={@handleError}
+        error={@state.error}
+        transitionWithCodeModeHistory={@transitionWithCodeModeHistory}
+        files_changed={@filesChanged()}
+        publishToGithub={@publishToGithub}
+        waitForPublishToServer={@waitForPublishToServer}
+        actionStopped={@actionStopped}
+        ref='appRouteHandler'/>
     </main>

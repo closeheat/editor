@@ -1,83 +1,73 @@
-var Filesystem, Promise, _, request;
+var Filesystem, _, traverse;
 
 _ = require('lodash');
 
-request = require('request');
-
-Promise = require('bluebird');
+traverse = require('traverse');
 
 module.exports = Filesystem = (function() {
-  function Filesystem() {
-    require('jade-memory-fs');
-  }
+  function Filesystem() {}
 
-  Filesystem.prototype.files = function() {
-    return fs.data();
+  Filesystem.create = function(files) {
+    return window.fs = files;
   };
 
-  Filesystem.prototype.load = function() {
-    return this.addFiles();
-  };
-
-  Filesystem.prototype.addFiles = function() {
-    return this.getFiles().then((function(_this) {
-      return function(files) {
-        var compatible_files;
-        _this.createDirs(files);
-        compatible_files = _.select(files, function(file) {
-          return file.path.match(/\.jade|md|html$/);
-        });
-        return Promise.all(_this.addFileContents(compatible_files));
-      };
-    })(this));
-  };
-
-  Filesystem.prototype.createDirs = function(files) {
-    var files_in_dirs;
-    files_in_dirs = _.select(files, function(file) {
-      var file_dir_split;
-      file_dir_split = file.path.split('/');
-      return file_dir_split.length > 1;
-    });
-    return _.each(files_in_dirs, function(file) {
-      var dir_path, file_dir_split;
-      file_dir_split = file.path.split('/');
-      dir_path = _.initial(file_dir_split).join('/');
-      return fs.mkdirpSync("/" + dir_path);
+  Filesystem.ls = function(path) {
+    if (!path) {
+      return window.fs;
+    }
+    return _.select(window.fs, function(file) {
+      return file.path.match(RegExp("^" + path));
     });
   };
 
-  Filesystem.prototype.getFiles = function() {
-    return new Promise((function(_this) {
-      return function(resolve, reject) {
-        return request.post({
-          url: window.location.href + "/files"
-        }, function(err, status, resp) {
-          var files;
-          if (err) {
-            return reject(err);
-          }
-          files = JSON.parse(resp).editor;
-          return resolve(files);
-        });
-      };
-    })(this));
+  Filesystem.read = function(path) {
+    var file_on_path;
+    file_on_path = _.detect(this.ls(), function(file) {
+      return file.path === path;
+    });
+    if (file_on_path) {
+      return file_on_path;
+    }
+    return {
+      type: 'dir',
+      path: path,
+      files: this.dirFiles(path)
+    };
   };
 
-  Filesystem.prototype.addFileContents = function(files) {
+  Filesystem.dirFiles = function(path) {
     var result;
     result = [];
-    _.each(files, (function(_this) {
-      return function(file) {
-        var promise;
-        promise = new Promise(function(resolve, reject) {
-          fs.writeFileSync("/" + file.path, file.content);
-          return resolve();
+    _.each(this.ls(path), function(file) {
+      var name, relative_to_dir;
+      relative_to_dir = file.path.replace(RegExp("^" + path + "\\/"), '');
+      if (relative_to_dir.match('/')) {
+        name = _.first(relative_to_dir.split('/'));
+        return result.push({
+          type: 'dir',
+          path: name
         });
-        return result.push(promise);
-      };
-    })(this));
-    return result;
+      } else {
+        return result.push(_.merge(file, {
+          type: 'file'
+        }));
+      }
+    });
+    return _.uniq(result, function(file) {
+      return file.path;
+    });
+  };
+
+  Filesystem.write = function(path, new_content) {
+    var file;
+    file = this.read(path);
+    return file.content = new_content;
+  };
+
+  Filesystem.isFile = function(path) {
+    return _.detect(this.ls(), function(file) {
+      return file.path === path;
+    });
   };
 
   return Filesystem;
