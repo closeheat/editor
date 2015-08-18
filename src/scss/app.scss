@@ -155,10 +155,19 @@ body {
       width: 100%;
     }
 
+    @keyframes tab-activation {
+      0% { background-color: #fff; }
+      100% { background-color: $tab-active-bg-color; }
+    }
+
+    .tab-flash {
+      animation-name: tab-activation;
+      animation-duration: 0.5s;
+    }
+
     .tab-active {
       background-color: $tab-active-bg-color;
       color: $tab-active-text-color;
-
       &:hover {
         background-color: $tab-active-bg-color;
       }

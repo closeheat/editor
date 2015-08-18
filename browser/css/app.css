@@ -8145,7 +8145,14 @@ body {
 .editor-wrapper .tabs-row {
   background-color: #F6F6F6;
   border-bottom: 1px solid rgba(158, 158, 158, 0.2);
-  margin: 0; }
+  margin: 0;
+  @keyframes tab-activation {
+    0% {
+      background-color: #fff; }
+
+    100% {
+      background-color: #F3F4F4; } }
+ }
   .editor-wrapper .tabs-row .tab {
     background-color: #EBEAEB;
     height: 35px;
@@ -8169,6 +8176,9 @@ body {
     color: #9D9D9D;
     display: inline-block;
     width: 100%; }
+  .editor-wrapper .tabs-row .tab-flash {
+    animation-name: tab-activation;
+    animation-duration: 0.5s; }
   .editor-wrapper .tabs-row .tab-active {
     background-color: #F3F4F4;
     color: #5B5B5B; }
