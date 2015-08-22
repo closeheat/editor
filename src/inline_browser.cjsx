@@ -15,7 +15,7 @@ inlineInject = ->
       path.unshift(el.nodeName.toLowerCase() + class_name)
       break unless (el.nodeName.toLowerCase() != 'html') && (el = el.parentNode)
 
-    parent.postMessage(action: 'click', path: path.join(' > '), 'http://localhost:4000')
+    parent.postMessage(action: 'click', path: path.join(' > ').replace('html > body ', ''), 'http://localhost:4000')
 
   # browser.on 'focus', '[contenteditable]', ->
   #   console.log('focus')
@@ -41,7 +41,9 @@ React.createClass
   injectCode: ->
     "inlineInject = #{inlineInject.toString()}; inlineInject()"
   inject: ->
-    @iframe().contentWindow.postMessage(@injectCode(), 'http://localhost:9000')
+    @evalInIframe(@injectCode())
+  evalInIframe: (code) ->
+    @iframe().contentWindow.postMessage(code, 'http://localhost:9000')
   render: ->
     <div className='browser'>
       <iframe id='browser' name='browser-frame' src={'http://localhost:9000' || @props.browser_url}></iframe>

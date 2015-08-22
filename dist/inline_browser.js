@@ -18,7 +18,7 @@ inlineInject = function() {
     }
     return parent.postMessage({
       action: 'click',
-      path: path.join(' > ')
+      path: path.join(' > ').replace('html > body ', '')
     }, 'http://localhost:4000');
   });
 };
@@ -45,7 +45,10 @@ module.exports = React.createClass({
     return "inlineInject = " + (inlineInject.toString()) + "; inlineInject()";
   },
   inject: function() {
-    return this.iframe().contentWindow.postMessage(this.injectCode(), 'http://localhost:9000');
+    return this.evalInIframe(this.injectCode());
+  },
+  evalInIframe: function(code) {
+    return this.iframe().contentWindow.postMessage(code, 'http://localhost:9000');
   },
   render: function() {
     return React.createElement("div", {
