@@ -1,4 +1,4 @@
-var Filesystem, InlineBrowser, Loader, React, _;
+var Filesystem, InlineBrowser, Loader, React, _, editingPrompt, mouseoutCode, mouseoverCode;
 
 React = require('react/addons');
 
@@ -9,6 +9,25 @@ InlineBrowser = require('./inline_browser');
 Loader = require('./loader');
 
 Filesystem = require('./filesystem');
+
+editingPrompt = function() {
+  return parent.postMessage({
+    action: 'prompt',
+    new_content: prompt('', 'CONTENT_VALUE')
+  }, 'http://localhost:4000');
+};
+
+mouseoverCode = function() {
+  var element;
+  element = document.querySelector('SELECTOR');
+  return element.style.outline = '1px solid #E5E5E5';
+};
+
+mouseoutCode = function() {
+  var element;
+  element = document.querySelector('SELECTOR');
+  return element.style.outline = '';
+};
 
 module.exports = React.createClass({
   getInitialState: function() {
@@ -29,40 +48,83 @@ module.exports = React.createClass({
       };
     })(this));
   },
-  onChange: function(e) {
+  onMessage: function(e) {
     if (e.data.action === 'click') {
-      return this.changeInHtml(e.data);
+      return this.onClick(e.data);
     } else if (e.data.action === 'prompt') {
       return this.state.editing_location.element.html(e.data.new_content);
+    } else if (e.data.action === 'mouseover') {
+      return this.onMouseover(e.data);
+    } else if (e.data.action === 'mouseout') {
+      return this.onMouseout(e.data);
     } else {
       debugger;
     }
   },
-  changeInHtml: function(event) {
-    var code, location, locations, new_content_code;
+  onMouseover: function(event) {
+    var code, element_data;
+    element_data = this.editableElement(event);
+    if (!element_data) {
+      return;
+    }
+    this.setState({
+      old_outline: event.old_outline
+    });
+    code = mouseoverCode.toString().replace('SELECTOR', element_data.selector);
+    return this.refs.browser.evalInIframe(code);
+  },
+  onMouseout: function(event) {
+    var code, element_data;
+    element_data = this.editableElement(event);
+    if (!element_data) {
+      return;
+    }
+    code = mouseoutCode.toString().replace('SELECTOR', element_data.selector);
+    return this.refs.browser.evalInIframe(code);
+  },
+  onClick: function(event) {
+    var element_data;
+    element_data = this.editableElement(event);
+    if (!element_data) {
+      return;
+    }
+    debugger;
+    return this.refs.browser.evalInIframe(editingPrompt.toString().replace('CONTENT_VALUE', element_data.element.html()));
+  },
+  editableElement: function(event) {
+    var locations;
     locations = [];
     _.each(this.htmlFiles(), (function(_this) {
       return function(file) {
         var dom, element;
         dom = $('<html>').html(file.content);
-        element = dom.find(event.path);
+        element = dom.find(event.selector);
         return locations.push({
           file: file,
           element: element,
-          dom: dom
+          dom: dom,
+          selector: event.selector
         });
       };
     })(this));
-    if (locations.length !== 1) {
-      return alert('Cannot edit this element');
+    if (!this.isEditableElement(locations)) {
+      return;
     }
-    location = locations[0];
-    this.setState({
-      editing_location: location
-    });
-    new_content_code = "prompt('', '" + (location.element.html()) + "')";
-    code = "parent.postMessage({ action: 'prompt', new_content: " + new_content_code + " }, 'http://localhost:4000')";
-    return this.refs.browser.evalInIframe(code);
+    return locations[0];
+  },
+  isEditableElement: function(locations) {
+    var element;
+    if (locations.length !== 1) {
+      return;
+    }
+    element = locations[0].element;
+    if (element.children().length !== 0) {
+      return;
+    }
+    if (!element.html()) {
+      return;
+    }
+    return true;
   },
   htmlFiles: function() {
     return _.select(Filesystem.ls(), function(file) {
@@ -77,7 +139,7 @@ module.exports = React.createClass({
     }, React.createElement(InlineBrowser, {
       "ref": 'browser',
       "browser_url": this.props.browser_url,
-      "onChange": this.onChange
+      "onMessage": this.onMessage
     }))));
   },
   render: function() {

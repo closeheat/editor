@@ -5,27 +5,48 @@ React = require('react');
 window._ = require('lodash');
 
 inlineInject = function() {
-  return window.addEventListener('click', function(e) {
-    var class_name, el, path;
-    path = [];
-    el = e.target;
+  var bindEvent, event, events, getSelector, i, len, positionInDom, results;
+  positionInDom = function(el) {
+    if (!el.previousElementSibling) {
+      return 1;
+    }
+  };
+  getSelector = function(el) {
+    var class_name, classes, selector;
+    selector = [];
     while (true) {
-      class_name = el.className ? '.' + el.className : '';
-      path.unshift(el.nodeName.toLowerCase() + class_name);
+      class_name = el.className ? (classes = el.className.split(' '), '.' + classes.join('.')) : '';
+      selector.unshift(el.nodeName.toLowerCase() + class_name + (":nth-child(" + (positionInDom(el)) + ")"));
       if (!((el.nodeName.toLowerCase() !== 'html') && (el = el.parentNode))) {
         break;
       }
     }
-    return parent.postMessage({
-      action: 'click',
-      path: path.join(' > ').replace('html > body ', '')
-    }, 'http://localhost:4000');
-  });
+    return selector.join(' > ').replace('html > body > ', '').replace('html > body', '');
+  };
+  bindEvent = function(event) {
+    return window.addEventListener(event, function(e) {
+      var selector;
+      e.preventDefault();
+      selector = getSelector(e.target);
+      return parent.postMessage({
+        action: event,
+        selector: selector,
+        old_outline: e.target.outline
+      }, 'http://localhost:4000');
+    });
+  };
+  events = ['click', 'mouseover', 'mouseout'];
+  results = [];
+  for (i = 0, len = events.length; i < len; i++) {
+    event = events[i];
+    results.push(bindEvent(event));
+  }
+  return results;
 };
 
 module.exports = React.createClass({
   getInitialState: function() {
-    window.addEventListener('message', this.props.onChange, false);
+    window.addEventListener('message', this.props.onMessage, false);
     return {};
   },
   iframe: function() {
@@ -41,14 +62,14 @@ module.exports = React.createClass({
       };
     })(this));
   },
-  injectCode: function() {
-    return "inlineInject = " + (inlineInject.toString()) + "; inlineInject()";
+  wrapEvalFunction: function(code) {
+    return "evalFunction = " + code + "; evalFunction()";
   },
   inject: function() {
-    return this.evalInIframe(this.injectCode());
+    return this.evalInIframe(inlineInject.toString());
   },
   evalInIframe: function(code) {
-    return this.iframe().contentWindow.postMessage(code, 'http://localhost:9000');
+    return this.iframe().contentWindow.postMessage(this.wrapEvalFunction(code), 'http://localhost:9000');
   },
   render: function() {
     return React.createElement("div", {

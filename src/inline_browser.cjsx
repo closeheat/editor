@@ -2,20 +2,36 @@ React = require 'react'
 window._ = require 'lodash'
 
 inlineInject = ->
-  window.addEventListener 'click', (e) ->
-    path = []
+  positionInDom = (el) ->
+    return 1 unless el.previousElementSibling
 
-    el = e.target
+  getSelector = (el) ->
+    selector = []
 
     loop
       class_name = if el.className
-        '.' + el.className
+        classes = el.className.split(' ')
+        '.' + classes.join('.')
       else
         ''
-      path.unshift(el.nodeName.toLowerCase() + class_name)
+      selector.unshift(el.nodeName.toLowerCase() + class_name + ":nth-child(#{positionInDom(el)})")
       break unless (el.nodeName.toLowerCase() != 'html') && (el = el.parentNode)
 
-    parent.postMessage(action: 'click', path: path.join(' > ').replace('html > body ', ''), 'http://localhost:4000')
+    selector.join(' > ').replace('html > body > ', '').replace('html > body', '')
+
+  bindEvent = (event) ->
+    window.addEventListener event, (e) ->
+      e.preventDefault()
+      selector = getSelector(e.target)
+      parent.postMessage(action: event, selector: selector, old_outline: e.target.outline, 'http://localhost:4000')
+
+  events = [
+    'click'
+    'mouseover'
+    'mouseout'
+  ]
+
+  bindEvent(event) for event in events
 
   # browser.on 'focus', '[contenteditable]', ->
   #   console.log('focus')
@@ -28,7 +44,7 @@ inlineInject = ->
 module.exports =
 React.createClass
   getInitialState: ->
-    window.addEventListener('message', @props.onChange, false)
+    window.addEventListener('message', @props.onMessage, false)
 
     {}
   iframe: ->
@@ -38,12 +54,12 @@ React.createClass
   componentDidMount: ->
     $(@iframe()).load =>
       @inject()
-  injectCode: ->
-    "inlineInject = #{inlineInject.toString()}; inlineInject()"
+  wrapEvalFunction: (code) ->
+    "evalFunction = #{code}; evalFunction()"
   inject: ->
-    @evalInIframe(@injectCode())
+    @evalInIframe(inlineInject.toString())
   evalInIframe: (code) ->
-    @iframe().contentWindow.postMessage(code, 'http://localhost:9000')
+    @iframe().contentWindow.postMessage(@wrapEvalFunction(code), 'http://localhost:9000')
   render: ->
     <div className='browser'>
       <iframe id='browser' name='browser-frame' src={'http://localhost:9000' || @props.browser_url}></iframe>

@@ -3,11 +3,11 @@ coffee = require 'gulp-coffee'
 gutil = require 'gulp-util'
 watch = require 'gulp-watch'
 cjsx = require 'gulp-cjsx'
-browserify = require 'browserify'
+# browserify = require 'browserify'
 transform = require 'vinyl-transform'
 sass = require('gulp-sass')
 
-gulp.task 'default', ['coffee', 'cjsx', 'browserify', 'sass']
+gulp.task 'default', ['coffee', 'cjsx', 'sass']
 
 gulp.task 'watch', ->
   gulp.watch('./src/**/*.*', ['default'])
@@ -29,11 +29,11 @@ gulp.task 'sass', ->
     .pipe(sass())
     .pipe(gulp.dest('./browser/css'));
 
-gulp.task 'browserify', ->
-  browserified = transform (filename) ->
-    b = browserify(entries: filename)
-    return b.bundle()
-
-  gulp.src('./dist/core.js')
-    .pipe(browserified)
-    .pipe(gulp.dest('./browser/js'))
+# gulp.task 'browserify', ->
+#   browserified = transform (filename) ->
+#     b = browserify(entries: filename)
+#     return b.bundle()
+#
+#   gulp.src('./dist/core.js')
+#     .pipe(browserified)
+#     .pipe(gulp.dest('./browser/js'))

@@ -4,6 +4,17 @@ InlineBrowser = require('./inline_browser')
 Loader = require('./loader')
 Filesystem = require('./filesystem')
 
+editingPrompt = ->
+  parent.postMessage(action: 'prompt', new_content: prompt('', 'CONTENT_VALUE'), 'http://localhost:4000')
+
+mouseoverCode = ->
+  element = document.querySelector('SELECTOR')
+  element.style.outline = '1px solid #E5E5E5'
+
+mouseoutCode = ->
+  element = document.querySelector('SELECTOR')
+  element.style.outline = ''
+
 module.exports =
 React.createClass
   getInitialState: ->
@@ -15,30 +26,58 @@ React.createClass
       @setState(build_finished: true)
     ).catch (err) =>
       @props.handleError(err)
-  onChange: (e) ->
+  onMessage: (e) ->
     if e.data.action == 'click'
-      @changeInHtml(e.data)
+      @onClick(e.data)
     else if e.data.action == 'prompt'
       @state.editing_location.element.html(e.data.new_content)
+    else if e.data.action == 'mouseover'
+      @onMouseover(e.data)
+    else if e.data.action == 'mouseout'
+      @onMouseout(e.data)
     else
       debugger
 
-  changeInHtml: (event) ->
+  onMouseover: (event) ->
+    element_data = @editableElement(event)
+    return unless element_data
+
+    @setState(old_outline: event.old_outline)
+    code = mouseoverCode.toString().replace('SELECTOR', element_data.selector)
+    @refs.browser.evalInIframe(code)
+  onMouseout: (event) ->
+    element_data = @editableElement(event)
+    return unless element_data
+
+    code = mouseoutCode.toString().replace('SELECTOR', element_data.selector)
+    @refs.browser.evalInIframe(code)
+  onClick: (event) ->
+    element_data = @editableElement(event)
+    return unless element_data
+
+    # @setState(editing_location: element_data)
+    debugger
+    @refs.browser.evalInIframe(editingPrompt.toString().replace('CONTENT_VALUE', element_data.element.html()))
+  editableElement: (event) ->
     locations = []
 
     _.each @htmlFiles(), (file) =>
       dom = $('<html>').html(file.content)
-      element = dom.find(event.path)
-      locations.push(file: file, element: element, dom: dom)
+      element = dom.find(event.selector)
+      locations.push(file: file, element: element, dom: dom, selector: event.selector)
 
-    return alert('Cannot edit this element') if locations.length != 1
+    return unless @isEditableElement(locations)
 
-    location = locations[0]
-    @setState(editing_location: location)
+    locations[0]
+  isEditableElement: (locations) ->
+    return unless locations.length == 1
 
-    new_content_code = "prompt('', '#{location.element.html()}')"
-    code = "parent.postMessage({ action: 'prompt', new_content: #{new_content_code} }, 'http://localhost:4000')"
-    @refs.browser.evalInIframe(code)
+    element = locations[0].element
+    return unless element.children().length == 0
+    return unless element.html()
+
+    true
+
   htmlFiles: ->
     _.select Filesystem.ls(), (file) ->
       file.path.match(/\.html$/)
@@ -46,7 +85,7 @@ React.createClass
     <div>
       <div className='row'>
         <div className='col browser-col full m12'>
-          <InlineBrowser ref='browser' browser_url={@props.browser_url} onChange={@onChange}/>
+          <InlineBrowser ref='browser' browser_url={@props.browser_url} onMessage={@onMessage}/>
         </div>
       </div>
     </div>
