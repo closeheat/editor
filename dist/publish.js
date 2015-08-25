@@ -23,7 +23,7 @@ module.exports = React.createClass({
         _this.setState({
           published_to_github: true
         });
-        return _this.props.waitForPublishToServer().timeout(15000, _this.timeoutMsg()).then(function() {
+        return _this.props.waitForPublishToServer().timeout(30000, _this.timeoutMsg()).then(function() {
           return _this.setState({
             published_to_server: true
           });
