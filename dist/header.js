@@ -88,7 +88,7 @@ module.exports = Header = React.createClass({
     }, "publish"), "Publish"), React.createElement("div", {
       "className": 'header-support col s1 center-align'
     }, React.createElement("a", {
-      "href": "mailto:support@closeheat?subject=I'm having a problem with the editor"
+      "href": "mailto:support@closeheat.com?subject=I'm having a problem with the editor"
     }, "Support")), React.createElement("div", {
       "className": 'col s1 center-align'
     }, React.createElement("a", {
