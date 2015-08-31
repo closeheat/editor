@@ -10,9 +10,21 @@ _ = require('lodash');
 
 require('brace/mode/html');
 
+require('brace/mode/jade');
+
+require('brace/mode/markdown');
+
+require('brace/mode/text');
+
+require('brace/mode/javascript');
+
 require('brace/mode/coffee');
 
-require('brace/mode/jade');
+require('brace/mode/jsx');
+
+require('brace/mode/json');
+
+require('brace/mode/css');
 
 require('brace/mode/sass');
 
@@ -38,9 +50,15 @@ module.exports = React.createClass({
     return {
       jade: 'jade',
       html: 'html',
+      md: 'markdown',
       coffee: 'coffee',
+      js: 'javascript',
+      jsx: 'jsx',
+      json: 'json',
       sass: 'sass',
-      scss: 'sass'
+      scss: 'sass',
+      css: 'css',
+      txt: 'text'
     };
   },
   onLoad: function(editor) {
