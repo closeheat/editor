@@ -10,7 +10,7 @@ Tabs = require('./tabs')
 
 module.exports =
 React.createClass
-  mixins: [Navigation],
+  mixins: [Navigation]
   fullPath: ->
     @props.params.splat
   tabs: ->
@@ -105,7 +105,12 @@ React.createClass
         <div className='col m12 code-mode-cols'>
           <Tabs tabs={@tabs()} new_tab_href={@newTabHref('')} />
 
-          <RouteHandler active_tab_path={@activeTabPath()} reuseTabHref={@reuseTabHref} newTabHref={@newTabHref} editorChange={@props.editorChange} />
+          <RouteHandler
+            active_tab_path={@activeTabPath()}
+            reuseTabHref={@reuseTabHref}
+            newTabHref={@newTabHref}
+            editorChange={@props.editorChange}
+          />
         </div>
       </div>
     </div>

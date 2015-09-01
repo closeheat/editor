@@ -46,10 +46,6 @@ React.createClass
   mixins: [Navigation],
   editorChange: (path, new_content) ->
     Filesystem.write(path, new_content)
-
-    # @goToStep(2) if @state.loaded
-    # @setState(loaded: true) if new_content == @state.editor_content
-
   codeClick: ->
     track('code_clicked')
     @transitionWithCodeModeHistory('code', '/code/*?')

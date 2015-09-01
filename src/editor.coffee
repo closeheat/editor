@@ -23,8 +23,16 @@ require('brace/ext/searchbox')
 
 module.exports =
 React.createClass
-  getInitialState: ->
-    loaded: false
+  emptySelection: ->
+    {
+      start:
+        row: 0
+        column: 0
+      end:
+        row: 0
+        column: 0
+    }
+
   onChange: (new_content) ->
     @props.onChange(@props.path, new_content)
   mode: ->
@@ -46,11 +54,29 @@ React.createClass
       txt: 'text'
     }
 
+  restoreSettings: (editor) ->
+    settings = window.CloseheatFileSettings[@props.path]
+    return editor.clearSelection() unless settings
+
+    editor.session.selection.setSelectionRange(settings.selection)
+    editor.session.setScrollTop(settings.scroll_top)
+    editor.session.setScrollLeft(settings.scroll_left)
+
   onLoad: (editor) ->
-    editor.clearSelection()
+    @restoreSettings(editor)
     editor.getSession().setTabSize(2)
     editor.getSession().setUseSoftTabs(true)
     editor.setHighlightActiveLine(false)
+
+  saveSettings: ->
+    editor = @refs.editor_container.editor
+
+    window.CloseheatFileSettings[@props.path] = {
+      selection: editor.getSelectionRange() || @emptySelection()
+      scroll_top: editor.session.getScrollTop() || 0
+      scroll_left: editor.session.getScrollLeft() || 0
+    }
+
   render: ->
     <AceEditor
       mode={@mode()}
@@ -61,4 +87,5 @@ React.createClass
       onChange={@onChange}
       onLoad={@onLoad}
       value={@props.value}
+      ref='editor_container'
     />

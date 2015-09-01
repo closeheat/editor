@@ -12,6 +12,7 @@ class InitialLoader
 
   addFiles: ->
     @getInitialData().then((data) =>
+      window.CloseheatFileSettings = {}
       Filesystem.create(data.files)
 
       data

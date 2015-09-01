@@ -33,9 +33,16 @@ require('brace/theme/xcode');
 require('brace/ext/searchbox');
 
 module.exports = React.createClass({
-  getInitialState: function() {
+  emptySelection: function() {
     return {
-      loaded: false
+      start: {
+        row: 0,
+        column: 0
+      },
+      end: {
+        row: 0,
+        column: 0
+      }
     };
   },
   onChange: function(new_content) {
@@ -61,11 +68,30 @@ module.exports = React.createClass({
       txt: 'text'
     };
   },
+  restoreSettings: function(editor) {
+    var settings;
+    settings = window.CloseheatFileSettings[this.props.path];
+    if (!settings) {
+      return editor.clearSelection();
+    }
+    editor.session.selection.setSelectionRange(settings.selection);
+    editor.session.setScrollTop(settings.scroll_top);
+    return editor.session.setScrollLeft(settings.scroll_left);
+  },
   onLoad: function(editor) {
-    editor.clearSelection();
+    this.restoreSettings(editor);
     editor.getSession().setTabSize(2);
     editor.getSession().setUseSoftTabs(true);
     return editor.setHighlightActiveLine(false);
+  },
+  saveSettings: function() {
+    var editor;
+    editor = this.refs.editor_container.editor;
+    return window.CloseheatFileSettings[this.props.path] = {
+      selection: editor.getSelectionRange() || this.emptySelection(),
+      scroll_top: editor.session.getScrollTop() || 0,
+      scroll_left: editor.session.getScrollLeft() || 0
+    };
   },
   render: function() {
     return React.createElement(AceEditor, {
@@ -76,7 +102,8 @@ module.exports = React.createClass({
       "width": '100%',
       "onChange": this.onChange,
       "onLoad": this.onLoad,
-      "value": this.props.value
+      "value": this.props.value,
+      "ref": 'editor_container'
     });
   }
 });

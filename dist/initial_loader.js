@@ -18,6 +18,7 @@ module.exports = InitialLoader = (function() {
   InitialLoader.prototype.addFiles = function() {
     return this.getInitialData().then((function(_this) {
       return function(data) {
+        window.CloseheatFileSettings = {};
         Filesystem.create(data.files);
         return data;
       };
