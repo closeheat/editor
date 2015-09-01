@@ -10,11 +10,13 @@ FileUp = require './file_up'
 module.exports =
 React.createClass
   folderFiles: ->
-    _.map @props.dir.files, (file) =>
+    result = _.map @props.dir.files, (file) =>
       file.href = @props.reuseTabHref(file.path)
       file.name = file.path
       file
 
+    [dirs, files] = _.partition result, (f) -> f.type == 'dir'
+    dirs.concat(files)
   upHref: ->
     up_path = _.dropRight(@pathParts())
     @props.reuseTabHref(up_path)
@@ -43,7 +45,7 @@ React.createClass
               </tr>
               <FileUp show={!!@props.path} href={@upHref()}/>
               {_.map @folderFiles(), (file) =>
-                <File file={file} active={@props.active} />
+                <File file={file} active={@props.active} supported_modes={@props.supported_modes}/>
               }
             </tbody>
           </table>

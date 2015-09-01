@@ -25,10 +25,12 @@ module.exports = React.createClass({
     });
   },
   kind: function() {
+    var ext;
     if (this.props.file.type === 'dir') {
       return 'Folder';
     }
-    return this.props.file.path.match(/\.([0-9a-z]+)$/i)[1];
+    ext = this.props.file.path.match(/\.([0-9a-z]+)$/i)[1];
+    return this.props.supported_modes[ext] || ext;
   },
   icon: function() {
     if (this.props.file.type === 'dir') {

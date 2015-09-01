@@ -16,15 +16,32 @@ module.exports = React.createClass({
       "value": file.content,
       "path": this.props.active_tab_path,
       "onChange": this.props.editorChange,
+      "supported_modes": this.supportedModes(),
       "ref": 'editor'
     });
+  },
+  supportedModes: function() {
+    return {
+      jade: 'jade',
+      html: 'html',
+      md: 'markdown',
+      coffee: 'coffee',
+      js: 'javascript',
+      jsx: 'jsx',
+      json: 'json',
+      sass: 'sass',
+      scss: 'sass',
+      css: 'css',
+      txt: 'text'
+    };
   },
   renderFileManager: function(dir) {
     return React.createElement(FileManager, {
       "dir": dir,
       "path": this.props.active_tab_path,
       "reuseTabHref": this.props.reuseTabHref,
-      "newTabHref": this.props.newTabHref
+      "newTabHref": this.props.newTabHref,
+      "supported_modes": this.supportedModes()
     });
   },
   fileOrDir: function() {

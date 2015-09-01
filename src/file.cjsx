@@ -17,7 +17,8 @@ React.createClass
   kind: ->
     return 'Folder' if @props.file.type == 'dir'
 
-    @props.file.path.match(/\.([0-9a-z]+)$/i)[1]
+    ext = @props.file.path.match(/\.([0-9a-z]+)$/i)[1]
+    @props.supported_modes[ext] || ext
   icon: ->
     if @props.file.type == 'dir'
       <i className='material-icons'>folder_open</i>

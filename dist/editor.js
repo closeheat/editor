@@ -51,22 +51,7 @@ module.exports = React.createClass({
   mode: function() {
     var ext;
     ext = this.props.path.match(/\.(.*)$/)[1] || 'html';
-    return this.supportedModes()[ext] || 'html';
-  },
-  supportedModes: function() {
-    return {
-      jade: 'jade',
-      html: 'html',
-      md: 'markdown',
-      coffee: 'coffee',
-      js: 'javascript',
-      jsx: 'jsx',
-      json: 'json',
-      sass: 'sass',
-      scss: 'sass',
-      css: 'css',
-      txt: 'text'
-    };
+    return this.props.supported_modes()[ext] || 'html';
   },
   restoreSettings: function(editor) {
     var settings;
