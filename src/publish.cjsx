@@ -16,7 +16,7 @@ React.createClass
     @props.publishToGithub().then((resp) =>
       @setState(published_to_github: true)
 
-      @props.waitForPublishToServer().timeout(30000, @timeoutMsg()).then =>
+      @props.waitForPublishToServer().timeout(40000, @timeoutMsg()).then =>
         @setState(published_to_server: true)
     ).catch (err) =>
       @props.handleError(err)
