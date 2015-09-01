@@ -62,11 +62,18 @@ React.createClass
     editor.session.setScrollTop(settings.scroll_top)
     editor.session.setScrollLeft(settings.scroll_left)
 
+    # bug in ace?
+    settings.undo_manager.$doc = editor.session
+    editor.session.setUndoManager(settings.undo_manager)
+
   onLoad: (editor) ->
-    @restoreSettings(editor)
-    editor.getSession().setTabSize(2)
-    editor.getSession().setUseSoftTabs(true)
+    editor_session = editor.getSession()
+
+    editor_session.setTabSize(2)
+    editor_session.setUseSoftTabs(true)
     editor.setHighlightActiveLine(false)
+    editor_session.setUndoManager(new brace.UndoManager)
+    @restoreSettings(editor)
 
   saveSettings: ->
     editor = @refs.editor_container.editor
@@ -75,6 +82,7 @@ React.createClass
       selection: editor.getSelectionRange() || @emptySelection()
       scroll_top: editor.session.getScrollTop() || 0
       scroll_left: editor.session.getScrollLeft() || 0
+      undo_manager: editor.session.getUndoManager()
     }
 
   render: ->

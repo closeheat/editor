@@ -51,7 +51,7 @@ React.createClass
     @transitionWithCodeModeHistory('code', '/code/*?')
   previewClick: ->
     track('preview_clicked')
-    setTimeout(@showFreeHosting, 9000) unless @state.free_hosting_shown
+    # setTimeout(@showFreeHosting, 9000) unless @state.free_hosting_shown
     return if @state.action_in_progress
 
     if @context.router.getCurrentPath().match(/^\/preview/)

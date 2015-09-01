@@ -72,9 +72,6 @@ module.exports = React.createClass({
   },
   previewClick: function() {
     track('preview_clicked');
-    if (!this.state.free_hosting_shown) {
-      setTimeout(this.showFreeHosting, 9000);
-    }
     if (this.state.action_in_progress) {
       return;
     }
