@@ -8322,5 +8322,9 @@ body {
     width: 100%;
     border: none; }
 
+.row.full {
+  padding: 0;
+  margin: 0; }
+
 .row .col.full {
   padding: 0; }

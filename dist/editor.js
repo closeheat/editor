@@ -104,7 +104,7 @@ module.exports = React.createClass({
       "mode": this.mode(),
       "theme": 'xcode',
       "name": 'blah1',
-      "height": 'calc(100vh - 50px)',
+      "height": 'calc(100vh - 54px - 36px)',
       "width": '100%',
       "onChange": this.onChange,
       "onLoad": this.onLoad,

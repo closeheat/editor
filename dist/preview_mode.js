@@ -27,7 +27,7 @@ module.exports = React.createClass({
   },
   browser: function() {
     return React.createElement("div", null, React.createElement("div", {
-      "className": 'row'
+      "className": 'row full'
     }, React.createElement("div", {
       "className": 'col browser-col full m12'
     }, React.createElement(Browser, {

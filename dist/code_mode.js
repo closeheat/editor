@@ -131,9 +131,9 @@ module.exports = React.createClass({
   render: function() {
     this.checkValidPath();
     return React.createElement("div", null, React.createElement("div", {
-      "className": 'row'
+      "className": 'row full'
     }, React.createElement("div", {
-      "className": 'col m12 code-mode-cols'
+      "className": 'col m12 full code-mode-cols'
     }, React.createElement(Tabs, {
       "tabs": this.tabs(),
       "new_tab_href": this.newTabHref('')

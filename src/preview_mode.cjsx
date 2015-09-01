@@ -15,7 +15,7 @@ React.createClass
       @props.handleError(err)
   browser: ->
     <div>
-      <div className='row'>
+      <div className='row full'>
         <div className='col browser-col full m12'>
           <Browser ref='browser' browser_url={@props.browser_url} />
         </div>

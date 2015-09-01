@@ -101,8 +101,8 @@ React.createClass
     @checkValidPath()
 
     <div>
-      <div className='row'>
-        <div className='col m12 code-mode-cols'>
+      <div className='row full'>
+        <div className='col m12 full code-mode-cols'>
           <Tabs tabs={@tabs()} new_tab_href={@newTabHref('')} />
 
           <RouteHandler
