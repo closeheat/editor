@@ -51,7 +51,7 @@ module.exports = React.createClass({
   mode: function() {
     var ext;
     ext = this.props.path.match(/\.(.*)$/)[1] || 'html';
-    return this.props.supported_modes()[ext] || 'html';
+    return this.props.supported_modes[ext] || 'html';
   },
   restoreSettings: function(editor) {
     var settings;

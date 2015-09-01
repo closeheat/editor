@@ -37,7 +37,7 @@ React.createClass
     @props.onChange(@props.path, new_content)
   mode: ->
     ext = @props.path.match(/\.(.*)$/)[1] || 'html'
-    @props.supported_modes()[ext] || 'html'
+    @props.supported_modes[ext] || 'html'
 
   restoreSettings: (editor) ->
     settings = window.CloseheatFileSettings[@props.path]
