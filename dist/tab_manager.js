@@ -15,20 +15,49 @@ module.exports = React.createClass({
     return React.createElement(Editor, {
       "value": file.content,
       "path": this.props.active_tab_path,
-      "onChange": this.props.editorChange
+      "onChange": this.props.editorChange,
+      "supported_modes": this.supportedModes(),
+      "ref": 'editor'
     });
+  },
+  supportedModes: function() {
+    return {
+      jade: 'jade',
+      html: 'html',
+      md: 'markdown',
+      coffee: 'coffee',
+      js: 'javascript',
+      jsx: 'jsx',
+      json: 'json',
+      sass: 'sass',
+      scss: 'sass',
+      css: 'css',
+      txt: 'text'
+    };
   },
   renderFileManager: function(dir) {
     return React.createElement(FileManager, {
       "dir": dir,
       "path": this.props.active_tab_path,
       "reuseTabHref": this.props.reuseTabHref,
-      "newTabHref": this.props.newTabHref
+      "newTabHref": this.props.newTabHref,
+      "supported_modes": this.supportedModes()
     });
+  },
+  fileOrDir: function() {
+    return Filesystem.read(this.props.active_tab_path);
+  },
+  statics: {
+    willTransitionFrom: function(transition, component) {
+      if (component.fileOrDir().type === 'dir') {
+        return;
+      }
+      return component.refs.editor.saveSettings();
+    }
   },
   render: function() {
     var file_or_dir;
-    file_or_dir = Filesystem.read(this.props.active_tab_path);
+    file_or_dir = this.fileOrDir();
     if (file_or_dir.type === 'dir') {
       return this.renderFileManager(file_or_dir);
     } else {

@@ -13,6 +13,9 @@ module.exports = React.createClass({
     if (this.props.active) {
       result += ' tab-active';
     }
+    if (this.props.active && this.props.flash) {
+      result += ' tab-flash';
+    }
     return result;
   },
   render: function() {

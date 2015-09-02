@@ -1,5 +1,4 @@
 _ = require 'lodash'
-traverse = require 'traverse'
 
 module.exports =
 class Filesystem
@@ -50,6 +49,7 @@ class Filesystem
     _.detect @ls(), (file) ->
       file.path == path
 
+  # traverse = require 'traverse'
   # @createDirs: (files) ->
   #   files_in_dirs = _.select files, (file) ->
   #     file_dir_split = file.path.split('/')

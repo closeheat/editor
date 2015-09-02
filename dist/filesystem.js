@@ -1,8 +1,6 @@
-var Filesystem, _, traverse;
+var Filesystem, _;
 
 _ = require('lodash');
-
-traverse = require('traverse');
 
 module.exports = Filesystem = (function() {
   function Filesystem() {}

@@ -81,6 +81,7 @@ body {
 
   .header-mode {
     @extend .header-item;
+    cursor: pointer;
     text-transform: uppercase;
     color: #fdfdfd;
 
@@ -154,10 +155,19 @@ body {
       width: 100%;
     }
 
+    @keyframes tab-activation {
+      0% { background-color: hsla(1, 84%, 59%, .5); }
+      100% { background-color: $tab-active-bg-color; }
+    }
+
+    .tab-flash {
+      animation-name: tab-activation;
+      animation-duration: 0.5s;
+    }
+
     .tab-active {
       background-color: $tab-active-bg-color;
       color: $tab-active-text-color;
-
       &:hover {
         background-color: $tab-active-bg-color;
       }
@@ -268,23 +278,74 @@ body {
       @extend .action-title;
       font-size: 12px;
     }
+  }
 
-    .published-open-page {
-      margin-top: 30px;
-      box-shadow: none;
+  .published-button {
+    margin-top: 30px;
+    box-shadow: none;
+    line-height: 20px;
+    padding-top: 7px;
+
+    .published-button-icon i {
+      font-size: 12px;
+      padding-left: 10px;
+    }
+
+    .published-button-subtitle {
+      font-size: 12px;
+      text-transform: none;
+      color: hsla(0, 0%, 100%, .7);
+    }
+  }
+
+  @keyframes appear-later {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  .free-hosting {
+    @extend .action-title;
+
+    position: fixed;
+    bottom: 0;
+    right: 5px;
+    padding: 20px;
+    border-radius: 5px;
+    border: 2px solid $light-grey;
+    background-color: #FDFDFD;
+    animation-name: appear-later;
+    animation-duration: 1s;
+    z-index: 999;
+
+    .free-hosting-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #4EB876;
+    }
+
+    .free-hosting-free {
+      color: #4EB876;
+      font-weight: 600;
+      padding-left: 3px;
+    }
+
+    .free-hosting-button {
+      @extend .published-button;
+
+      background-color: #4EB876;
+      margin-top: 10px;
       line-height: 20px;
-      padding-top: 7px;
+    }
 
-      .published-open-page-icon i {
-        font-size: 12px;
-        padding-left: 10px;
-      }
+    .free-button-icon i {
+      font-size: 12px;
+      padding-left: 10px;
+    }
 
-      .published-open-page-url {
-        font-size: 12px;
-        text-transform: none;
-        color: hsla(0, 0%, 100%, .7);
-      }
+    .free-button-hide {
+      margin-top: 10px;
+      color: $grey;
+      cursor: pointer;
     }
   }
 
@@ -328,4 +389,13 @@ body {
     width: 100%;
     border: none;
   }
+}
+
+.row.full {
+  padding: 0;
+  margin: 0;
+}
+
+.row .col.full {
+  padding: 0;
 }

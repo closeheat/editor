@@ -78,7 +78,7 @@ Header = React.createClass
           Publish
         </div>
         <div className='header-support col s1 center-align'>
-          <a href="mailto:domas@closeheat?subject=I'm having a problem with the editor">
+          <a href="mailto:support@closeheat.com?subject=I'm having a problem with the editor">
             Support
           </a>
         </div>

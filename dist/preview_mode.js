@@ -27,7 +27,7 @@ module.exports = React.createClass({
   },
   browser: function() {
     return React.createElement("div", null, React.createElement("div", {
-      "className": 'row'
+      "className": 'row full'
     }, React.createElement("div", {
       "className": 'col browser-col full m12'
     }, React.createElement(Browser, {
@@ -40,7 +40,8 @@ module.exports = React.createClass({
       return this.browser();
     } else {
       return React.createElement(Loader, {
-        "title": 'Hang in tight. Building your page preview...'
+        "title": 'Hang in tight.',
+        "subtitle": 'Building your page preview...'
       });
     }
   }

@@ -18,14 +18,14 @@ React.createClass
             </div>
           </div>
 
-          <a href={@props.website_url} target='_blank' className="btn btn-large waves-effect waves-light published-open-page">
+          <a href={@props.website_url} target='_blank' className="btn btn-large waves-effect waves-light published-button">
             <div>
               Open my landing page
-              <span className='published-open-page-icon'>
+              <span className='published-button-icon'>
                 <i className='material-icons'>open_in_new</i>
               </span>
             </div>
-            <div className='published-open-page-url'>
+            <div className='published-button-subtitle'>
               {@props.website_url.replace('http://', '')}
             </div>
           </a>

@@ -21,8 +21,15 @@ React.createClass
 
     {
       clean_files: _.cloneDeep(Filesystem.ls()),
-      action_in_progress: false
+      action_in_progress: false,
+      first_build_done: false
     }
+
+  showFreeHosting: ->
+    @setState(show_free_hosting: true)
+
+  hideFreeHosting: ->
+    @setState(show_free_hosting: false, free_hosting_shown: true)
 
   bindKeys: ->
     $(window).bind 'keydown', (event) =>
@@ -39,24 +46,18 @@ React.createClass
   mixins: [Navigation],
   editorChange: (path, new_content) ->
     Filesystem.write(path, new_content)
-
-    # @goToStep(2) if @state.loaded
-    # @setState(loaded: true) if new_content == @state.editor_content
-
   codeClick: ->
     track('code_clicked')
     @transitionWithCodeModeHistory('code', '/code/*?')
   previewClick: ->
     track('preview_clicked')
+    # setTimeout(@showFreeHosting, 9000) unless @state.free_hosting_shown
     return if @state.action_in_progress
 
-    @transitionWithCodeModeHistory('preview', 'preview-with-history')
-
-    browser_ref = @refs.appRouteHandler.refs.__routeHandler__.refs.browser
-    return unless browser_ref
-
-    # same route, refresh manually
-    browser_ref.refresh()
+    if @context.router.getCurrentPath().match(/^\/preview/)
+      @buildOrRefresh()
+    else
+      @transitionWithCodeModeHistory('preview', 'preview-with-history')
 
   transitionWithCodeModeHistory: (route, with_history_route) ->
     track('transitioned_to', route: route)
@@ -84,6 +85,24 @@ React.createClass
       clean_file.content == new_file.content
 
   build: ->
+    @buildOrRefresh()
+
+  buildOrRefresh: ->
+    if @filesChanged() or !@state.first_build_done
+      @execBuild()
+    else
+      @refreshBrowser()
+
+  refreshBrowser: ->
+    new Promise (resolve, reject) =>
+      browser_ref = @refs.appRouteHandler.refs.__routeHandler__?.refs.browser
+      return resolve() unless browser_ref
+
+      # same route, refresh manually
+      browser_ref.refresh()
+      resolve()
+
+  execBuild: ->
     track('build_started')
     @actionStarted()
 
@@ -98,7 +117,7 @@ React.createClass
         return reject(err) if err
         return reject(resp.error) unless resp.success
 
-        @setState(clean_files: _.cloneDeep(Filesystem.ls()))
+        @setState(clean_files: _.cloneDeep(Filesystem.ls()), first_build_done: true)
         @actionStopped()
         track('build_finished')
         resolve()
@@ -106,27 +125,34 @@ React.createClass
   filesChanged: ->
     !_.isEmpty(@changedFiles())
 
-  publish: ->
+  publishToGithub: ->
     track('publish_started')
 
     if @filesChanged()
-      @build().then(@publish).catch (err) =>
+      @build().then(@publishToGithub).catch (err) =>
         @handleError(err)
     else
       @actionStarted()
       @execPublish().then( (resp) =>
         return @handleError(resp.error) unless resp.success
 
-        track('publish_finished')
-        @actionStopped()
+        track('publish_to_github_finished')
       ).catch (err) =>
         @handleError(err)
+
+  waitForPublishToServer: ->
+    new Promise (resolve, reject) =>
+      pusher_user_channel.bind 'app.build', =>
+        track('publish_to_server_finished')
+        @actionStopped()
+        resolve()
 
   execPublish: ->
     new Promise (resolve, reject) =>
       request.post json: true, url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/publish", (err, status, resp) ->
         return reject(err) if err
 
+        # published to GitHub
         resolve(resp)
 
   activeMode: ->
@@ -140,6 +166,30 @@ React.createClass
 
   actionStopped: ->
     @setState(action_in_progress: false)
+
+  freeHosting: ->
+    return <div></div> unless @state.show_free_hosting
+
+    <div className='row center-align free-hosting'>
+      <div className='free-hosting-title'>Free stuff</div>
+      <div>
+        Do you have your other website's HTML and CSS files?
+      </div>
+      <div>
+        For early users we're hosting it
+        <span className='free-hosting-free'>FREE</span>.
+      </div>
+      <a href='/apps/new_from_github' target='_blank' className="btn btn-small waves-effect waves-light free-hosting-button">
+        <div>
+          I believe - Host my website
+          <span className='free-button-icon'>
+            <i className='material-icons'>open_in_new</i>
+          </span>
+        </div>
+      </a>
+
+      <div onClick={@hideFreeHosting} className='free-button-hide'>No, thanks</div>
+    </div>
 
   render: ->
     <main className='editor-wrapper'>
@@ -162,7 +212,10 @@ React.createClass
         error={@state.error}
         transitionWithCodeModeHistory={@transitionWithCodeModeHistory}
         files_changed={@filesChanged()}
-        publish={@publish}
+        publishToGithub={@publishToGithub}
+        waitForPublishToServer={@waitForPublishToServer}
         actionStopped={@actionStopped}
         ref='appRouteHandler'/>
+
+      {@freeHosting()}
     </main>

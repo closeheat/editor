@@ -16,13 +16,18 @@ FileUp = require('./file_up');
 
 module.exports = React.createClass({
   folderFiles: function() {
-    return _.map(this.props.dir.files, (function(_this) {
+    var dirs, files, ref, result;
+    result = _.map(this.props.dir.files, (function(_this) {
       return function(file) {
         file.href = _this.props.reuseTabHref(file.path);
         file.name = file.path;
         return file;
       };
     })(this));
+    ref = _.partition(result, function(f) {
+      return f.type === 'dir';
+    }), dirs = ref[0], files = ref[1];
+    return dirs.concat(files);
   },
   upHref: function() {
     var up_path;
@@ -58,7 +63,8 @@ module.exports = React.createClass({
       return function(file) {
         return React.createElement(File, {
           "file": file,
-          "active": _this.props.active
+          "active": _this.props.active,
+          "supported_modes": _this.props.supported_modes
         });
       };
     })(this)))))));

@@ -30,8 +30,20 @@ module.exports = React.createClass({
     track('loaded');
     return {
       clean_files: _.cloneDeep(Filesystem.ls()),
-      action_in_progress: false
+      action_in_progress: false,
+      first_build_done: false
     };
+  },
+  showFreeHosting: function() {
+    return this.setState({
+      show_free_hosting: true
+    });
+  },
+  hideFreeHosting: function() {
+    return this.setState({
+      show_free_hosting: false,
+      free_hosting_shown: true
+    });
   },
   bindKeys: function() {
     return $(window).bind('keydown', (function(_this) {
@@ -59,17 +71,15 @@ module.exports = React.createClass({
     return this.transitionWithCodeModeHistory('code', '/code/*?');
   },
   previewClick: function() {
-    var browser_ref;
     track('preview_clicked');
     if (this.state.action_in_progress) {
       return;
     }
-    this.transitionWithCodeModeHistory('preview', 'preview-with-history');
-    browser_ref = this.refs.appRouteHandler.refs.__routeHandler__.refs.browser;
-    if (!browser_ref) {
-      return;
+    if (this.context.router.getCurrentPath().match(/^\/preview/)) {
+      return this.buildOrRefresh();
+    } else {
+      return this.transitionWithCodeModeHistory('preview', 'preview-with-history');
     }
-    return browser_ref.refresh();
   },
   transitionWithCodeModeHistory: function(route, with_history_route) {
     track('transitioned_to', {
@@ -109,6 +119,29 @@ module.exports = React.createClass({
     })(this));
   },
   build: function() {
+    return this.buildOrRefresh();
+  },
+  buildOrRefresh: function() {
+    if (this.filesChanged() || !this.state.first_build_done) {
+      return this.execBuild();
+    } else {
+      return this.refreshBrowser();
+    }
+  },
+  refreshBrowser: function() {
+    return new Promise((function(_this) {
+      return function(resolve, reject) {
+        var browser_ref, ref;
+        browser_ref = (ref = _this.refs.appRouteHandler.refs.__routeHandler__) != null ? ref.refs.browser : void 0;
+        if (!browser_ref) {
+          return resolve();
+        }
+        browser_ref.refresh();
+        return resolve();
+      };
+    })(this));
+  },
+  execBuild: function() {
     track('build_started');
     this.actionStarted();
     return new Promise((function(_this) {
@@ -127,7 +160,8 @@ module.exports = React.createClass({
             return reject(resp.error);
           }
           _this.setState({
-            clean_files: _.cloneDeep(Filesystem.ls())
+            clean_files: _.cloneDeep(Filesystem.ls()),
+            first_build_done: true
           });
           _this.actionStopped();
           track('build_finished');
@@ -139,10 +173,10 @@ module.exports = React.createClass({
   filesChanged: function() {
     return !_.isEmpty(this.changedFiles());
   },
-  publish: function() {
+  publishToGithub: function() {
     track('publish_started');
     if (this.filesChanged()) {
-      return this.build().then(this.publish)["catch"]((function(_this) {
+      return this.build().then(this.publishToGithub)["catch"]((function(_this) {
         return function(err) {
           return _this.handleError(err);
         };
@@ -154,8 +188,7 @@ module.exports = React.createClass({
           if (!resp.success) {
             return _this.handleError(resp.error);
           }
-          track('publish_finished');
-          return _this.actionStopped();
+          return track('publish_to_github_finished');
         };
       })(this))["catch"]((function(_this) {
         return function(err) {
@@ -163,6 +196,17 @@ module.exports = React.createClass({
         };
       })(this));
     }
+  },
+  waitForPublishToServer: function() {
+    return new Promise((function(_this) {
+      return function(resolve, reject) {
+        return pusher_user_channel.bind('app.build', function() {
+          track('publish_to_server_finished');
+          _this.actionStopped();
+          return resolve();
+        });
+      };
+    })(this));
   },
   execPublish: function() {
     return new Promise((function(_this) {
@@ -194,6 +238,29 @@ module.exports = React.createClass({
       action_in_progress: false
     });
   },
+  freeHosting: function() {
+    if (!this.state.show_free_hosting) {
+      return React.createElement("div", null);
+    }
+    return React.createElement("div", {
+      "className": 'row center-align free-hosting'
+    }, React.createElement("div", {
+      "className": 'free-hosting-title'
+    }, "Free stuff"), React.createElement("div", null, "Do you have your other website\'s HTML and CSS files?"), React.createElement("div", null, "For early users we\'re hosting it", React.createElement("span", {
+      "className": 'free-hosting-free'
+    }, "FREE"), "."), React.createElement("a", {
+      "href": '/apps/new_from_github',
+      "target": '_blank',
+      "className": "btn btn-small waves-effect waves-light free-hosting-button"
+    }, React.createElement("div", null, "I believe - Host my website", React.createElement("span", {
+      "className": 'free-button-icon'
+    }, React.createElement("i", {
+      "className": 'material-icons'
+    }, "open_in_new")))), React.createElement("div", {
+      "onClick": this.hideFreeHosting,
+      "className": 'free-button-hide'
+    }, "No, thanks"));
+  },
   render: function() {
     return React.createElement("main", {
       "className": 'editor-wrapper'
@@ -214,9 +281,10 @@ module.exports = React.createClass({
       "error": this.state.error,
       "transitionWithCodeModeHistory": this.transitionWithCodeModeHistory,
       "files_changed": this.filesChanged(),
-      "publish": this.publish,
+      "publishToGithub": this.publishToGithub,
+      "waitForPublishToServer": this.waitForPublishToServer,
       "actionStopped": this.actionStopped,
       "ref": 'appRouteHandler'
-    }));
+    }), this.freeHosting());
   }
 });

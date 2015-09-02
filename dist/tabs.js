@@ -11,6 +11,23 @@ Link = Router.Link;
 Tab = require('./tab');
 
 module.exports = React.createClass({
+  getInitialState: function() {
+    return {
+      flash: false
+    };
+  },
+  onNewTab: function() {
+    this.setState({
+      flash: true
+    });
+    return setTimeout(((function(_this) {
+      return function() {
+        return _this.setState({
+          flash: false
+        });
+      };
+    })(this)), 50);
+  },
   render: function() {
     return React.createElement("ul", {
       "className": 'row tabs-row'
@@ -20,7 +37,8 @@ module.exports = React.createClass({
           "href": tab.href,
           "close_href": tab.close_href,
           "path": tab.path,
-          "active": tab.active
+          "active": tab.active,
+          "flash": _this.state.flash
         });
       };
     })(this)), React.createElement("li", {
@@ -29,7 +47,8 @@ module.exports = React.createClass({
       "to": 'file',
       "params": {
         splat: this.props.new_tab_href
-      }
+      },
+      "onClick": this.onNewTab
     }, React.createElement("div", null, "+ New tab"))));
   }
 });

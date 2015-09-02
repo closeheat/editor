@@ -15,7 +15,7 @@ React.createClass
       @props.handleError(err)
   browser: ->
     <div>
-      <div className='row'>
+      <div className='row full'>
         <div className='col browser-col full m12'>
           <Browser ref='browser' browser_url={@props.browser_url} />
         </div>
@@ -25,4 +25,6 @@ React.createClass
     if @state.build_finished
       @browser()
     else
-      <Loader title='Hang in tight. Building your page preview...'/>
+      <Loader
+        title='Hang in tight.'
+        subtitle='Building your page preview...'/>
