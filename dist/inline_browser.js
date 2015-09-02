@@ -6,22 +6,40 @@ window._ = require('lodash');
 
 inlineInject = function() {
   var bindEvent, event, events, getSelector, i, len, positionInDom, results;
-  positionInDom = function(el) {
-    if (!el.previousElementSibling) {
-      return 1;
+  positionInDom = function(el, count) {
+    var new_el;
+    if (count == null) {
+      count = 1;
+    }
+    if (new_el = el.previousElementSibling) {
+      return positionInDom(new_el, count + 1);
+    } else {
+      return count;
     }
   };
   getSelector = function(el) {
-    var class_name, classes, selector;
-    selector = [];
-    while (true) {
-      class_name = el.className ? (classes = el.className.split(' '), '.' + classes.join('.')) : '';
-      selector.unshift(el.nodeName.toLowerCase() + class_name + (":nth-child(" + (positionInDom(el)) + ")"));
-      if (!((el.nodeName.toLowerCase() !== 'html') && (el = el.parentNode))) {
+    var c, e, names;
+    names = [];
+    while (el.parentNode) {
+      if (el.id) {
+        names.unshift('#' + el.id);
         break;
+      } else {
+        if (el === el.ownerDocument.documentElement) {
+          names.unshift(el.tagName.toLowerCase());
+        } else {
+          c = 1;
+          e = el;
+          while (e.previousElementSibling) {
+            e = e.previousElementSibling;
+            c++;
+          }
+          names.unshift(el.tagName.toLowerCase() + ':nth-child(' + c + ')');
+        }
+        el = el.parentNode;
       }
     }
-    return selector.join(' > ').replace('html > body > ', '').replace('html > body', '');
+    return names.join(' > ');
   };
   bindEvent = function(event) {
     return window.addEventListener(event, function(e) {

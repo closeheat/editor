@@ -1,4 +1,4 @@
-var Filesystem, InlineBrowser, Loader, React, _, editingPrompt, mouseoutCode, mouseoverCode;
+var Filesystem, InlineBrowser, Loader, Parser, React, _, editingPrompt, mouseoutCode, mouseoverCode;
 
 React = require('react/addons');
 
@@ -9,6 +9,8 @@ InlineBrowser = require('./inline_browser');
 Loader = require('./loader');
 
 Filesystem = require('./filesystem');
+
+Parser = new DOMParser();
 
 editingPrompt = function() {
   return parent.postMessage({
@@ -97,7 +99,7 @@ module.exports = React.createClass({
     _.each(this.htmlFiles(), (function(_this) {
       return function(file) {
         var dom, element;
-        dom = $('<html>').html(file.content);
+        dom = $(Parser.parseFromString(file.content, "text/html"));
         element = dom.find(event.selector);
         return locations.push({
           file: file,
@@ -138,7 +140,7 @@ module.exports = React.createClass({
       "className": 'col browser-col full m12'
     }, React.createElement(InlineBrowser, {
       "ref": 'browser',
-      "browser_url": this.props.browser_url,
+      "browser_url": 'http://localhost:9000' || this.props.browser_url,
       "onMessage": this.onMessage
     }))));
   },

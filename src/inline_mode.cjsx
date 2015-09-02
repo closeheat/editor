@@ -3,6 +3,7 @@ _ = require 'lodash'
 InlineBrowser = require('./inline_browser')
 Loader = require('./loader')
 Filesystem = require('./filesystem')
+Parser = new DOMParser()
 
 editingPrompt = ->
   parent.postMessage(action: 'prompt', new_content: prompt('', 'CONTENT_VALUE'), 'http://localhost:4000')
@@ -62,7 +63,7 @@ React.createClass
     locations = []
 
     _.each @htmlFiles(), (file) =>
-      dom = $('<html>').html(file.content)
+      dom = $(Parser.parseFromString(file.content, "text/html"))
       element = dom.find(event.selector)
       locations.push(file: file, element: element, dom: dom, selector: event.selector)
 
@@ -85,7 +86,7 @@ React.createClass
     <div>
       <div className='row'>
         <div className='col browser-col full m12'>
-          <InlineBrowser ref='browser' browser_url={@props.browser_url} onMessage={@onMessage}/>
+          <InlineBrowser ref='browser' browser_url={'http://localhost:9000' || @props.browser_url} onMessage={@onMessage}/>
         </div>
       </div>
     </div>

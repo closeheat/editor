@@ -2,22 +2,32 @@ React = require 'react'
 window._ = require 'lodash'
 
 inlineInject = ->
-  positionInDom = (el) ->
-    return 1 unless el.previousElementSibling
+  positionInDom = (el, count = 1) ->
+    if new_el = el.previousElementSibling
+      positionInDom(new_el, count + 1)
+    else
+      count
 
   getSelector = (el) ->
-    selector = []
+    names = []
 
-    loop
-      class_name = if el.className
-        classes = el.className.split(' ')
-        '.' + classes.join('.')
+    while el.parentNode
+      if el.id
+        names.unshift '#' + el.id
+        break
       else
-        ''
-      selector.unshift(el.nodeName.toLowerCase() + class_name + ":nth-child(#{positionInDom(el)})")
-      break unless (el.nodeName.toLowerCase() != 'html') && (el = el.parentNode)
+        if el == el.ownerDocument.documentElement
+          names.unshift el.tagName.toLowerCase()
+        else
+          c = 1
+          e = el
+          while e.previousElementSibling
+            e = e.previousElementSibling
+            c++
+          names.unshift el.tagName.toLowerCase() + ':nth-child(' + c + ')'
+        el = el.parentNode
 
-    selector.join(' > ').replace('html > body > ', '').replace('html > body', '')
+    names.join ' > '
 
   bindEvent = (event) ->
     window.addEventListener event, (e) ->
