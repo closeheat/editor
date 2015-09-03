@@ -30,6 +30,7 @@
     "react-bootstrap": "^0.22.6",
     "react-code-mirror": "^3.0.4",
     "react-router": "^0.13.3",
+    "react-wysiwyg": "Nedomas/react-wysiwyg",
     "request": "^2.54.0",
     "stringify": "^3.1.0",
     "traverse": "^0.6.6",

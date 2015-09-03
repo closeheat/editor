@@ -29,11 +29,39 @@ inlineInject = ->
 
     names.join ' > '
 
+  bindScrollEvent = ->
+    window.addEventListener 'scroll', (e) ->
+      parent.postMessage
+        action: 'scroll'
+        top: e.srcElement.body.scrollTop
+        left: e.srcElement.body.scrollLeft
+      , 'http://localhost:4000'
+
   bindEvent = (event) ->
     window.addEventListener event, (e) ->
       e.preventDefault()
       selector = getSelector(e.target)
-      parent.postMessage(action: event, selector: selector, old_outline: e.target.outline, 'http://localhost:4000')
+
+      offsets = getElementOffset(e.target)
+      # debugger if event == 'click'
+
+      parent.postMessage
+        action: event
+        selector: selector
+        top: offsets.top
+        left: offsets.left
+        height: e.target.offsetHeight
+        width: e.target.offsetWidth
+        old_outline: e.target.outline
+        style: JSON.stringify(window.getComputedStyle(e.target))
+      , 'http://localhost:4000'
+
+  getElementOffset = (element) ->
+    de = document.documentElement
+    box = element.getBoundingClientRect()
+    top = box.top + window.pageYOffset - de.clientTop
+    left = box.left + window.pageXOffset - de.clientLeft
+    { top: top, left: left }
 
   events = [
     'click'
@@ -42,6 +70,7 @@ inlineInject = ->
   ]
 
   bindEvent(event) for event in events
+  bindScrollEvent()
 
   # browser.on 'focus', '[contenteditable]', ->
   #   console.log('focus')

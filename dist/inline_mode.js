@@ -1,10 +1,12 @@
-var Filesystem, InlineBrowser, Loader, Parser, React, _, editingPrompt, mouseoutCode, mouseoverCode;
+var Filesystem, InlineBrowser, Loader, Parser, Prompt, React, _, editingPrompt, mouseoutCode, mouseoverCode;
 
 React = require('react/addons');
 
 _ = require('lodash');
 
 InlineBrowser = require('./inline_browser');
+
+Prompt = require('./prompt');
 
 Loader = require('./loader');
 
@@ -34,7 +36,11 @@ mouseoutCode = function() {
 module.exports = React.createClass({
   getInitialState: function() {
     return {
-      build_finished: false
+      build_finished: false,
+      show_prompt: false,
+      iframe_scroll_top: 0,
+      iframe_scroll_left: 0,
+      current_element_data: {}
     };
   },
   componentDidMount: function() {
@@ -59,6 +65,8 @@ module.exports = React.createClass({
       return this.onMouseover(e.data);
     } else if (e.data.action === 'mouseout') {
       return this.onMouseout(e.data);
+    } else if (e.data.action === 'scroll') {
+      return this.onScroll(e.data);
     } else {
       debugger;
     }
@@ -87,26 +95,32 @@ module.exports = React.createClass({
   onClick: function(event) {
     var element_data;
     element_data = this.editableElement(event);
-    if (!element_data) {
-      return;
+    if (element_data) {
+      return this.setState({
+        show_prompt: true,
+        current_element_data: element_data
+      });
+    } else {
+      return this.setState({
+        show_prompt: false,
+        current_element_data: {}
+      });
     }
-    debugger;
-    return this.refs.browser.evalInIframe(editingPrompt.toString().replace('CONTENT_VALUE', element_data.element.html()));
   },
   editableElement: function(event) {
     var locations;
     locations = [];
     _.each(this.htmlFiles(), (function(_this) {
       return function(file) {
-        var dom, element;
+        var dom, element, element_data;
         dom = $(Parser.parseFromString(file.content, "text/html"));
         element = dom.find(event.selector);
-        return locations.push({
+        element_data = {
           file: file,
           element: element,
-          dom: dom,
-          selector: event.selector
-        });
+          dom: dom
+        };
+        return locations.push(_.merge(element_data, event));
       };
     })(this));
     if (!this.isEditableElement(locations)) {
@@ -133,6 +147,23 @@ module.exports = React.createClass({
       return file.path.match(/\.html$/);
     });
   },
+  onScroll: function(data) {
+    console.log(data);
+    return this.setState({
+      iframe_scroll_top: data.top,
+      iframe_scroll_left: data.left
+    });
+  },
+  prompt: function() {
+    if (!this.state.show_prompt) {
+      return React.createElement("div", null);
+    }
+    return React.createElement(Prompt, {
+      "element_data": this.state.current_element_data,
+      "iframe_scroll_top": this.state.iframe_scroll_top,
+      "iframe_scroll_left": this.state.iframe_scroll_left
+    });
+  },
   browser: function() {
     return React.createElement("div", null, React.createElement("div", {
       "className": 'row'
@@ -142,7 +173,7 @@ module.exports = React.createClass({
       "ref": 'browser',
       "browser_url": 'http://localhost:9000' || this.props.browser_url,
       "onMessage": this.onMessage
-    }))));
+    }))), this.prompt());
   },
   render: function() {
     if (this.state.build_finished) {

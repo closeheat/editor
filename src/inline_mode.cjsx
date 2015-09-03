@@ -1,6 +1,7 @@
 React = require 'react/addons'
 _ = require 'lodash'
 InlineBrowser = require('./inline_browser')
+Prompt = require('./prompt')
 Loader = require('./loader')
 Filesystem = require('./filesystem')
 Parser = new DOMParser()
@@ -20,7 +21,11 @@ module.exports =
 React.createClass
   getInitialState: ->
     {
-      build_finished: false,
+      build_finished: false
+      show_prompt: false
+      iframe_scroll_top: 0
+      iframe_scroll_left: 0
+      current_element_data: {}
     }
   componentDidMount: ->
     @props.build().then((resp) =>
@@ -36,6 +41,8 @@ React.createClass
       @onMouseover(e.data)
     else if e.data.action == 'mouseout'
       @onMouseout(e.data)
+    else if e.data.action == 'scroll'
+      @onScroll(e.data)
     else
       debugger
 
@@ -54,18 +61,28 @@ React.createClass
     @refs.browser.evalInIframe(code)
   onClick: (event) ->
     element_data = @editableElement(event)
-    return unless element_data
 
-    # @setState(editing_location: element_data)
-    debugger
-    @refs.browser.evalInIframe(editingPrompt.toString().replace('CONTENT_VALUE', element_data.element.html()))
+    if element_data
+      @setState
+        show_prompt: true
+        current_element_data: element_data
+    else
+      @setState
+        show_prompt: false
+        current_element_data: {}
+
   editableElement: (event) ->
     locations = []
 
     _.each @htmlFiles(), (file) =>
       dom = $(Parser.parseFromString(file.content, "text/html"))
       element = dom.find(event.selector)
-      locations.push(file: file, element: element, dom: dom, selector: event.selector)
+      element_data =
+        file: file
+        element: element
+        dom: dom
+
+      locations.push(_.merge(element_data, event))
 
     return unless @isEditableElement(locations)
 
@@ -82,6 +99,18 @@ React.createClass
   htmlFiles: ->
     _.select Filesystem.ls(), (file) ->
       file.path.match(/\.html$/)
+
+  onScroll: (data) ->
+    console.log(data)
+    @setState(iframe_scroll_top: data.top, iframe_scroll_left: data.left)
+  prompt: ->
+    return <div></div> unless @state.show_prompt
+
+    <Prompt
+      element_data={@state.current_element_data}
+      iframe_scroll_top={@state.iframe_scroll_top}
+      iframe_scroll_left={@state.iframe_scroll_left}
+    />
   browser: ->
     <div>
       <div className='row'>
@@ -89,6 +118,7 @@ React.createClass
           <InlineBrowser ref='browser' browser_url={'http://localhost:9000' || @props.browser_url} onMessage={@onMessage}/>
         </div>
       </div>
+      {@prompt()}
     </div>
   render: ->
     if @state.build_finished

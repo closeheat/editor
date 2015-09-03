@@ -5,7 +5,7 @@ React = require('react');
 window._ = require('lodash');
 
 inlineInject = function() {
-  var bindEvent, event, events, getSelector, i, len, positionInDom, results;
+  var bindEvent, bindScrollEvent, event, events, getElementOffset, getSelector, i, len, positionInDom;
   positionInDom = function(el, count) {
     var new_el;
     if (count == null) {
@@ -41,25 +41,50 @@ inlineInject = function() {
     }
     return names.join(' > ');
   };
-  bindEvent = function(event) {
-    return window.addEventListener(event, function(e) {
-      var selector;
-      e.preventDefault();
-      selector = getSelector(e.target);
+  bindScrollEvent = function() {
+    return window.addEventListener('scroll', function(e) {
       return parent.postMessage({
-        action: event,
-        selector: selector,
-        old_outline: e.target.outline
+        action: 'scroll',
+        top: e.srcElement.body.scrollTop,
+        left: e.srcElement.body.scrollLeft
       }, 'http://localhost:4000');
     });
   };
+  bindEvent = function(event) {
+    return window.addEventListener(event, function(e) {
+      var offsets, selector;
+      e.preventDefault();
+      selector = getSelector(e.target);
+      offsets = getElementOffset(e.target);
+      return parent.postMessage({
+        action: event,
+        selector: selector,
+        top: offsets.top,
+        left: offsets.left,
+        height: e.target.offsetHeight,
+        width: e.target.offsetWidth,
+        old_outline: e.target.outline,
+        style: JSON.stringify(window.getComputedStyle(e.target))
+      }, 'http://localhost:4000');
+    });
+  };
+  getElementOffset = function(element) {
+    var box, de, left, top;
+    de = document.documentElement;
+    box = element.getBoundingClientRect();
+    top = box.top + window.pageYOffset - de.clientTop;
+    left = box.left + window.pageXOffset - de.clientLeft;
+    return {
+      top: top,
+      left: left
+    };
+  };
   events = ['click', 'mouseover', 'mouseout'];
-  results = [];
   for (i = 0, len = events.length; i < len; i++) {
     event = events[i];
-    results.push(bindEvent(event));
+    bindEvent(event);
   }
-  return results;
+  return bindScrollEvent();
 };
 
 module.exports = React.createClass({
