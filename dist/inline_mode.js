@@ -44,6 +44,9 @@ module.exports = React.createClass({
     };
   },
   componentDidMount: function() {
+    return this.build();
+  },
+  build: function() {
     return this.props.build().then((function(_this) {
       return function(resp) {
         return _this.setState({
@@ -55,6 +58,12 @@ module.exports = React.createClass({
         return _this.props.handleError(err);
       };
     })(this));
+  },
+  rebuild: function() {
+    this.setState({
+      build_finished: false
+    });
+    return this.build();
   },
   onMessage: function(e) {
     if (e.data.action === 'click') {
@@ -95,17 +104,20 @@ module.exports = React.createClass({
   onClick: function(event) {
     var element_data;
     element_data = this.editableElement(event);
-    if (element_data) {
-      return this.setState({
-        show_prompt: true,
-        current_element_data: element_data
-      });
-    } else {
-      return this.setState({
-        show_prompt: false,
-        current_element_data: {}
-      });
+    this.removePrompt();
+    if (!element_data) {
+      return;
     }
+    return this.setState({
+      show_prompt: true,
+      current_element_data: element_data
+    });
+  },
+  removePrompt: function() {
+    return this.setState({
+      show_prompt: false,
+      current_element_data: {}
+    });
   },
   editableElement: function(event) {
     var locations;
@@ -148,11 +160,23 @@ module.exports = React.createClass({
     });
   },
   onScroll: function(data) {
-    console.log(data);
     return this.setState({
       iframe_scroll_top: data.top,
       iframe_scroll_left: data.left
     });
+  },
+  onSave: function(new_value) {
+    var found_element, new_content, new_element_html, old_element_html;
+    old_element_html = this.state.current_element_data.element.prop('outerHTML');
+    new_element_html = this.state.current_element_data.element.html(new_value).prop('outerHTML');
+    found_element = this.state.current_element_data.file.content.match(old_element_html);
+    if (!found_element) {
+      return alert('Cant find the element in code. Formatting?');
+    }
+    new_content = this.state.current_element_data.file.content.replace(old_element_html, new_element_html);
+    Filesystem.write(this.state.current_element_data.file.path, new_content);
+    this.removePrompt();
+    return this.rebuild();
   },
   prompt: function() {
     if (!this.state.show_prompt) {
@@ -161,7 +185,8 @@ module.exports = React.createClass({
     return React.createElement(Prompt, {
       "element_data": this.state.current_element_data,
       "iframe_scroll_top": this.state.iframe_scroll_top,
-      "iframe_scroll_left": this.state.iframe_scroll_left
+      "iframe_scroll_left": this.state.iframe_scroll_left,
+      "onSave": this.onSave
     });
   },
   browser: function() {

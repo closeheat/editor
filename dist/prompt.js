@@ -8,44 +8,55 @@ module.exports = React.createClass({
   getInitialState: function() {
     return {
       value: this.props.element_data.element.html(),
-      initial_style: this.initialStyle()
+      field_style: this.initialStyle()
     };
   },
   initialStyle: function() {
-    var original_styles, position_style;
-    position_style = {
-      position: 'absolute',
+    var field_styles, original_styles;
+    field_styles = {
       width: this.props.element_data.width,
       height: this.props.element_data.height,
       backgroundColor: 'rgb(24, 30, 44)',
+      color: '#fff',
       border: 0,
       outline: '3px solid white'
     };
-    original_styles = _.pick(JSON.parse(this.props.element_data.style), 'font', 'padding', 'color', 'lineHeight', 'textAlign', 'textTransform');
-    return _.merge(original_styles, position_style);
+    original_styles = _.pick(JSON.parse(this.props.element_data.style), 'font', 'padding', 'lineHeight', 'textAlign', 'textTransform');
+    return _.merge(original_styles, field_styles);
   },
   onChange: function(new_value) {
     return this.setState({
       value: new_value
     });
   },
-  style: function() {
-    var result;
-    result = this.state.initial_style;
-    result.top = this.props.element_data.top + 54 - this.props.iframe_scroll_top;
-    result.left = this.props.element_data.left - this.props.iframe_scroll_left;
-    return result;
+  onSave: function() {
+    return this.props.onSave(this.state.value);
+  },
+  positionStyle: function() {
+    return {
+      position: 'absolute',
+      top: this.props.element_data.top + 54 - this.props.iframe_scroll_top - 20,
+      left: this.props.element_data.left - this.props.iframe_scroll_left
+    };
   },
   render: function() {
-    return React.createElement(ContentEditable, {
-      "key": this.props.iframe_scroll_top,
+    return React.createElement("div", {
+      "className": 'prompt',
+      "style": this.positionStyle(),
+      "key": this.props.iframe_scroll_top
+    }, React.createElement("div", {
+      "className": 'prompt-actions'
+    }, React.createElement("div", {
+      "className": 'prompt-action',
+      "onClick": this.onSave
+    }, "Save")), React.createElement(ContentEditable, {
       "tagName": 'div',
       "onChange": this.onChange,
       "html": this.state.value,
       "preventStyling": true,
       "noLinebreaks": true,
       "editing": true,
-      "style": this.style()
-    });
+      "style": this.state.field_style
+    }));
   }
 });

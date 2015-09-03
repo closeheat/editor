@@ -28,10 +28,17 @@ React.createClass
       current_element_data: {}
     }
   componentDidMount: ->
+    @build()
+  build: ->
     @props.build().then((resp) =>
       @setState(build_finished: true)
     ).catch (err) =>
       @props.handleError(err)
+
+
+  rebuild: ->
+    @setState(build_finished: false)
+    @build()
   onMessage: (e) ->
     if e.data.action == 'click'
       @onClick(e.data)
@@ -61,15 +68,18 @@ React.createClass
     @refs.browser.evalInIframe(code)
   onClick: (event) ->
     element_data = @editableElement(event)
+    @removePrompt()
 
-    if element_data
-      @setState
-        show_prompt: true
-        current_element_data: element_data
-    else
-      @setState
-        show_prompt: false
-        current_element_data: {}
+    return unless element_data
+
+    @setState
+      show_prompt: true
+      current_element_data: element_data
+
+  removePrompt: ->
+    @setState
+      show_prompt: false
+      current_element_data: {}
 
   editableElement: (event) ->
     locations = []
@@ -101,8 +111,18 @@ React.createClass
       file.path.match(/\.html$/)
 
   onScroll: (data) ->
-    console.log(data)
     @setState(iframe_scroll_top: data.top, iframe_scroll_left: data.left)
+  onSave: (new_value) ->
+    old_element_html = @state.current_element_data.element.prop('outerHTML')
+    new_element_html = @state.current_element_data.element.html(new_value).prop('outerHTML')
+
+    found_element = @state.current_element_data.file.content.match(old_element_html)
+    return alert('Cant find the element in code. Formatting?') unless found_element
+
+    new_content = @state.current_element_data.file.content.replace(old_element_html, new_element_html)
+    Filesystem.write(@state.current_element_data.file.path, new_content)
+    @removePrompt()
+    @rebuild()
   prompt: ->
     return <div></div> unless @state.show_prompt
 
@@ -110,6 +130,7 @@ React.createClass
       element_data={@state.current_element_data}
       iframe_scroll_top={@state.iframe_scroll_top}
       iframe_scroll_left={@state.iframe_scroll_left}
+      onSave={@onSave}
     />
   browser: ->
     <div>
