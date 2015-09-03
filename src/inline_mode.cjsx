@@ -116,6 +116,7 @@ React.createClass
     old_element_html = @state.current_element_data.element.prop('outerHTML')
     new_element_html = @state.current_element_data.element.html(new_value).prop('outerHTML')
 
+    # DO THIS CHECK BEFORE
     found_element = @state.current_element_data.file.content.match(old_element_html)
     return alert('Cant find the element in code. Formatting?') unless found_element
 
