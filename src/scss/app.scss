@@ -8,12 +8,18 @@ $red: #EE4340;
 $hover-red-bg: hsla(1, 84%, 59%, .1);
 $hover-red-text: hsla(1, 84%, 49%, 1);
 $grey: #C1C6D1;
+$dark-grey: hsla(227, 27%, 14%, .4);
 $light-grey: hsla(221, 15%, 79%, .2);
 $even-lighter-grey: hsla(221, 15%, 79%, .1);
 $white: #fff;
 $darker-white: hsla(0, 0%, 90%, 1);
 $whiter-grey: hsla(0, 0%, 90%, .3);
 $header-in-progress-text-color: hsla(0, 0%, 70%, 1);
+$tint: hsla(227, 27%, 14%, .7);
+$green: #4EB876;
+$light-green: hsla(143, 43%, 51%, .7);
+$very-light-green: hsla(143, 43%, 51%, .5);
+$blue: hsla(204, 61%, 57%, 1);
 
 $tab-bg-color: #EBEAEB;
 $tab-text-color: #9D9D9D;
@@ -26,6 +32,7 @@ $tab-hover-bg-color: #F0EFEF;
 $error-title-color: hsla(0, 0%, 98%, 1);
 
 $header-height: 54px;
+$modal-shadow: 0 16px 28px 0 rgba(0, 0, 0, 0.22), 0 25px 55px 0 rgba(0, 0, 0, 0.21);
 
 html {
   height: 100%;
@@ -303,24 +310,74 @@ body {
     100% { opacity: 1; }
   }
 
-  .free-hosting {
-    @extend .action-title;
-
+  .free-hosting-container {
     position: fixed;
-    bottom: 0;
-    right: 5px;
-    padding: 20px;
-    border-radius: 5px;
-    border: 2px solid $light-grey;
-    background-color: #FDFDFD;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: $tint;
     animation-name: appear-later;
     animation-duration: 1s;
     z-index: 999;
+  }
+
+  .free-hosting {
+    box-shadow: $modal-shadow;
+    width: 500px;
+    margin: 15% auto;
+    padding: 40px 40px 0;
+    font-size: 12px;
+    border-radius: 2px;
+    border: 2px solid $light-grey;
+    background-color: #FDFDFD;
 
     .free-hosting-title {
       font-size: 20px;
       font-weight: 600;
-      color: #4EB876;
+      color: $primary-color;
+      margin-bottom: 10px;
+    }
+
+    .free-hosting-type {
+      cursor: pointer;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+
+    .free-hosting-type-selected {
+      color: $blue;
+
+      .free-hosting-type-icon {
+        border-color: $blue;
+      }
+
+      .free-hosting-type-title {
+        color: #fdfdfd;
+        background-color: $blue;
+        border-radius: 10px;
+      }
+    }
+
+    .free-hosting-type-icon {
+      padding: 20px;
+      border-radius: 5px;
+      margin: 20px 40px 15px;
+      border: 3px solid $grey;
+    }
+
+    .free-hosting-type:not(.free-hosting-type-selected) {
+      color: $grey;
+
+      .free-hosting-type-icon {
+        &:hover {
+          border-color: $dark-grey;
+        }
+      }
+
+      &:hover {
+        color: $dark-grey;
+      }
     }
 
     .free-hosting-free {
@@ -332,9 +389,11 @@ body {
     .free-hosting-button {
       @extend .published-button;
 
-      background-color: #4EB876;
-      margin-top: 10px;
+      background-color: $green;
+      margin-top: 40px;
       line-height: 20px;
+      padding-top: 17px;
+      width: 185px;
     }
 
     .free-button-icon i {

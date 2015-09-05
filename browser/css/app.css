@@ -8228,7 +8228,7 @@ body {
       color: #C1C6D1;
       text-transform: uppercase;
       font-size: 11px; }
-  .editor-wrapper .action-title, .editor-wrapper .published .published-title, .editor-wrapper .free-hosting, .editor-wrapper .error .error-title {
+  .editor-wrapper .action-title, .editor-wrapper .published .published-title, .editor-wrapper .error .error-title {
     font-size: 12px;
     color: #9D9D9D;
     text-align: center;
@@ -8263,29 +8263,63 @@ body {
       font-size: 12px;
       text-transform: none;
       color: rgba(255, 255, 255, 0.7); }
-  .editor-wrapper .free-hosting {
+  .editor-wrapper .free-hosting-container {
     position: fixed;
-    bottom: 0;
-    right: 5px;
-    padding: 20px;
-    border-radius: 5px;
-    border: 2px solid rgba(193, 199, 209, 0.2);
-    background-color: #FDFDFD;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(26, 30, 45, 0.7);
     animation-name: appear-later;
     animation-duration: 1s;
     z-index: 999; }
+  .editor-wrapper .free-hosting {
+    box-shadow: 0 16px 28px 0 rgba(0, 0, 0, 0.22), 0 25px 55px 0 rgba(0, 0, 0, 0.21);
+    width: 500px;
+    margin: 15% auto;
+    padding: 40px 40px 0;
+    font-size: 12px;
+    border-radius: 2px;
+    border: 2px solid rgba(193, 199, 209, 0.2);
+    background-color: #FDFDFD; }
     .editor-wrapper .free-hosting .free-hosting-title {
       font-size: 20px;
       font-weight: 600;
-      color: #4EB876; }
+      color: #1A1E2D;
+      margin-bottom: 10px; }
+    .editor-wrapper .free-hosting .free-hosting-type {
+      cursor: pointer;
+      text-transform: uppercase;
+      font-size: 11px; }
+    .editor-wrapper .free-hosting .free-hosting-type-selected {
+      color: #4e9fd4; }
+      .editor-wrapper .free-hosting .free-hosting-type-selected .free-hosting-type-icon {
+        border-color: #4e9fd4; }
+      .editor-wrapper .free-hosting .free-hosting-type-selected .free-hosting-type-title {
+        color: #fdfdfd;
+        background-color: #4e9fd4;
+        border-radius: 10px; }
+    .editor-wrapper .free-hosting .free-hosting-type-icon {
+      padding: 20px;
+      border-radius: 5px;
+      margin: 20px 40px 15px;
+      border: 3px solid #C1C6D1; }
+    .editor-wrapper .free-hosting .free-hosting-type:not(.free-hosting-type-selected) {
+      color: #C1C6D1; }
+      .editor-wrapper .free-hosting .free-hosting-type:not(.free-hosting-type-selected) .free-hosting-type-icon:hover {
+        border-color: rgba(26, 30, 45, 0.4); }
+      .editor-wrapper .free-hosting .free-hosting-type:not(.free-hosting-type-selected):hover {
+        color: rgba(26, 30, 45, 0.4); }
     .editor-wrapper .free-hosting .free-hosting-free {
       color: #4EB876;
       font-weight: 600;
       padding-left: 3px; }
     .editor-wrapper .free-hosting .free-hosting-button {
       background-color: #4EB876;
-      margin-top: 10px;
-      line-height: 20px; }
+      margin-top: 40px;
+      line-height: 20px;
+      padding-top: 17px;
+      width: 185px; }
     .editor-wrapper .free-hosting .free-button-icon i {
       font-size: 12px;
       padding-left: 10px; }
