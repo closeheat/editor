@@ -195,5 +195,5 @@ React.createClass
         actionStopped={@actionStopped}
         ref='appRouteHandler'/>
 
-      <NewApp show={@state.show_free_hosting} />
+      <NewApp show={@state.show_free_hosting} close={@hideFreeHosting}/>
     </main>

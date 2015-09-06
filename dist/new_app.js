@@ -44,7 +44,8 @@ module.exports = React.createClass({
       return React.createElement("div", null);
     }
     return React.createElement("div", {
-      "className": 'free-hosting-container'
+      "className": 'free-hosting-container',
+      "onClick": this.props.close
     }, React.createElement("div", {
       "className": 'free-hosting center-align'
     }, React.createElement("div", {

@@ -1,39 +1,3 @@
-$primary-color: #1A1E2D;
-$secondary-color: #F5534E;
-@import 'materialize';
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600);
-@import url(https://fonts.googleapis.com/icon?family=Material+Icons);
-@import url(http://fonts.googleapis.com/css?family=Source+Code+Pro);
-$red: #EE4340;
-$hover-red-bg: hsla(1, 84%, 59%, .1);
-$hover-red-text: hsla(1, 84%, 49%, 1);
-$grey: #C1C6D1;
-$dark-grey: hsla(227, 27%, 14%, .4);
-$light-grey: hsla(221, 15%, 79%, .2);
-$even-lighter-grey: hsla(221, 15%, 79%, .1);
-$white: #fff;
-$darker-white: hsla(0, 0%, 90%, 1);
-$whiter-grey: hsla(0, 0%, 90%, .3);
-$header-in-progress-text-color: hsla(0, 0%, 70%, 1);
-$tint: hsla(227, 27%, 14%, .7);
-$green: #4EB876;
-$light-green: hsla(143, 43%, 51%, .7);
-$very-light-green: hsla(143, 43%, 51%, .5);
-$blue: hsla(204, 61%, 57%, 1);
-
-$tab-bg-color: #EBEAEB;
-$tab-text-color: #9D9D9D;
-$tab-active-bg-color: #F3F4F4;
-$tab-active-text-color: #5B5B5B;
-$tabs-row-bg-color: #F6F6F6;
-$tab-border-color: hsla(0, 0%, 62%, .2);
-$tab-hover-bg-color: #F0EFEF;
-
-$error-title-color: hsla(0, 0%, 98%, 1);
-
-$header-height: 54px;
-$modal-shadow: 0 16px 28px 0 rgba(0, 0, 0, 0.22), 0 25px 55px 0 rgba(0, 0, 0, 0.21);
-
 html {
   height: 100%;
   font-family: 'Open Sans', sans-serif;
@@ -103,8 +67,8 @@ body {
   }
 
   .header-mode-active {
-    color: $red;
-    border-bottom: 2px solid $red;
+    color: $pretty-red;
+    border-bottom: 2px solid $pretty-red;
     box-sizing: border-box;
 
     &:hover {
@@ -152,7 +116,7 @@ body {
       display: inline-block;
 
       &:hover {
-        color: $red;
+        color: $pretty-red;
       }
     }
 
@@ -189,11 +153,11 @@ body {
     }
 
     .file-list-start {
-      color: $red;
+      color: $pretty-red;
     }
 
     .file-list-sep {
-      color: $grey;
+      color: $pretty-grey;
       padding: 0 10px;
     }
   }
@@ -208,7 +172,7 @@ body {
     th {
       font-size: 12px;
       text-transform: uppercase;
-      color: $grey;
+      color: $pretty-grey;
       font-weight: normal;
       padding-left: 0;
     }
@@ -228,19 +192,19 @@ body {
     }
 
     .file-list-icon i {
-      color: $red;
+      color: $pretty-red;
       font-size: 40px;
     }
 
     .file-list-uneditable {
       .file-list-name,
       .file-list-icon i {
-        color: $grey;
+        color: $pretty-grey;
       }
     }
 
     .file-list-kind {
-      color: $grey;
+      color: $pretty-grey;
       text-transform: uppercase;
       font-size: 11px;
     }
@@ -274,7 +238,7 @@ body {
 
     .published-icon i {
       font-size: 150px;
-      color: $red;
+      color: $pretty-red;
     }
 
     .published-container {
@@ -346,15 +310,15 @@ body {
     }
 
     .free-hosting-type-selected {
-      color: $blue;
+      color: $pretty-blue;
 
       .free-hosting-type-icon {
-        border-color: $blue;
+        border-color: $pretty-blue;
       }
 
       .free-hosting-type-title {
         color: #fdfdfd;
-        background-color: $blue;
+        background-color: $pretty-blue;
         border-radius: 10px;
       }
     }
@@ -363,11 +327,11 @@ body {
       padding: 20px;
       border-radius: 5px;
       margin: 20px 40px 15px;
-      border: 3px solid $grey;
+      border: 3px solid $pretty-grey;
     }
 
     .free-hosting-type:not(.free-hosting-type-selected) {
-      color: $grey;
+      color: $pretty-grey;
 
       .free-hosting-type-icon {
         &:hover {
@@ -389,7 +353,7 @@ body {
     .free-hosting-button {
       @extend .published-button;
 
-      background-color: $green;
+      background-color: $pretty-green;
       margin-top: 40px;
       line-height: 20px;
       padding-top: 17px;
@@ -403,8 +367,9 @@ body {
 
     .free-button-hide {
       margin-top: 10px;
-      color: $grey;
+      color: $pretty-grey;
       cursor: pointer;
+      text-transform: uppercase;
     }
   }
 
@@ -426,7 +391,7 @@ body {
 
       text-align: left;
       font-size: 12px;
-      background-color: $red;
+      background-color: $pretty-red;
       color: $error-title-color;
       padding: 10px 20px;
     }

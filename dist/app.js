@@ -269,7 +269,8 @@ module.exports = React.createClass({
       "actionStopped": this.actionStopped,
       "ref": 'appRouteHandler'
     }), React.createElement(NewApp, {
-      "show": this.state.show_free_hosting
+      "show": this.state.show_free_hosting,
+      "close": this.hideFreeHosting
     }));
   }
 });

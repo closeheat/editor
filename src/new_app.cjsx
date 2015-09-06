@@ -28,7 +28,7 @@ React.createClass
   render: ->
     return <div></div> unless @props.show
 
-    <div className='free-hosting-container'>
+    <div className='free-hosting-container' onClick={@props.close}>
       <div className='free-hosting center-align'>
         <div className='row free-hosting-title'>
           Secure your first free website

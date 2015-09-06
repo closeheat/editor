@@ -8326,7 +8326,8 @@ body {
     .editor-wrapper .free-hosting .free-button-hide {
       margin-top: 10px;
       color: #C1C6D1;
-      cursor: pointer; }
+      cursor: pointer;
+      text-transform: uppercase; }
   .editor-wrapper .error {
     height: calc(100vh - 54px);
     background-color: #FDFDFD;
