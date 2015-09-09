@@ -39,13 +39,19 @@ module.exports = React.createClass({
       return 'Get my website';
     }
   },
+  maybeClose: function(e) {
+    if (e.target.className !== 'free-hosting-container') {
+      return;
+    }
+    return this.props.close();
+  },
   render: function() {
     if (!this.props.show) {
       return React.createElement("div", null);
     }
     return React.createElement("div", {
       "className": 'free-hosting-container',
-      "onClick": this.props.close
+      "onClick": this.maybeClose
     }, React.createElement("div", {
       "className": 'free-hosting center-align'
     }, React.createElement("div", {

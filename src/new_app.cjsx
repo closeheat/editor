@@ -25,10 +25,15 @@ React.createClass
     else
       'Get my website'
 
+  maybeClose: (e) ->
+    return unless e.target.className == 'free-hosting-container'
+
+    @props.close()
+
   render: ->
     return <div></div> unless @props.show
 
-    <div className='free-hosting-container' onClick={@props.close}>
+    <div className='free-hosting-container' onClick={@maybeClose}>
       <div className='free-hosting center-align'>
         <div className='row free-hosting-title'>
           Secure your first free website
