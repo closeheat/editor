@@ -203,7 +203,6 @@ React.createClass
         return reject(err) if err
 
         window.location.origin = @newEditorUrl(resp.slug)
-        # resolve(resp)
 
   newEditorUrl: (slug) ->
     window.location.href = "#{window.location.origin}/apps/#{slug}/live_edit#{window.location.hash}"

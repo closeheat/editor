@@ -291,8 +291,7 @@ module.exports = React.createClass({
           if (err) {
             return reject(err);
           }
-          window.location.origin = _this.newEditorUrl(resp.slug);
-          return resolve(resp);
+          return window.location.origin = _this.newEditorUrl(resp.slug);
         });
       };
     })(this));

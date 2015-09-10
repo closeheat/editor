@@ -16,7 +16,7 @@ React.createClass
       @setState(selected: type)
   getHref: ->
     if @state.selected == 'upload'
-      '/apps/new_from_github'
+      '/upload/github'
     else
       '/apps/scratch/new'
   buttonText: ->

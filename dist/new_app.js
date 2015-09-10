@@ -27,7 +27,7 @@ module.exports = React.createClass({
   },
   getHref: function() {
     if (this.state.selected === 'upload') {
-      return '/apps/new_from_github';
+      return '/upload/github';
     } else {
       return '/apps/scratch/new';
     }
