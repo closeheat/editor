@@ -13,6 +13,7 @@ Navigation = Router.Navigation
 Header = require './header'
 Filesystem = require './filesystem'
 NewApp = require './new_app'
+ChangeDistDirToast = require './change_dist_dir_toast'
 
 module.exports =
 React.createClass
@@ -24,7 +25,8 @@ React.createClass
       clean_files: _.cloneDeep(Filesystem.ls()),
       action_in_progress: false,
       first_build_done: false,
-      show_free_hosting: false
+      show_free_hosting: false,
+      show_change_dist_dir: @props.show_change_dist_dir,
     }
 
   showFreeHosting: ->
@@ -169,6 +171,13 @@ React.createClass
   actionStopped: ->
     @setState(action_in_progress: false)
 
+  openSettings: ->
+    @hideChangeDistDirToast()
+    @transitionWithCodeModeHistory('settings', '/settings/*?')
+
+  hideChangeDistDirToast: ->
+    @setState(show_change_dist_dir: false)
+
   render: ->
     <main className='editor-wrapper'>
       <Header
@@ -184,6 +193,8 @@ React.createClass
       <RouteHandler
         browser_url={@props.browser_url}
         website_url={@props.website_url}
+        slug={@props.slug}
+        dist_dir={@props.dist_dir}
         editorChange={@editorChange}
         build={@build}
         handleError={@handleError}
@@ -196,4 +207,10 @@ React.createClass
         ref='appRouteHandler'/>
 
       <NewApp show={@state.show_free_hosting} close={@hideFreeHosting}/>
+      <ChangeDistDirToast
+        show={@state.show_change_dist_dir}
+        dist_dir={@props.dist_dir}
+        onClose={@hideChangeDistDirToast}
+        onClick={@openSettings}
+      />
     </main>

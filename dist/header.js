@@ -62,14 +62,14 @@ module.exports = Header = React.createClass({
     }, React.createElement("i", {
       "className": 'material-icons'
     }, "code"), "Code"), React.createElement("div", {
-      "className": this.activeModeClass('preview', 'label-with-icon s2 m3'),
+      "className": this.activeModeClass('preview', 'label-with-icon s2'),
       "onClick": this.props.onPreviewClick,
       "data-tooltip": 'Ctrl+S',
       "ref": 'preview'
     }, React.createElement("i", {
       "className": 'material-icons'
-    }, "navigation"), "Preview Changes"), React.createElement("div", {
-      "className": 'header-website-url col s4 m3 center-align label-with-icon',
+    }, "navigation"), "Preview"), React.createElement("div", {
+      "className": 'header-website-url col s4 center-align label-with-icon',
       "ref": 'website_url',
       "data-tooltip": 'This is your public page URL'
     }, React.createElement("a", {

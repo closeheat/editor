@@ -1,4 +1,4 @@
-var $, Filesystem, Header, Navigation, NewApp, Promise, React, RouteHandler, Router, _, flatten, request;
+var $, ChangeDistDirToast, Filesystem, Header, Navigation, NewApp, Promise, React, RouteHandler, Router, _, flatten, request;
 
 React = require('react/addons');
 
@@ -26,6 +26,8 @@ Filesystem = require('./filesystem');
 
 NewApp = require('./new_app');
 
+ChangeDistDirToast = require('./change_dist_dir_toast');
+
 module.exports = React.createClass({
   getInitialState: function() {
     this.bindKeys();
@@ -34,7 +36,8 @@ module.exports = React.createClass({
       clean_files: _.cloneDeep(Filesystem.ls()),
       action_in_progress: false,
       first_build_done: false,
-      show_free_hosting: false
+      show_free_hosting: false,
+      show_change_dist_dir: this.props.show_change_dist_dir
     };
   },
   showFreeHosting: function() {
@@ -244,6 +247,15 @@ module.exports = React.createClass({
       action_in_progress: false
     });
   },
+  openSettings: function() {
+    this.hideChangeDistDirToast();
+    return this.transitionWithCodeModeHistory('settings', '/settings/*?');
+  },
+  hideChangeDistDirToast: function() {
+    return this.setState({
+      show_change_dist_dir: false
+    });
+  },
   render: function() {
     return React.createElement("main", {
       "className": 'editor-wrapper'
@@ -258,6 +270,8 @@ module.exports = React.createClass({
     }), React.createElement(RouteHandler, {
       "browser_url": this.props.browser_url,
       "website_url": this.props.website_url,
+      "slug": this.props.slug,
+      "dist_dir": this.props.dist_dir,
       "editorChange": this.editorChange,
       "build": this.build,
       "handleError": this.handleError,
@@ -271,6 +285,11 @@ module.exports = React.createClass({
     }), React.createElement(NewApp, {
       "show": this.state.show_free_hosting,
       "close": this.hideFreeHosting
+    }), React.createElement(ChangeDistDirToast, {
+      "show": this.state.show_change_dist_dir,
+      "dist_dir": this.props.dist_dir,
+      "onClose": this.hideChangeDistDirToast,
+      "onClick": this.openSettings
     }));
   }
 });

@@ -58,11 +58,11 @@ Header = React.createClass
           <i className='material-icons'>code</i>
           Code
         </div>
-        <div className={@activeModeClass('preview', 'label-with-icon s2 m3')} onClick={@props.onPreviewClick} data-tooltip='Ctrl+S' ref='preview'>
+        <div className={@activeModeClass('preview', 'label-with-icon s2')} onClick={@props.onPreviewClick} data-tooltip='Ctrl+S' ref='preview'>
           <i className='material-icons'>navigation</i>
-          Preview Changes
+          Preview
         </div>
-        <div className='header-website-url col s4 m3 center-align label-with-icon' ref='website_url' data-tooltip='This is your public page URL'>
+        <div className='header-website-url col s4 center-align label-with-icon' ref='website_url' data-tooltip='This is your public page URL'>
           <a href={@props.website_url} target='_blank' className='truncate'>
             {@prettyWebsiteUrl()}
             <i className='material-icons header-icon-right'>open_in_new</i>

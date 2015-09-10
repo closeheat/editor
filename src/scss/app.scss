@@ -406,6 +406,59 @@ body {
       font-family: 'Source Code Pro', 'Open Sans', sans-serif;
     }
   }
+
+  .settings {
+    background-color: #F9F9FB;
+    padding: 50px 0;
+
+    .settings-container {
+      background-color: $pretty-white;
+      padding: 50px;
+    }
+
+    .settings-title {
+      text-align: left;
+      font-size: 32px;
+      font-weight: 300;
+    }
+
+    .input-field {
+      margin: 45px 0;
+    }
+
+    .settings-save-changes-button {
+      box-shadow: none;
+      width: 100%;
+    }
+
+    .settings-slug {
+      display: inline-block;
+      width: 50%;
+    }
+  }
+
+  .custom-toast {
+    position: fixed;
+    bottom: 15px;
+    left: 15px;
+    top: inherit;
+    font-size: 14px;
+    z-index: 999;
+
+    .custom-toast-buttons {
+      padding-left: 30px;
+
+      .btn-flat {
+        padding-left: 10px;
+        padding-right: 0;
+        margin: 0;
+      }
+    }
+  }
+}
+
+.input-field label {
+  left: 0;
 }
 
 .browser {
