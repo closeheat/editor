@@ -11,6 +11,24 @@ React.createClass
     @setState(dist_dir: e.target.value)
   changeSlug: (e) ->
     @setState(slug: e.target.value)
+  saveChanges: ->
+    @setState(saving: true)
+
+    jobs = []
+    jobs.push('dist_dir') if @state.dist_dir != @props.dist_dir
+    jobs.push('slug') if @state.slug != @props.slug
+
+    Promise.reduce(jobs, (total, name) =>
+      @saveSingle(name)
+    , 0).then =>
+      @setState(saving: false)
+
+  saveSingle: (name) ->
+    if name == 'dist_dir'
+      @props.saveDistDir(@state.dist_dir)
+    else
+      @props.saveSlug(@state.slug)
+
   render: ->
     <div className='settings'>
       <div className='row'>
@@ -38,8 +56,8 @@ React.createClass
             </label>
           </div>
 
-          <div className="btn btn-large waves-effect waves-light settings-save-changes-button">
-            Save Changes
+          <div onClick={@saveChanges} className="btn btn-large waves-effect waves-light settings-save-changes-button">
+            {if @state.saving then 'Saving...' else 'Save Changes'}
           </div>
 
         </div>

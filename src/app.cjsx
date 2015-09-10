@@ -27,6 +27,7 @@ React.createClass
       first_build_done: false,
       show_free_hosting: false,
       show_change_dist_dir: @props.show_change_dist_dir,
+      dist_dir: @props.dist_dir
     }
 
   showFreeHosting: ->
@@ -178,6 +179,35 @@ React.createClass
   hideChangeDistDirToast: ->
     @setState(show_change_dist_dir: false)
 
+  saveDistDir: (dist_dir) ->
+    new Promise (resolve, reject) =>
+      request.post
+        json: true
+        url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/change_dist_dir"
+        body:
+          dist_dir: dist_dir
+      , (err, status, resp) =>
+        return reject(err) if err
+
+        @setState(dist_dir: resp.dist_dir)
+        resolve(resp)
+
+  saveSlug: (slug) ->
+    new Promise (resolve, reject) =>
+      request.post
+        json: true
+        url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/change_slug"
+        body:
+          slug: slug
+      , (err, status, resp) =>
+        return reject(err) if err
+
+        window.location.origin = @newEditorUrl(resp.slug)
+        # resolve(resp)
+
+  newEditorUrl: (slug) ->
+    window.location.href = "#{window.location.origin}/apps/#{slug}/live_edit#{window.location.hash}"
+
   render: ->
     <main className='editor-wrapper'>
       <Header
@@ -194,7 +224,7 @@ React.createClass
         browser_url={@props.browser_url}
         website_url={@props.website_url}
         slug={@props.slug}
-        dist_dir={@props.dist_dir}
+        dist_dir={@state.dist_dir}
         editorChange={@editorChange}
         build={@build}
         handleError={@handleError}
@@ -204,12 +234,14 @@ React.createClass
         publishToGithub={@publishToGithub}
         waitForPublishToServer={@waitForPublishToServer}
         actionStopped={@actionStopped}
+        saveDistDir={@saveDistDir}
+        saveSlug={@saveSlug}
         ref='appRouteHandler'/>
 
       <NewApp show={@state.show_free_hosting} close={@hideFreeHosting}/>
       <ChangeDistDirToast
         show={@state.show_change_dist_dir}
-        dist_dir={@props.dist_dir}
+        dist_dir={@state.dist_dir}
         onClose={@hideChangeDistDirToast}
         onClick={@openSettings}
       />

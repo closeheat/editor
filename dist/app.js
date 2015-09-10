@@ -37,7 +37,8 @@ module.exports = React.createClass({
       action_in_progress: false,
       first_build_done: false,
       show_free_hosting: false,
-      show_change_dist_dir: this.props.show_change_dist_dir
+      show_change_dist_dir: this.props.show_change_dist_dir,
+      dist_dir: this.props.dist_dir
     };
   },
   showFreeHosting: function() {
@@ -256,6 +257,49 @@ module.exports = React.createClass({
       show_change_dist_dir: false
     });
   },
+  saveDistDir: function(dist_dir) {
+    return new Promise((function(_this) {
+      return function(resolve, reject) {
+        return request.post({
+          json: true,
+          url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/change_dist_dir",
+          body: {
+            dist_dir: dist_dir
+          }
+        }, function(err, status, resp) {
+          if (err) {
+            return reject(err);
+          }
+          _this.setState({
+            dist_dir: resp.dist_dir
+          });
+          return resolve(resp);
+        });
+      };
+    })(this));
+  },
+  saveSlug: function(slug) {
+    return new Promise((function(_this) {
+      return function(resolve, reject) {
+        return request.post({
+          json: true,
+          url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/change_slug",
+          body: {
+            slug: slug
+          }
+        }, function(err, status, resp) {
+          if (err) {
+            return reject(err);
+          }
+          window.location.origin = _this.newEditorUrl(resp.slug);
+          return resolve(resp);
+        });
+      };
+    })(this));
+  },
+  newEditorUrl: function(slug) {
+    return window.location.href = window.location.origin + "/apps/" + slug + "/live_edit" + window.location.hash;
+  },
   render: function() {
     return React.createElement("main", {
       "className": 'editor-wrapper'
@@ -271,7 +315,7 @@ module.exports = React.createClass({
       "browser_url": this.props.browser_url,
       "website_url": this.props.website_url,
       "slug": this.props.slug,
-      "dist_dir": this.props.dist_dir,
+      "dist_dir": this.state.dist_dir,
       "editorChange": this.editorChange,
       "build": this.build,
       "handleError": this.handleError,
@@ -281,13 +325,15 @@ module.exports = React.createClass({
       "publishToGithub": this.publishToGithub,
       "waitForPublishToServer": this.waitForPublishToServer,
       "actionStopped": this.actionStopped,
+      "saveDistDir": this.saveDistDir,
+      "saveSlug": this.saveSlug,
       "ref": 'appRouteHandler'
     }), React.createElement(NewApp, {
       "show": this.state.show_free_hosting,
       "close": this.hideFreeHosting
     }), React.createElement(ChangeDistDirToast, {
       "show": this.state.show_change_dist_dir,
-      "dist_dir": this.props.dist_dir,
+      "dist_dir": this.state.dist_dir,
       "onClose": this.hideChangeDistDirToast,
       "onClick": this.openSettings
     }));

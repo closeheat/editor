@@ -23,6 +23,37 @@ module.exports = React.createClass({
       slug: e.target.value
     });
   },
+  saveChanges: function() {
+    var jobs;
+    this.setState({
+      saving: true
+    });
+    jobs = [];
+    if (this.state.dist_dir !== this.props.dist_dir) {
+      jobs.push('dist_dir');
+    }
+    if (this.state.slug !== this.props.slug) {
+      jobs.push('slug');
+    }
+    return Promise.reduce(jobs, (function(_this) {
+      return function(total, name) {
+        return _this.saveSingle(name);
+      };
+    })(this), 0).then((function(_this) {
+      return function() {
+        return _this.setState({
+          saving: false
+        });
+      };
+    })(this));
+  },
+  saveSingle: function(name) {
+    if (name === 'dist_dir') {
+      return this.props.saveDistDir(this.state.dist_dir);
+    } else {
+      return this.props.saveSlug(this.state.slug);
+    }
+  },
   render: function() {
     return React.createElement("div", {
       "className": 'settings'
@@ -59,7 +90,8 @@ module.exports = React.createClass({
       "htmlFor": 'dist-dir',
       "className": 'active'
     }, "Directory to be published")), React.createElement("div", {
+      "onClick": this.saveChanges,
       "className": "btn btn-large waves-effect waves-light settings-save-changes-button"
-    }, "Save Changes"))));
+    }, (this.state.saving ? 'Saving...' : 'Save Changes')))));
   }
 });
