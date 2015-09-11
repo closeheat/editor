@@ -480,20 +480,3 @@ body {
 .row .col.full {
   padding: 0;
 }
-
-.dropdown-content {
-  li {
-    background-color: $primary-color;
-
-    a {
-      color: $pretty-grey;
-      font-size: 12px;
-      text-transform: uppercase;
-
-      &:hover {
-        background-color: $dropdown-hover-bg;
-        color: $pretty-white;
-      }
-    }
-  }
-}

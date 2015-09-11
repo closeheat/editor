@@ -306,13 +306,3 @@ body {
 
 .row .col.full {
   padding: 0; }
-
-.dropdown-content li {
-  background-color: #1A1E2D; }
-  .dropdown-content li a {
-    color: #C1C6D1;
-    font-size: 12px;
-    text-transform: uppercase; }
-    .dropdown-content li a:hover {
-      background-color: #2F212F;
-      color: #fff; }
