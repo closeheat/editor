@@ -113,12 +113,12 @@ module.exports = Header = React.createClass({
       "href": 'javascript:void(0);',
       "onClick": this.props.onSettingsClick
     }, "Settings")), React.createElement("li", null, React.createElement("a", {
-      "href": dashboard_url,
-      "target": '_blank'
-    }, "Website Dashboard")), React.createElement("li", null, React.createElement("a", {
       "href": 'javascript:void(0);',
       "onClick": this.props.onNewWebsiteClick
-    }, "Create a New Website"))), React.createElement(Tour, {
+    }, "Create a New Website")), React.createElement("li", null, React.createElement("a", {
+      "href": dashboard_url,
+      "target": '_blank'
+    }, "Website Dashboard"))), React.createElement(Tour, {
       "step": this.state.tour_step,
       "done": this.state.tour_done
     }));

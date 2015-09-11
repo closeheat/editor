@@ -31,7 +31,8 @@ class Core
           avatar={@data.avatar}
           browser_url={@data.browser_url}
           dist_dir={@data.dist_dir}
-          show_change_dist_dir={@data.show_change_dist_dir}
+          is_demo_app={@data.is_demo_app}
+          first_build={@data.first_build}
         />, document.body)
 
   routes: ->

@@ -101,13 +101,13 @@ Header = React.createClass
           </a>
         </li>
         <li>
-          <a href={dashboard_url} target='_blank'>
-            Website Dashboard
+          <a href='javascript:void(0);' onClick={@props.onNewWebsiteClick}>
+            Create a New Website
           </a>
         </li>
         <li>
-          <a href='javascript:void(0);' onClick={@props.onNewWebsiteClick}>
-            Create a New Website
+          <a href={dashboard_url} target='_blank'>
+            Website Dashboard
           </a>
         </li>
       </ul>

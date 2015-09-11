@@ -1,9 +1,10 @@
 React = require 'react/addons'
+_ = require 'lodash'
 
 module.exports =
 React.createClass
   distDirName: ->
-    return 'Root (/)' if @props.dist_dir == '/'
+    return 'Root (/)' if @props.dist_dir == '/' or _.isEmpty(@props.dist_dir)
 
     @props.dist_dir
   render: ->

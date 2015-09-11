@@ -1,10 +1,12 @@
-var React;
+var React, _;
 
 React = require('react/addons');
 
+_ = require('lodash');
+
 module.exports = React.createClass({
   distDirName: function() {
-    if (this.props.dist_dir === '/') {
+    if (this.props.dist_dir === '/' || _.isEmpty(this.props.dist_dir)) {
       return 'Root (/)';
     }
     return this.props.dist_dir;

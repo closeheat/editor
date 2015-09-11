@@ -46,7 +46,8 @@ module.exports = Core = (function() {
             "avatar": _this.data.avatar,
             "browser_url": _this.data.browser_url,
             "dist_dir": _this.data.dist_dir,
-            "show_change_dist_dir": _this.data.show_change_dist_dir
+            "is_demo_app": _this.data.is_demo_app,
+            "first_build": _this.data.first_build
           }), document.body);
         });
       };

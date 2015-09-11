@@ -37,9 +37,20 @@ module.exports = React.createClass({
       action_in_progress: false,
       first_build_done: false,
       show_free_hosting: false,
-      show_change_dist_dir: this.props.show_change_dist_dir,
+      show_change_dist_dir: !this.props.is_demo_app && this.props.first_build,
       dist_dir: this.props.dist_dir
     };
+  },
+  componentDidMount: function() {
+    if (this.props.is_demo_app) {
+      return this.showCodeGuide();
+    }
+  },
+  showCodeGuide: function() {
+    Materialize.toast("We created a simple demo website for you. Here's the code.", 10000);
+    return setTimeout((function() {
+      return Materialize.toast("Click <span class='guide-button'>Preview</span> to see how it looks.", 10000);
+    }), 4000);
   },
   showFreeHosting: function() {
     return this.setState({
@@ -79,7 +90,7 @@ module.exports = React.createClass({
   },
   previewClick: function() {
     track('preview_clicked');
-    if (!this.state.free_hosting_shown) {
+    if (this.props.is_demo_app && !this.state.free_hosting_shown) {
       setTimeout(this.showFreeHosting, 9000);
     }
     if (this.state.action_in_progress) {

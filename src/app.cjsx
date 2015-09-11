@@ -26,9 +26,16 @@ React.createClass
       action_in_progress: false,
       first_build_done: false,
       show_free_hosting: false,
-      show_change_dist_dir: @props.show_change_dist_dir,
+      show_change_dist_dir: !@props.is_demo_app && @props.first_build,
       dist_dir: @props.dist_dir
     }
+
+  componentDidMount: ->
+    @showCodeGuide() if @props.is_demo_app
+
+  showCodeGuide: ->
+    Materialize.toast("We created a simple demo website for you. Here's the code.", 10000)
+    setTimeout((-> Materialize.toast("Click <span class='guide-button'>Preview</span> to see how it looks.", 10000)), 4000)
 
   showFreeHosting: ->
     @setState(show_free_hosting: true)
@@ -56,7 +63,7 @@ React.createClass
     @transitionWithCodeModeHistory('code', '/code/*?')
   previewClick: ->
     track('preview_clicked')
-    setTimeout(@showFreeHosting, 9000) unless @state.free_hosting_shown
+    setTimeout(@showFreeHosting, 9000) if @props.is_demo_app and !@state.free_hosting_shown
     return if @state.action_in_progress
 
     if @context.router.getCurrentPath().match(/^\/preview/)
