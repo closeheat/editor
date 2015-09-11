@@ -35,12 +35,17 @@ Header = React.createClass
 
   componentDidMount: ->
     @addTooltips()
+    @addDropdowns()
 
   componentDidUpdate: ->
     @addTooltips()
+    @addDropdowns()
+
+  addDropdowns: ->
+    $(@getDOMNode()).find('.dropdown-button').dropdown(hover: true, belowOrigin: true, gutter: 20, constrain_width: false)
 
   addTooltips: ->
-    elements = _.map ['code', 'preview', 'publish', 'website_url', 'avatar'], (name) =>
+    elements = _.map ['code', 'preview', 'publish', 'website_url'], (name) =>
       React.findDOMNode(@refs[name])
 
     $(elements).tooltip
@@ -82,12 +87,25 @@ Header = React.createClass
             Support
           </a>
         </div>
-        <div className='col s1 center-align'>
-          <a href={dashboard_url} target='_blank' className='header-avatar' ref='avatar' data-tooltip='Dashboard'>
+        <div className='col s1 center-align dropdown-button' data-activates='avatar-dropdown'>
+          <div className='header-avatar'>
             <img src={@props.avatar}/>
-          </a>
+          </div>
         </div>
       </div>
+
+      <ul id='avatar-dropdown' className='dropdown-content'>
+        <li>
+          <a href='javascript:void(0);' onClick={@props.onSettingsClick}>
+            Settings
+          </a>
+        </li>
+        <li>
+          <a href={dashboard_url} target='_blank'>
+            Website Dashboard
+          </a>
+        </li>
+      </ul>
 
       <Tour step={@state.tour_step} done={@state.tour_done}/>
     </div>

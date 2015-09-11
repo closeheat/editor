@@ -77,6 +77,11 @@ React.createClass
     return if @state.action_in_progress
     @transitionWithCodeModeHistory('publish', '/publish/*?')
 
+  settingsClick: ->
+    return if @state.action_in_progress
+
+    @openSettings()
+
   handleError: (msg) ->
     track('error_happened', message: msg)
     @setState(error: msg)
@@ -173,7 +178,7 @@ React.createClass
     @setState(action_in_progress: false)
 
   openSettings: ->
-    @hideChangeDistDirToast()
+    track('settings_clicked')
     @transitionWithCodeModeHistory('settings', '/settings/*?')
 
   hideChangeDistDirToast: ->
@@ -201,6 +206,7 @@ React.createClass
           slug: slug
       , (err, status, resp) =>
         return reject(err) if err
+        return reject('invalid_slug') unless resp.success
 
         window.location.origin = @newEditorUrl(resp.slug)
 
@@ -216,6 +222,7 @@ React.createClass
         onCodeClick={@codeClick}
         onPreviewClick={@previewClick}
         onPublishClick={@publishClick}
+        onSettingsClick={@settingsClick}
         avatar={@props.avatar}
         />
 
@@ -235,6 +242,7 @@ React.createClass
         actionStopped={@actionStopped}
         saveDistDir={@saveDistDir}
         saveSlug={@saveSlug}
+        hideChangeDistDirToast={@hideChangeDistDirToast}
         ref='appRouteHandler'/>
 
       <NewApp show={@state.show_free_hosting} close={@hideFreeHosting}/>

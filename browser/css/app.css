@@ -55,7 +55,8 @@ body {
   .editor-wrapper .header-avatar img {
     margin-top: 10px;
     width: 30px;
-    border-radius: 9999px; }
+    border-radius: 9999px;
+    cursor: pointer; }
   .editor-wrapper .code-mode-cols {
     padding: 0; }
   .editor-wrapper .tabs-row {
@@ -305,3 +306,13 @@ body {
 
 .row .col.full {
   padding: 0; }
+
+.dropdown-content li {
+  background-color: #1A1E2D; }
+  .dropdown-content li a {
+    color: #C1C6D1;
+    font-size: 12px;
+    text-transform: uppercase; }
+    .dropdown-content li a:hover {
+      background-color: #2F212F;
+      color: #fff; }

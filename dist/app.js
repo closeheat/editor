@@ -108,6 +108,12 @@ module.exports = React.createClass({
     }
     return this.transitionWithCodeModeHistory('publish', '/publish/*?');
   },
+  settingsClick: function() {
+    if (this.state.action_in_progress) {
+      return;
+    }
+    return this.openSettings();
+  },
   handleError: function(msg) {
     track('error_happened', {
       message: msg
@@ -249,7 +255,7 @@ module.exports = React.createClass({
     });
   },
   openSettings: function() {
-    this.hideChangeDistDirToast();
+    track('settings_clicked');
     return this.transitionWithCodeModeHistory('settings', '/settings/*?');
   },
   hideChangeDistDirToast: function() {
@@ -291,6 +297,9 @@ module.exports = React.createClass({
           if (err) {
             return reject(err);
           }
+          if (!resp.success) {
+            return reject('invalid_slug');
+          }
           return window.location.origin = _this.newEditorUrl(resp.slug);
         });
       };
@@ -309,6 +318,7 @@ module.exports = React.createClass({
       "onCodeClick": this.codeClick,
       "onPreviewClick": this.previewClick,
       "onPublishClick": this.publishClick,
+      "onSettingsClick": this.settingsClick,
       "avatar": this.props.avatar
     }), React.createElement(RouteHandler, {
       "browser_url": this.props.browser_url,
@@ -326,6 +336,7 @@ module.exports = React.createClass({
       "actionStopped": this.actionStopped,
       "saveDistDir": this.saveDistDir,
       "saveSlug": this.saveSlug,
+      "hideChangeDistDirToast": this.hideChangeDistDirToast,
       "ref": 'appRouteHandler'
     }), React.createElement(NewApp, {
       "show": this.state.show_free_hosting,
