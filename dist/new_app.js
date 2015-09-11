@@ -27,7 +27,7 @@ module.exports = React.createClass({
   },
   getHref: function() {
     if (this.state.selected === 'upload') {
-      return '/upload/github';
+      return '/apps/upload/github';
     } else {
       return '/apps/scratch/new';
     }
@@ -56,7 +56,7 @@ module.exports = React.createClass({
       "className": 'free-hosting center-align'
     }, React.createElement("div", {
       "className": 'row free-hosting-title'
-    }, "Secure your first free website"), React.createElement("div", {
+    }, "So, you\'ve checked out the demo.", React.createElement("br", null), "Create your first real website"), React.createElement("div", {
       "className": 'row'
     }, React.createElement("div", {
       "className": 'col s6'

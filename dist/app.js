@@ -319,6 +319,7 @@ module.exports = React.createClass({
       "onPreviewClick": this.previewClick,
       "onPublishClick": this.publishClick,
       "onSettingsClick": this.settingsClick,
+      "onNewWebsiteClick": this.showFreeHosting,
       "avatar": this.props.avatar
     }), React.createElement(RouteHandler, {
       "browser_url": this.props.browser_url,

@@ -223,6 +223,7 @@ React.createClass
         onPreviewClick={@previewClick}
         onPublishClick={@publishClick}
         onSettingsClick={@settingsClick}
+        onNewWebsiteClick={@showFreeHosting}
         avatar={@props.avatar}
         />
 

@@ -105,6 +105,11 @@ Header = React.createClass
             Website Dashboard
           </a>
         </li>
+        <li>
+          <a href='javascript:void(0);' onClick={@props.onNewWebsiteClick}>
+            Create a New Website
+          </a>
+        </li>
       </ul>
 
       <Tour step={@state.tour_step} done={@state.tour_done}/>

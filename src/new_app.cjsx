@@ -16,7 +16,7 @@ React.createClass
       @setState(selected: type)
   getHref: ->
     if @state.selected == 'upload'
-      '/upload/github'
+      '/apps/upload/github'
     else
       '/apps/scratch/new'
   buttonText: ->
@@ -36,7 +36,9 @@ React.createClass
     <div className='free-hosting-container' onClick={@maybeClose}>
       <div className='free-hosting center-align'>
         <div className='row free-hosting-title'>
-          Secure your first free website
+          So, you've checked out the demo.
+          <br/>
+          Create your first real website
         </div>
         <div className='row'>
           <div className='col s6'>
