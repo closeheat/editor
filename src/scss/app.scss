@@ -1,31 +1,5 @@
-$primary-color: #1A1E2D;
-$secondary-color: #F5534E;
-@import 'materialize';
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600);
-@import url(https://fonts.googleapis.com/icon?family=Material+Icons);
-@import url(http://fonts.googleapis.com/css?family=Source+Code+Pro);
-$red: #EE4340;
-$hover-red-bg: hsla(1, 84%, 59%, .1);
-$hover-red-text: hsla(1, 84%, 49%, 1);
-$grey: #C1C6D1;
-$light-grey: hsla(221, 15%, 79%, .2);
-$even-lighter-grey: hsla(221, 15%, 79%, .1);
-$white: #fff;
-$darker-white: hsla(0, 0%, 90%, 1);
-$whiter-grey: hsla(0, 0%, 90%, .3);
-$header-in-progress-text-color: hsla(0, 0%, 70%, 1);
-
-$tab-bg-color: #EBEAEB;
-$tab-text-color: #9D9D9D;
-$tab-active-bg-color: #F3F4F4;
-$tab-active-text-color: #5B5B5B;
-$tabs-row-bg-color: #F6F6F6;
-$tab-border-color: hsla(0, 0%, 62%, .2);
-$tab-hover-bg-color: #F0EFEF;
-
-$error-title-color: hsla(0, 0%, 98%, 1);
-
-$header-height: 54px;
+@import 'variables';
+@import 'fonts';
 
 html {
   height: 100%;
@@ -96,8 +70,8 @@ body {
   }
 
   .header-mode-active {
-    color: $red;
-    border-bottom: 2px solid $red;
+    color: $pretty-red;
+    border-bottom: 2px solid $pretty-red;
     box-sizing: border-box;
 
     &:hover {
@@ -109,6 +83,7 @@ body {
     margin-top: 10px;
     width: 30px;
     border-radius: 9999px;
+    cursor: pointer;
   }
 
   .code-mode-cols {
@@ -145,7 +120,7 @@ body {
       display: inline-block;
 
       &:hover {
-        color: $red;
+        color: $pretty-red;
       }
     }
 
@@ -182,11 +157,11 @@ body {
     }
 
     .file-list-start {
-      color: $red;
+      color: $pretty-red;
     }
 
     .file-list-sep {
-      color: $grey;
+      color: $pretty-grey;
       padding: 0 10px;
     }
   }
@@ -201,7 +176,7 @@ body {
     th {
       font-size: 12px;
       text-transform: uppercase;
-      color: $grey;
+      color: $pretty-grey;
       font-weight: normal;
       padding-left: 0;
     }
@@ -221,19 +196,19 @@ body {
     }
 
     .file-list-icon i {
-      color: $red;
+      color: $pretty-red;
       font-size: 40px;
     }
 
     .file-list-uneditable {
       .file-list-name,
       .file-list-icon i {
-        color: $grey;
+        color: $pretty-grey;
       }
     }
 
     .file-list-kind {
-      color: $grey;
+      color: $pretty-grey;
       text-transform: uppercase;
       font-size: 11px;
     }
@@ -267,7 +242,7 @@ body {
 
     .published-icon i {
       font-size: 150px;
-      color: $red;
+      color: $pretty-red;
     }
 
     .published-container {
@@ -303,24 +278,74 @@ body {
     100% { opacity: 1; }
   }
 
-  .free-hosting {
-    @extend .action-title;
-
+  .free-hosting-container {
     position: fixed;
-    bottom: 0;
-    right: 5px;
-    padding: 20px;
-    border-radius: 5px;
-    border: 2px solid $light-grey;
-    background-color: #FDFDFD;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: $tint;
     animation-name: appear-later;
     animation-duration: 1s;
     z-index: 999;
+  }
+
+  .free-hosting {
+    box-shadow: $modal-shadow;
+    width: 500px;
+    margin: 100px auto;
+    padding: 40px 40px 0;
+    font-size: 12px;
+    border-radius: 2px;
+    border: 2px solid $light-grey;
+    background-color: #FDFDFD;
 
     .free-hosting-title {
       font-size: 20px;
       font-weight: 600;
-      color: #4EB876;
+      color: $primary-color;
+      margin-bottom: 10px;
+    }
+
+    .free-hosting-type {
+      cursor: pointer;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+
+    .free-hosting-type-selected {
+      color: $pretty-blue;
+
+      .free-hosting-type-icon {
+        border-color: $pretty-blue;
+      }
+
+      .free-hosting-type-title {
+        color: #fdfdfd;
+        background-color: $pretty-blue;
+        border-radius: 10px;
+      }
+    }
+
+    .free-hosting-type-icon {
+      padding: 20px;
+      border-radius: 5px;
+      margin: 20px 40px 15px;
+      border: 3px solid $pretty-grey;
+    }
+
+    .free-hosting-type:not(.free-hosting-type-selected) {
+      color: $pretty-grey;
+
+      .free-hosting-type-icon {
+        &:hover {
+          border-color: $dark-grey;
+        }
+      }
+
+      &:hover {
+        color: $dark-grey;
+      }
     }
 
     .free-hosting-free {
@@ -332,9 +357,11 @@ body {
     .free-hosting-button {
       @extend .published-button;
 
-      background-color: #4EB876;
-      margin-top: 10px;
+      background-color: $pretty-green;
+      margin-top: 40px;
       line-height: 20px;
+      padding-top: 17px;
+      width: 200px;
     }
 
     .free-button-icon i {
@@ -344,8 +371,9 @@ body {
 
     .free-button-hide {
       margin-top: 10px;
-      color: $grey;
+      color: $pretty-grey;
       cursor: pointer;
+      text-transform: uppercase;
     }
   }
 
@@ -367,7 +395,7 @@ body {
 
       text-align: left;
       font-size: 12px;
-      background-color: $red;
+      background-color: $pretty-red;
       color: $error-title-color;
       padding: 10px 20px;
     }
@@ -379,6 +407,59 @@ body {
       font-family: 'Source Code Pro', 'Open Sans', sans-serif;
     }
   }
+
+  .settings {
+    background-color: #F9F9FB;
+    padding: 50px 0;
+
+    .settings-container {
+      background-color: $pretty-white;
+      padding: 50px;
+    }
+
+    .settings-title {
+      text-align: left;
+      font-size: 32px;
+      font-weight: 300;
+    }
+
+    .input-field {
+      margin: 45px 0;
+    }
+
+    .settings-save-changes-button {
+      box-shadow: none;
+      width: 100%;
+    }
+
+    .settings-slug {
+      display: inline-block;
+      width: 50%;
+    }
+  }
+
+  .custom-toast {
+    position: fixed;
+    bottom: 15px;
+    left: 15px;
+    top: inherit;
+    font-size: 14px;
+    z-index: 999;
+
+    .custom-toast-buttons {
+      padding-left: 30px;
+
+      .btn-flat {
+        padding-left: 10px;
+        padding-right: 0;
+        margin: 0;
+      }
+    }
+  }
+}
+
+.input-field label {
+  left: 0;
 }
 
 .browser {
@@ -398,4 +479,11 @@ body {
 
 .row .col.full {
   padding: 0;
+}
+
+.guide-button {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-family: 'Source Code Pro', 'Open Sans', sans-serif;
+  padding: 0 5px;
 }

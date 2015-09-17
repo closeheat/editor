@@ -1,0 +1,35 @@
+$primary-color: #1A1E2D;
+$secondary-color: #F5534E;
+
+$pretty-red: #EE4340;
+$hover-red-bg: hsla(1, 84%, 59%, .1);
+$hover-red-text: hsla(1, 84%, 49%, 1);
+$pretty-grey: #C1C6D1;
+$dark-grey: hsla(227, 27%, 14%, .4);
+$light-grey: hsla(221, 15%, 79%, .2);
+$even-lighter-grey: hsla(221, 15%, 79%, .1);
+$pretty-white: #fff;
+$darker-white: hsla(0, 0%, 90%, 1);
+$whiter-grey: hsla(0, 0%, 90%, .3);
+$header-in-progress-text-color: hsla(0, 0%, 70%, 1);
+$tint: hsla(227, 27%, 14%, .7);
+$pretty-green: #4EB876;
+$light-green: hsla(143, 43%, 51%, .7);
+$very-light-green: hsla(143, 43%, 51%, .5);
+$pretty-blue: hsla(204, 61%, 57%, 1);
+
+$dropdown-hover-bg: #2F212F;
+
+$tab-bg-color: #EBEAEB;
+$tab-text-color: #9D9D9D;
+$tab-active-bg-color: #F3F4F4;
+$tab-active-text-color: #5B5B5B;
+$tabs-row-bg-color: #F6F6F6;
+$tab-border-color: hsla(0, 0%, 62%, .2);
+$tab-hover-bg-color: #F0EFEF;
+
+$error-title-color: hsla(0, 0%, 98%, 1);
+
+$header-height: 54px;
+$modal-shadow: 0 16px 28px 0 rgba(0, 0, 0, 0.22), 0 25px 55px 0 rgba(0, 0, 0, 0.21);
+$input-focus-color: $pretty-blue;

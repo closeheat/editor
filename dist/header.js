@@ -30,14 +30,24 @@ module.exports = Header = React.createClass({
     ));
   },
   componentDidMount: function() {
-    return this.addTooltips();
+    this.addTooltips();
+    return this.addDropdowns();
   },
   componentDidUpdate: function() {
-    return this.addTooltips();
+    this.addTooltips();
+    return this.addDropdowns();
+  },
+  addDropdowns: function() {
+    return $(this.getDOMNode()).find('.dropdown-button').dropdown({
+      hover: true,
+      belowOrigin: true,
+      gutter: 20,
+      constrain_width: false
+    });
   },
   addTooltips: function() {
     var elements;
-    elements = _.map(['code', 'preview', 'publish', 'website_url', 'avatar'], (function(_this) {
+    elements = _.map(['code', 'preview', 'publish', 'website_url'], (function(_this) {
       return function(name) {
         return React.findDOMNode(_this.refs[name]);
       };
@@ -62,14 +72,14 @@ module.exports = Header = React.createClass({
     }, React.createElement("i", {
       "className": 'material-icons'
     }, "code"), "Code"), React.createElement("div", {
-      "className": this.activeModeClass('preview', 'label-with-icon s2 m3'),
+      "className": this.activeModeClass('preview', 'label-with-icon s2'),
       "onClick": this.props.onPreviewClick,
       "data-tooltip": 'Ctrl+S',
       "ref": 'preview'
     }, React.createElement("i", {
       "className": 'material-icons'
-    }, "navigation"), "Preview Changes"), React.createElement("div", {
-      "className": 'header-website-url col s4 m3 center-align label-with-icon',
+    }, "navigation"), "Preview"), React.createElement("div", {
+      "className": 'header-website-url col s4 center-align label-with-icon',
       "ref": 'website_url',
       "data-tooltip": 'This is your public page URL'
     }, React.createElement("a", {
@@ -90,16 +100,25 @@ module.exports = Header = React.createClass({
     }, React.createElement("a", {
       "href": "mailto:support@closeheat.com?subject=I'm having a problem with the editor"
     }, "Support")), React.createElement("div", {
-      "className": 'col s1 center-align'
-    }, React.createElement("a", {
-      "href": dashboard_url,
-      "target": '_blank',
-      "className": 'header-avatar',
-      "ref": 'avatar',
-      "data-tooltip": 'Dashboard'
+      "className": 'col s1 center-align dropdown-button',
+      "data-activates": 'avatar-dropdown'
+    }, React.createElement("div", {
+      "className": 'header-avatar'
     }, React.createElement("img", {
       "src": this.props.avatar
-    })))), React.createElement(Tour, {
+    })))), React.createElement("ul", {
+      "id": 'avatar-dropdown',
+      "className": 'dropdown-content'
+    }, React.createElement("li", null, React.createElement("a", {
+      "href": 'javascript:void(0);',
+      "onClick": this.props.onSettingsClick
+    }, "Settings")), React.createElement("li", null, React.createElement("a", {
+      "href": 'javascript:void(0);',
+      "onClick": this.props.onNewWebsiteClick
+    }, "Create a New Website")), React.createElement("li", null, React.createElement("a", {
+      "href": dashboard_url,
+      "target": '_blank'
+    }, "Website Dashboard"))), React.createElement(Tour, {
       "step": this.state.tour_step,
       "done": this.state.tour_done
     }));
