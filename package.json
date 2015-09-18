@@ -15,6 +15,7 @@
   "dependencies": {
     "bluebird": "^2.9.20",
     "brace": "^0.4.0",
+    "browser-cookies": "^1.0.8",
     "codemirror": "^5.3.0",
     "flat": "^1.6.0",
     "flatten-hash": "0.0.4",

@@ -4,6 +4,7 @@ _ = require 'lodash'
 $ = window.jQuery = window.$ = require 'jquery'
 request = require 'request'
 Promise = require 'bluebird'
+cookies = require 'browser-cookies'
 require('./materialize')
 
 Router = require 'react-router'
@@ -19,7 +20,7 @@ module.exports =
 React.createClass
   getInitialState: ->
     @bindKeys()
-    track('loaded')
+    track('loaded', ch_initial_referrer: cookies.get('ch_initial_referrer'))
 
     {
       clean_files: _.cloneDeep(Filesystem.ls()),

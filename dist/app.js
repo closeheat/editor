@@ -1,4 +1,4 @@
-var $, ChangeDistDirToast, Filesystem, Header, Navigation, NewApp, Promise, React, RouteHandler, Router, _, flatten, request;
+var $, ChangeDistDirToast, Filesystem, Header, Navigation, NewApp, Promise, React, RouteHandler, Router, _, cookies, flatten, request;
 
 React = require('react/addons');
 
@@ -11,6 +11,8 @@ $ = window.jQuery = window.$ = require('jquery');
 request = require('request');
 
 Promise = require('bluebird');
+
+cookies = require('browser-cookies');
 
 require('./materialize');
 
@@ -31,7 +33,9 @@ ChangeDistDirToast = require('./change_dist_dir_toast');
 module.exports = React.createClass({
   getInitialState: function() {
     this.bindKeys();
-    track('loaded');
+    track('loaded', {
+      ch_initial_referrer: cookies.get('ch_initial_referrer')
+    });
     return {
       clean_files: _.cloneDeep(Filesystem.ls()),
       action_in_progress: false,
