@@ -23,10 +23,12 @@ module.exports = React.createClass({
     var tabs;
     tabs = _.map(this.tabPaths(), (function(_this) {
       return function(tab_path) {
-        var path, tab_data;
+        var name, path, tab_data;
         path = tab_path.replace(/\*$/, '');
+        name = _.last(path.split('/'));
         return tab_data = {
           path: path,
+          name: name,
           active: path === _this.activeTabPath()
         };
       };

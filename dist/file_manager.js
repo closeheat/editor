@@ -20,7 +20,6 @@ module.exports = React.createClass({
     result = _.map(this.props.dir.files, (function(_this) {
       return function(file) {
         file.href = _this.props.reuseTabHref(file.path);
-        file.name = file.path;
         return file;
       };
     })(this));
