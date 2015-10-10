@@ -16,9 +16,9 @@ React.createClass
       @setState(selected: type)
   getHref: ->
     if @state.selected == 'upload'
-      '/apps/upload/github'
+      '/apps/new#/upload'
     else
-      '/apps/scratch/new'
+      '/apps/new#/templates'
   buttonText: ->
     if @state.selected == 'upload'
       'Upload my website'
