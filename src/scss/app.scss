@@ -430,7 +430,7 @@ body {
     }
 
     .input-field {
-      margin: 45px 0;
+      margin: 20px 0;
     }
 
     .settings-save-changes-button {
@@ -470,6 +470,13 @@ body {
         margin: 0;
       }
     }
+  }
+}
+
+.publish-options {
+  .branch-options {
+    text-align: left;
+    padding-bottom: 50px;
   }
 }
 

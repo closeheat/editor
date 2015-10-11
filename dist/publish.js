@@ -1,4 +1,4 @@
-var Loader, Promise, Published, React, request;
+var Loader, Promise, PublishOptions, Published, React, request;
 
 React = require('react/addons');
 
@@ -9,6 +9,8 @@ request = require('request');
 Loader = require('./loader');
 
 Published = require('./published');
+
+PublishOptions = require('./publish_options');
 
 module.exports = React.createClass({
   getInitialState: function() {

@@ -273,7 +273,7 @@ body {
       font-size: 32px;
       font-weight: 300; }
     .editor-wrapper .settings .input-field {
-      margin: 45px 0; }
+      margin: 20px 0; }
     .editor-wrapper .settings .settings-save-changes-button {
       box-shadow: none;
       color: #ee423f;
@@ -300,6 +300,10 @@ body {
         padding-left: 10px;
         padding-right: 0;
         margin: 0; }
+
+.publish-options .branch-options {
+  text-align: left;
+  padding-bottom: 50px; }
 
 .input-field label {
   left: 0; }
