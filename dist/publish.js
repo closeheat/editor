@@ -30,7 +30,8 @@ module.exports = React.createClass({
     return this.props.publishToGithub(data).then((function(_this) {
       return function(resp) {
         _this.setState({
-          published_to_github: true
+          published_to_github: true,
+          url: resp.website_url
         });
         return _this.props.waitForPublishToServer().timeout(40000, _this.timeoutMsg()).then(function() {
           return _this.setState({
@@ -54,7 +55,7 @@ module.exports = React.createClass({
       });
     } else if (this.state.published_to_server) {
       return React.createElement(Published, {
-        "website_url": this.props.website_url
+        "website_url": this.state.website_url
       });
     } else if (this.state.published_to_github) {
       return React.createElement(Loader, {

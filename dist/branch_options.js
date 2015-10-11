@@ -38,14 +38,14 @@ module.exports = React.createClass({
       "type": 'radio',
       "id": 'branch-master',
       "checked": this.checked('master'),
-      "onClick": this.check('master')
+      "onChange": this.check('master')
     }), React.createElement("label", {
       "htmlFor": 'branch-master'
     }, "Deploy to website (master branch)")), React.createElement("div", null, React.createElement("input", {
       "type": 'radio',
       "id": 'branch-pr',
       "checked": this.checked('pr'),
-      "onClick": this.check('pr')
+      "onChange": this.check('pr')
     }), React.createElement("label", {
       "htmlFor": 'branch-pr'
     }, "Create a Pull Request with changes (create new branch)")), this.title());

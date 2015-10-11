@@ -21,13 +21,13 @@ React.createClass
   render: ->
     <div className='branch-options'>
       <div>
-        <input type='radio' id='branch-master' checked={@checked('master')} onClick={@check('master')}/>
+        <input type='radio' id='branch-master' checked={@checked('master')} onChange={@check('master')}/>
         <label htmlFor='branch-master'>
           Deploy to website (master branch)
         </label>
       </div>
       <div>
-        <input type='radio' id='branch-pr' checked={@checked('pr')} onClick={@check('pr')}/>
+        <input type='radio' id='branch-pr' checked={@checked('pr')} onChange={@check('pr')}/>
         <label htmlFor='branch-pr'>
           Create a Pull Request with changes (create new branch)
         </label>

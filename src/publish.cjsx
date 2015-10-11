@@ -18,7 +18,7 @@ React.createClass
     @setState(publishing: true)
 
     @props.publishToGithub(data).then((resp) =>
-      @setState(published_to_github: true)
+      @setState(published_to_github: true, url: resp.website_url)
 
       @props.waitForPublishToServer().timeout(40000, @timeoutMsg()).then =>
         @setState(published_to_server: true)
@@ -31,7 +31,7 @@ React.createClass
     if @props.files_changed
       <Loader title='Building your website first...'/>
     else if @state.published_to_server
-      <Published website_url={@props.website_url}/>
+      <Published website_url={@state.website_url}/>
     else if @state.published_to_github
       <Loader
         title='Your files are now in Github.'

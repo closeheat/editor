@@ -32,9 +32,15 @@ React.createClass
           </div>
 
           <div className='input-field'>
-            <textarea className='materialize-textarea' id='commit-msg' type='text' value={@state.commit_msg} onChange={@changeCommitMsg}/>
+            <input
+              id='commit-msg'
+              type='text'
+              value={@state.commit_msg}
+              onChange={@changeCommitMsg}
+            />
+
             <label htmlFor='commit-msg'>
-              Change comment (commit message)
+              Comment
             </label>
           </div>
 

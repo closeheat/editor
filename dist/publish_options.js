@@ -50,15 +50,14 @@ module.exports = React.createClass({
       "className": 'settings-title'
     }, "Publish changes")), React.createElement("div", {
       "className": 'input-field'
-    }, React.createElement("textarea", {
-      "className": 'materialize-textarea',
+    }, React.createElement("input", {
       "id": 'commit-msg',
       "type": 'text',
       "value": this.state.commit_msg,
       "onChange": this.changeCommitMsg
     }), React.createElement("label", {
       "htmlFor": 'commit-msg'
-    }, "Change comment (commit message)")), React.createElement(BranchOptions, {
+    }, "Comment")), React.createElement(BranchOptions, {
       "branch": this.state.branch,
       "onCheck": this.check,
       "title": this.state.title,
