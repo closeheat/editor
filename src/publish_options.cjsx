@@ -9,7 +9,6 @@ React.createClass
   getInitialState: ->
     commit_msg: ''
     branch: 'master'
-    title: ''
   componentDidMount: ->
     track('publish_options')
   check: (type) ->
@@ -44,11 +43,7 @@ React.createClass
             </label>
           </div>
 
-          <BranchOptions
-            branch={@state.branch}
-            onCheck={@check}
-            title={@state.title}
-            onTitleChange={@titleChange} />
+          <BranchOptions branch={@state.branch} onCheck={@check} />
 
           <div onClick={@continue} className="btn btn-large waves-effect waves-light settings-save-changes-button">
             Continue

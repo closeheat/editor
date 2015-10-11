@@ -12,8 +12,7 @@ module.exports = React.createClass({
   getInitialState: function() {
     return {
       commit_msg: '',
-      branch: 'master',
-      title: ''
+      branch: 'master'
     };
   },
   componentDidMount: function() {
@@ -59,9 +58,7 @@ module.exports = React.createClass({
       "htmlFor": 'commit-msg'
     }, "Comment")), React.createElement(BranchOptions, {
       "branch": this.state.branch,
-      "onCheck": this.check,
-      "title": this.state.title,
-      "onTitleChange": this.titleChange
+      "onCheck": this.check
     }), React.createElement("div", {
       "onClick": this["continue"],
       "className": "btn btn-large waves-effect waves-light settings-save-changes-button"

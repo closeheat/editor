@@ -257,8 +257,7 @@ module.exports = React.createClass({
           url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/publish",
           body: {
             commit_msg: data.commit_msg,
-            branch: data.branch,
-            title: data.title
+            branch: data.branch
           }
         }, function(err, status, resp) {
           if (err) {

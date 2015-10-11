@@ -7,17 +7,6 @@ React.createClass
   check: (type) ->
     (e) =>
       @props.onCheck(type)
-  titleChange: (e) ->
-    @props.onTitleChange(e.target.value)
-  title: ->
-    return unless @props.branch == 'pr'
-
-    <div className='input-field'>
-      <input id='dist-dir' type='text' value={@props.title} onChange={@titleChange}/>
-      <label htmlFor='dist-dir'>
-        Title for a Pull Request
-      </label>
-    </div>
   render: ->
     <div className='branch-options'>
       <div>
@@ -32,6 +21,4 @@ React.createClass
           Create a Pull Request
         </label>
       </div>
-
-      {@title()}
     </div>

@@ -13,24 +13,6 @@ module.exports = React.createClass({
       };
     })(this);
   },
-  titleChange: function(e) {
-    return this.props.onTitleChange(e.target.value);
-  },
-  title: function() {
-    if (this.props.branch !== 'pr') {
-      return;
-    }
-    return React.createElement("div", {
-      "className": 'input-field'
-    }, React.createElement("input", {
-      "id": 'dist-dir',
-      "type": 'text',
-      "value": this.props.title,
-      "onChange": this.titleChange
-    }), React.createElement("label", {
-      "htmlFor": 'dist-dir'
-    }, "Title for a Pull Request"));
-  },
   render: function() {
     return React.createElement("div", {
       "className": 'branch-options'
@@ -48,6 +30,6 @@ module.exports = React.createClass({
       "onChange": this.check('pr')
     }), React.createElement("label", {
       "htmlFor": 'branch-pr'
-    }, "Create a Pull Request")), this.title());
+    }, "Create a Pull Request")));
   }
 });

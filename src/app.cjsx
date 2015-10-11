@@ -179,7 +179,6 @@ React.createClass
         body:
           commit_msg: data.commit_msg
           branch: data.branch
-          title: data.title
       , (err, status, resp) ->
         return reject(err) if err
 
