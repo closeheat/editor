@@ -14,6 +14,7 @@ TabManager = require './tab_manager'
 Publish = require './publish'
 ErrorHandler = require './error_handler'
 InlineMode = require './inline_mode'
+Settings = require './settings'
 
 module.exports =
 class Core
@@ -25,7 +26,15 @@ class Core
       @data = data
 
       Router.run @routes(), (Handler) =>
-        React.render(<Handler website_url={@data.app_domain} avatar={@data.avatar} browser_url={@data.browser_url} />, document.body)
+        React.render(<Handler
+          website_url={@data.app_domain}
+          slug={@data.slug}
+          avatar={@data.avatar}
+          browser_url={@data.browser_url}
+          dist_dir={@data.dist_dir}
+          is_demo_app={@data.is_demo_app}
+          first_build={@data.first_build}
+        />, document.body)
 
   routes: ->
     <Route handler={App} path='/'>
@@ -44,6 +53,9 @@ class Core
 
       <Route name='error' path='/error' handler={ErrorHandler} />
       <Route name='error-with-history' path='/error/*?' handler={ErrorHandler} />
+
+      <Route name='settings' path='/settings' handler={Settings} />
+      <Route name='settings-with-history' path='/settings/*?' handler={Settings} />
 
       <Redirect from='' to='/code/' />
       <Redirect from="/code" to="/code/" />

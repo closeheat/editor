@@ -4,6 +4,7 @@ _ = require 'lodash'
 $ = window.jQuery = window.$ = require 'jquery'
 request = require 'request'
 Promise = require 'bluebird'
+cookies = require 'browser-cookies'
 require('./materialize')
 
 Router = require 'react-router'
@@ -12,18 +13,30 @@ Navigation = Router.Navigation
 
 Header = require './header'
 Filesystem = require './filesystem'
+NewApp = require './new_app'
+ChangeDistDirToast = require './change_dist_dir_toast'
 
 module.exports =
 React.createClass
   getInitialState: ->
     @bindKeys()
-    track('loaded')
+    track('loaded', ch_initial_referrer: cookies.get('ch_initial_referrer'))
 
     {
       clean_files: _.cloneDeep(Filesystem.ls()),
       action_in_progress: false,
-      first_build_done: false
+      first_build_done: false,
+      show_free_hosting: false,
+      show_change_dist_dir: !@props.is_demo_app && @props.first_build,
+      dist_dir: @props.dist_dir
     }
+
+  componentDidMount: ->
+    @showCodeGuide() if @props.is_demo_app
+
+  showCodeGuide: ->
+    Materialize.toast("We created a simple demo website for you. Here's the code.", 10000)
+    setTimeout((-> Materialize.toast("Click <span class='guide-button'>Preview</span> to see how it looks.", 10000)), 4000)
 
   showFreeHosting: ->
     @setState(show_free_hosting: true)
@@ -51,7 +64,7 @@ React.createClass
     @transitionWithCodeModeHistory('code', '/code/*?')
   previewClick: ->
     track('preview_clicked')
-    # setTimeout(@showFreeHosting, 9000) unless @state.free_hosting_shown
+    setTimeout(@showFreeHosting, 18000) if @props.is_demo_app and !@state.free_hosting_shown
     return if @state.action_in_progress
 
     if @context.router.getCurrentPath().match(/^\/preview/)
@@ -71,6 +84,11 @@ React.createClass
     track('publish_clicked')
     return if @state.action_in_progress
     @transitionWithCodeModeHistory('publish', '/publish/*?')
+
+  settingsClick: ->
+    return if @state.action_in_progress
+
+    @openSettings()
 
   handleError: (msg) ->
     track('error_happened', message: msg)
@@ -115,6 +133,8 @@ React.createClass
       , (err, status, resp) =>
 
         return reject(err) if err
+        if status.statusCode == 500
+          return reject("Something bad happened in the server. Not your fault. We're fixing it.")
         return reject(resp.error) unless resp.success
 
         @setState(clean_files: _.cloneDeep(Filesystem.ls()), first_build_done: true)
@@ -167,29 +187,41 @@ React.createClass
   actionStopped: ->
     @setState(action_in_progress: false)
 
-  freeHosting: ->
-    return <div></div> unless @state.show_free_hosting
+  openSettings: ->
+    track('settings_clicked')
+    @transitionWithCodeModeHistory('settings', '/settings/*?')
 
-    <div className='row center-align free-hosting'>
-      <div className='free-hosting-title'>Free stuff</div>
-      <div>
-        Do you have your other website's HTML and CSS files?
-      </div>
-      <div>
-        For early users we're hosting it
-        <span className='free-hosting-free'>FREE</span>.
-      </div>
-      <a href='/apps/new_from_github' target='_blank' className="btn btn-small waves-effect waves-light free-hosting-button">
-        <div>
-          I believe - Host my website
-          <span className='free-button-icon'>
-            <i className='material-icons'>open_in_new</i>
-          </span>
-        </div>
-      </a>
+  hideChangeDistDirToast: ->
+    @setState(show_change_dist_dir: false)
 
-      <div onClick={@hideFreeHosting} className='free-button-hide'>No, thanks</div>
-    </div>
+  saveDistDir: (dist_dir) ->
+    new Promise (resolve, reject) =>
+      request.post
+        json: true
+        url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/change_dist_dir"
+        body:
+          dist_dir: dist_dir
+      , (err, status, resp) =>
+        return reject(err) if err
+
+        @setState(dist_dir: resp.dist_dir)
+        resolve(resp)
+
+  saveSlug: (slug) ->
+    new Promise (resolve, reject) =>
+      request.post
+        json: true
+        url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/change_slug"
+        body:
+          slug: slug
+      , (err, status, resp) =>
+        return reject(err) if err
+        return reject('invalid_slug') unless resp.success
+
+        window.location.origin = @newEditorUrl(resp.slug)
+
+  newEditorUrl: (slug) ->
+    window.location.href = "#{window.location.origin}/apps/#{slug}/live_edit#{window.location.hash}"
 
   render: ->
     <main className='editor-wrapper'>
@@ -200,12 +232,16 @@ React.createClass
         onCodeClick={@codeClick}
         onPreviewClick={@previewClick}
         onPublishClick={@publishClick}
+        onSettingsClick={@settingsClick}
+        onNewWebsiteClick={@showFreeHosting}
         avatar={@props.avatar}
         />
 
       <RouteHandler
         browser_url={@props.browser_url}
         website_url={@props.website_url}
+        slug={@props.slug}
+        dist_dir={@state.dist_dir}
         editorChange={@editorChange}
         build={@build}
         handleError={@handleError}
@@ -215,7 +251,16 @@ React.createClass
         publishToGithub={@publishToGithub}
         waitForPublishToServer={@waitForPublishToServer}
         actionStopped={@actionStopped}
+        saveDistDir={@saveDistDir}
+        saveSlug={@saveSlug}
+        hideChangeDistDirToast={@hideChangeDistDirToast}
         ref='appRouteHandler'/>
 
-      {@freeHosting()}
+      <NewApp show={@state.show_free_hosting} close={@hideFreeHosting}/>
+      <ChangeDistDirToast
+        show={@state.show_change_dist_dir}
+        dist_dir={@state.dist_dir}
+        onClose={@hideChangeDistDirToast}
+        onClick={@openSettings}
+      />
     </main>

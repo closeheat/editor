@@ -28,18 +28,23 @@ class Filesystem
 
     _.each @ls(path), (file) ->
       relative_to_dir = file.path.replace(///^#{path}\////, '')
+      name = _.first(relative_to_dir.split('/'))
 
       if relative_to_dir.match('/')
-        name = _.first(relative_to_dir.split('/'))
+        dir_path = if _.isEmpty(path)
+          name
+        else
+          [path, name].join('/')
 
         result.push
-          type: 'dir',
-          path: name
+          type: 'dir'
+          path: dir_path
+          name: name
       else
-        result.push(_.merge(file, type: 'file'))
+        result.push(_.merge(file, type: 'file', name: name))
 
     _.uniq result, (file) ->
-      file.path
+      file.name
 
   @write: (path, new_content) ->
     file = @read(path)

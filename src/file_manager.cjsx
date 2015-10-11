@@ -12,7 +12,6 @@ React.createClass
   folderFiles: ->
     result = _.map @props.dir.files, (file) =>
       file.href = @props.reuseTabHref(file.path)
-      file.name = file.path
       file
 
     [dirs, files] = _.partition result, (f) -> f.type == 'dir'

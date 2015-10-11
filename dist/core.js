@@ -1,4 +1,4 @@
-var $, App, CodeMode, Core, ErrorHandler, InitialLoader, InlineMode, PreviewMode, Publish, React, Redirect, Route, Router, TabManager, md;
+var $, App, CodeMode, Core, ErrorHandler, InitialLoader, PreviewMode, Publish, React, Redirect, Route, Router, Settings, TabManager, md;
 
 md = require('marked');
 
@@ -26,7 +26,7 @@ Publish = require('./publish');
 
 ErrorHandler = require('./error_handler');
 
-InlineMode = require('./inline_mode');
+Settings = require('./settings');
 
 module.exports = Core = (function() {
   function Core(base, server) {
@@ -42,8 +42,12 @@ module.exports = Core = (function() {
         return Router.run(_this.routes(), function(Handler) {
           return React.render(React.createElement(Handler, {
             "website_url": _this.data.app_domain,
+            "slug": _this.data.slug,
             "avatar": _this.data.avatar,
-            "browser_url": _this.data.browser_url
+            "browser_url": _this.data.browser_url,
+            "dist_dir": _this.data.dist_dir,
+            "is_demo_app": _this.data.is_demo_app,
+            "first_build": _this.data.first_build
           }), document.body);
         });
       };
@@ -71,14 +75,6 @@ module.exports = Core = (function() {
       "path": '/preview/*?',
       "handler": PreviewMode
     }), React.createElement(Route, {
-      "name": 'inline',
-      "path": '/inline',
-      "handler": InlineMode
-    }), React.createElement(Route, {
-      "name": 'inline-with-history',
-      "path": '/inline/*?',
-      "handler": InlineMode
-    }), React.createElement(Route, {
       "name": 'publish',
       "path": '/publish',
       "handler": Publish
@@ -94,6 +90,14 @@ module.exports = Core = (function() {
       "name": 'error-with-history',
       "path": '/error/*?',
       "handler": ErrorHandler
+    }), React.createElement(Route, {
+      "name": 'settings',
+      "path": '/settings',
+      "handler": Settings
+    }), React.createElement(Route, {
+      "name": 'settings-with-history',
+      "path": '/settings/*?',
+      "handler": Settings
     }), React.createElement(Redirect, {
       "from": '',
       "to": '/code/'

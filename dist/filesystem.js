@@ -37,22 +37,25 @@ module.exports = Filesystem = (function() {
     var result;
     result = [];
     _.each(this.ls(path), function(file) {
-      var name, relative_to_dir;
+      var dir_path, name, relative_to_dir;
       relative_to_dir = file.path.replace(RegExp("^" + path + "\\/"), '');
+      name = _.first(relative_to_dir.split('/'));
       if (relative_to_dir.match('/')) {
-        name = _.first(relative_to_dir.split('/'));
+        dir_path = _.isEmpty(path) ? name : [path, name].join('/');
         return result.push({
           type: 'dir',
-          path: name
+          path: dir_path,
+          name: name
         });
       } else {
         return result.push(_.merge(file, {
-          type: 'file'
+          type: 'file',
+          name: name
         }));
       }
     });
     return _.uniq(result, function(file) {
-      return file.path;
+      return file.name;
     });
   };
 

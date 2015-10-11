@@ -1,4 +1,4 @@
-var $, Filesystem, Header, Navigation, Promise, React, RouteHandler, Router, _, flatten, request;
+var $, ChangeDistDirToast, Filesystem, Header, Navigation, NewApp, Promise, React, RouteHandler, Router, _, cookies, flatten, request;
 
 React = require('react/addons');
 
@@ -12,6 +12,8 @@ request = require('request');
 
 Promise = require('bluebird');
 
+cookies = require('browser-cookies');
+
 require('./materialize');
 
 Router = require('react-router');
@@ -24,15 +26,35 @@ Header = require('./header');
 
 Filesystem = require('./filesystem');
 
+NewApp = require('./new_app');
+
+ChangeDistDirToast = require('./change_dist_dir_toast');
+
 module.exports = React.createClass({
   getInitialState: function() {
     this.bindKeys();
-    track('loaded');
+    track('loaded', {
+      ch_initial_referrer: cookies.get('ch_initial_referrer')
+    });
     return {
       clean_files: _.cloneDeep(Filesystem.ls()),
       action_in_progress: false,
-      first_build_done: false
+      first_build_done: false,
+      show_free_hosting: false,
+      show_change_dist_dir: !this.props.is_demo_app && this.props.first_build,
+      dist_dir: this.props.dist_dir
     };
+  },
+  componentDidMount: function() {
+    if (this.props.is_demo_app) {
+      return this.showCodeGuide();
+    }
+  },
+  showCodeGuide: function() {
+    Materialize.toast("We created a simple demo website for you. Here's the code.", 10000);
+    return setTimeout((function() {
+      return Materialize.toast("Click <span class='guide-button'>Preview</span> to see how it looks.", 10000);
+    }), 4000);
   },
   showFreeHosting: function() {
     return this.setState({
@@ -72,6 +94,9 @@ module.exports = React.createClass({
   },
   previewClick: function() {
     track('preview_clicked');
+    if (this.props.is_demo_app && !this.state.free_hosting_shown) {
+      setTimeout(this.showFreeHosting, 18000);
+    }
     if (this.state.action_in_progress) {
       return;
     }
@@ -97,6 +122,12 @@ module.exports = React.createClass({
       return;
     }
     return this.transitionWithCodeModeHistory('publish', '/publish/*?');
+  },
+  settingsClick: function() {
+    if (this.state.action_in_progress) {
+      return;
+    }
+    return this.openSettings();
   },
   handleError: function(msg) {
     track('error_happened', {
@@ -155,6 +186,9 @@ module.exports = React.createClass({
         }, function(err, status, resp) {
           if (err) {
             return reject(err);
+          }
+          if (status.statusCode === 500) {
+            return reject("Something bad happened in the server. Not your fault. We're fixing it.");
           }
           if (!resp.success) {
             return reject(resp.error);
@@ -238,28 +272,59 @@ module.exports = React.createClass({
       action_in_progress: false
     });
   },
-  freeHosting: function() {
-    if (!this.state.show_free_hosting) {
-      return React.createElement("div", null);
-    }
-    return React.createElement("div", {
-      "className": 'row center-align free-hosting'
-    }, React.createElement("div", {
-      "className": 'free-hosting-title'
-    }, "Free stuff"), React.createElement("div", null, "Do you have your other website\'s HTML and CSS files?"), React.createElement("div", null, "For early users we\'re hosting it", React.createElement("span", {
-      "className": 'free-hosting-free'
-    }, "FREE"), "."), React.createElement("a", {
-      "href": '/apps/new_from_github',
-      "target": '_blank',
-      "className": "btn btn-small waves-effect waves-light free-hosting-button"
-    }, React.createElement("div", null, "I believe - Host my website", React.createElement("span", {
-      "className": 'free-button-icon'
-    }, React.createElement("i", {
-      "className": 'material-icons'
-    }, "open_in_new")))), React.createElement("div", {
-      "onClick": this.hideFreeHosting,
-      "className": 'free-button-hide'
-    }, "No, thanks"));
+  openSettings: function() {
+    track('settings_clicked');
+    return this.transitionWithCodeModeHistory('settings', '/settings/*?');
+  },
+  hideChangeDistDirToast: function() {
+    return this.setState({
+      show_change_dist_dir: false
+    });
+  },
+  saveDistDir: function(dist_dir) {
+    return new Promise((function(_this) {
+      return function(resolve, reject) {
+        return request.post({
+          json: true,
+          url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/change_dist_dir",
+          body: {
+            dist_dir: dist_dir
+          }
+        }, function(err, status, resp) {
+          if (err) {
+            return reject(err);
+          }
+          _this.setState({
+            dist_dir: resp.dist_dir
+          });
+          return resolve(resp);
+        });
+      };
+    })(this));
+  },
+  saveSlug: function(slug) {
+    return new Promise((function(_this) {
+      return function(resolve, reject) {
+        return request.post({
+          json: true,
+          url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/change_slug",
+          body: {
+            slug: slug
+          }
+        }, function(err, status, resp) {
+          if (err) {
+            return reject(err);
+          }
+          if (!resp.success) {
+            return reject('invalid_slug');
+          }
+          return window.location.origin = _this.newEditorUrl(resp.slug);
+        });
+      };
+    })(this));
+  },
+  newEditorUrl: function(slug) {
+    return window.location.href = window.location.origin + "/apps/" + slug + "/live_edit" + window.location.hash;
   },
   render: function() {
     return React.createElement("main", {
@@ -271,10 +336,14 @@ module.exports = React.createClass({
       "onCodeClick": this.codeClick,
       "onPreviewClick": this.previewClick,
       "onPublishClick": this.publishClick,
+      "onSettingsClick": this.settingsClick,
+      "onNewWebsiteClick": this.showFreeHosting,
       "avatar": this.props.avatar
     }), React.createElement(RouteHandler, {
       "browser_url": this.props.browser_url,
       "website_url": this.props.website_url,
+      "slug": this.props.slug,
+      "dist_dir": this.state.dist_dir,
       "editorChange": this.editorChange,
       "build": this.build,
       "handleError": this.handleError,
@@ -284,7 +353,18 @@ module.exports = React.createClass({
       "publishToGithub": this.publishToGithub,
       "waitForPublishToServer": this.waitForPublishToServer,
       "actionStopped": this.actionStopped,
+      "saveDistDir": this.saveDistDir,
+      "saveSlug": this.saveSlug,
+      "hideChangeDistDirToast": this.hideChangeDistDirToast,
       "ref": 'appRouteHandler'
-    }), this.freeHosting());
+    }), React.createElement(NewApp, {
+      "show": this.state.show_free_hosting,
+      "close": this.hideFreeHosting
+    }), React.createElement(ChangeDistDirToast, {
+      "show": this.state.show_change_dist_dir,
+      "dist_dir": this.state.dist_dir,
+      "onClose": this.hideChangeDistDirToast,
+      "onClick": this.openSettings
+    }));
   }
 });

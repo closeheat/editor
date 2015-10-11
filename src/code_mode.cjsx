@@ -16,11 +16,12 @@ React.createClass
   tabs: ->
     tabs = _.map @tabPaths(), (tab_path) =>
       path = tab_path.replace(/\*$/, '')
+      name = _.last(path.split('/'))
 
-      tab_data = {
-        path: path,
-        active: path == @activeTabPath(),
-      }
+      tab_data =
+        path: path
+        name: name
+        active: path == @activeTabPath()
 
     _.map tabs, (tab) =>
       tab.href = @href(tabs, tab)

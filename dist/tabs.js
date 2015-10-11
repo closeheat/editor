@@ -36,7 +36,7 @@ module.exports = React.createClass({
         return React.createElement(Tab, {
           "href": tab.href,
           "close_href": tab.close_href,
-          "path": tab.path,
+          "name": tab.name,
           "active": tab.active,
           "flash": _this.state.flash
         });

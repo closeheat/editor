@@ -35,12 +35,17 @@ Header = React.createClass
 
   componentDidMount: ->
     @addTooltips()
+    @addDropdowns()
 
   componentDidUpdate: ->
     @addTooltips()
+    @addDropdowns()
+
+  addDropdowns: ->
+    $(@getDOMNode()).find('.dropdown-button').dropdown(hover: true, belowOrigin: true, gutter: 20, constrain_width: false)
 
   addTooltips: ->
-    elements = _.map ['code', 'preview', 'publish', 'website_url', 'avatar'], (name) =>
+    elements = _.map ['code', 'preview', 'publish', 'website_url'], (name) =>
       React.findDOMNode(@refs[name])
 
     $(elements).tooltip
@@ -58,11 +63,11 @@ Header = React.createClass
           <i className='material-icons'>code</i>
           Code
         </div>
-        <div className={@activeModeClass('preview', 'label-with-icon s2 m3')} onClick={@props.onPreviewClick} data-tooltip='Ctrl+S' ref='preview'>
+        <div className={@activeModeClass('preview', 'label-with-icon s2')} onClick={@props.onPreviewClick} data-tooltip='Ctrl+S' ref='preview'>
           <i className='material-icons'>navigation</i>
-          Preview Changes
+          Preview
         </div>
-        <div className='header-website-url col s4 m3 center-align label-with-icon' ref='website_url' data-tooltip='This is your public page URL'>
+        <div className='header-website-url col s4 center-align label-with-icon' ref='website_url' data-tooltip='This is your public page URL'>
           <a href={@props.website_url} target='_blank' className='truncate'>
             {@prettyWebsiteUrl()}
             <i className='material-icons header-icon-right'>open_in_new</i>
@@ -82,12 +87,30 @@ Header = React.createClass
             Support
           </a>
         </div>
-        <div className='col s1 center-align'>
-          <a href={dashboard_url} target='_blank' className='header-avatar' ref='avatar' data-tooltip='Dashboard'>
+        <div className='col s1 center-align dropdown-button' data-activates='avatar-dropdown'>
+          <div className='header-avatar'>
             <img src={@props.avatar}/>
-          </a>
+          </div>
         </div>
       </div>
+
+      <ul id='avatar-dropdown' className='dropdown-content'>
+        <li>
+          <a href='javascript:void(0);' onClick={@props.onSettingsClick}>
+            Settings
+          </a>
+        </li>
+        <li>
+          <a href='javascript:void(0);' onClick={@props.onNewWebsiteClick}>
+            Create a New Website
+          </a>
+        </li>
+        <li>
+          <a href={dashboard_url} target='_blank'>
+            Website Dashboard
+          </a>
+        </li>
+      </ul>
 
       <Tour step={@state.tour_step} done={@state.tour_done}/>
     </div>
