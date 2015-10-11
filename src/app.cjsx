@@ -145,20 +145,24 @@ React.createClass
   filesChanged: ->
     !_.isEmpty(@changedFiles())
 
-  publishToGithub: ->
-    track('publish_started')
-
+  ensureBuilt: ->
     if @filesChanged()
-      @build().then(@publishToGithub).catch (err) =>
+      @build().catch (err) =>
         @handleError(err)
     else
-      @actionStarted()
-      @execPublish().then( (resp) =>
-        return @handleError(resp.error) unless resp.success
+      new Promise (resolve, reject) =>
+        resolve()
 
-        track('publish_to_github_finished')
-      ).catch (err) =>
-        @handleError(err)
+  publishToGithub: (data) ->
+    track('publish_started')
+
+    @actionStarted()
+    @execPublish(data).then( (resp) =>
+      return @handleError(resp.error) unless resp.success
+
+      track('publish_to_github_finished')
+    ).catch (err) =>
+      @handleError(err)
 
   waitForPublishToServer: ->
     new Promise (resolve, reject) =>
@@ -167,9 +171,16 @@ React.createClass
         @actionStopped()
         resolve()
 
-  execPublish: ->
+  execPublish: (data) ->
     new Promise (resolve, reject) =>
-      request.post json: true, url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/publish", (err, status, resp) ->
+      request.post
+        json: true
+        url: "#{window.location.origin}/apps/#{APP_SLUG}/live_edit/publish"
+        body:
+          commit_msg: data.commit_msg
+          branch: data.branch
+          title: data.title
+      , (err, status, resp) ->
         return reject(err) if err
 
         # published to GitHub
@@ -249,6 +260,7 @@ React.createClass
         transitionWithCodeModeHistory={@transitionWithCodeModeHistory}
         files_changed={@filesChanged()}
         publishToGithub={@publishToGithub}
+        ensureBuilt={@ensureBuilt}
         waitForPublishToServer={@waitForPublishToServer}
         actionStopped={@actionStopped}
         saveDistDir={@saveDistDir}

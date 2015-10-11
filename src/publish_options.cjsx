@@ -10,15 +10,17 @@ React.createClass
     commit_msg: ''
     branch: 'master'
     title: ''
+  componentDidMount: ->
+    track('publish_options')
   check: (type) ->
     @setState(branch: type)
   titleChange: (new_title) ->
     @setState(title: new_title)
   changeCommitMsg: (e) ->
+    @setState(commit_msg: e.target.value)
 
-  publish: ->
-    debugger
-
+  continue: ->
+    @props.onContinue(@state)
   render: ->
     <div className='publish-options settings'>
       <div className='row'>
@@ -42,7 +44,7 @@ React.createClass
             title={@state.title}
             onTitleChange={@titleChange} />
 
-          <div onClick={@publish} className="btn btn-large waves-effect waves-light settings-save-changes-button">
+          <div onClick={@continue} className="btn btn-large waves-effect waves-light settings-save-changes-button">
             Continue
           </div>
 

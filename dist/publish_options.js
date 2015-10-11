@@ -16,6 +16,9 @@ module.exports = React.createClass({
       title: ''
     };
   },
+  componentDidMount: function() {
+    return track('publish_options');
+  },
   check: function(type) {
     return this.setState({
       branch: type
@@ -26,9 +29,13 @@ module.exports = React.createClass({
       title: new_title
     });
   },
-  changeCommitMsg: function(e) {},
-  publish: function() {
-    debugger;
+  changeCommitMsg: function(e) {
+    return this.setState({
+      commit_msg: e.target.value
+    });
+  },
+  "continue": function() {
+    return this.props.onContinue(this.state);
   },
   render: function() {
     return React.createElement("div", {
@@ -57,7 +64,7 @@ module.exports = React.createClass({
       "title": this.state.title,
       "onTitleChange": this.titleChange
     }), React.createElement("div", {
-      "onClick": this.publish,
+      "onClick": this["continue"],
       "className": "btn btn-large waves-effect waves-light settings-save-changes-button"
     }, "Continue"))));
   }

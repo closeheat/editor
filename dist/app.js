@@ -207,29 +207,36 @@ module.exports = React.createClass({
   filesChanged: function() {
     return !_.isEmpty(this.changedFiles());
   },
-  publishToGithub: function() {
-    track('publish_started');
+  ensureBuilt: function() {
     if (this.filesChanged()) {
-      return this.build().then(this.publishToGithub)["catch"]((function(_this) {
+      return this.build()["catch"]((function(_this) {
         return function(err) {
           return _this.handleError(err);
         };
       })(this));
     } else {
-      this.actionStarted();
-      return this.execPublish().then((function(_this) {
-        return function(resp) {
-          if (!resp.success) {
-            return _this.handleError(resp.error);
-          }
-          return track('publish_to_github_finished');
-        };
-      })(this))["catch"]((function(_this) {
-        return function(err) {
-          return _this.handleError(err);
+      return new Promise((function(_this) {
+        return function(resolve, reject) {
+          return resolve();
         };
       })(this));
     }
+  },
+  publishToGithub: function(data) {
+    track('publish_started');
+    this.actionStarted();
+    return this.execPublish(data).then((function(_this) {
+      return function(resp) {
+        if (!resp.success) {
+          return _this.handleError(resp.error);
+        }
+        return track('publish_to_github_finished');
+      };
+    })(this))["catch"]((function(_this) {
+      return function(err) {
+        return _this.handleError(err);
+      };
+    })(this));
   },
   waitForPublishToServer: function() {
     return new Promise((function(_this) {
@@ -242,12 +249,17 @@ module.exports = React.createClass({
       };
     })(this));
   },
-  execPublish: function() {
+  execPublish: function(data) {
     return new Promise((function(_this) {
       return function(resolve, reject) {
         return request.post({
           json: true,
-          url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/publish"
+          url: window.location.origin + "/apps/" + APP_SLUG + "/live_edit/publish",
+          body: {
+            commit_msg: data.commit_msg,
+            branch: data.branch,
+            title: data.title
+          }
         }, function(err, status, resp) {
           if (err) {
             return reject(err);
@@ -351,6 +363,7 @@ module.exports = React.createClass({
       "transitionWithCodeModeHistory": this.transitionWithCodeModeHistory,
       "files_changed": this.filesChanged(),
       "publishToGithub": this.publishToGithub,
+      "ensureBuilt": this.ensureBuilt,
       "waitForPublishToServer": this.waitForPublishToServer,
       "actionStopped": this.actionStopped,
       "saveDistDir": this.saveDistDir,
