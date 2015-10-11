@@ -13,13 +13,14 @@ React.createClass
     field_styles = {
       width: @props.element_data.width
       height: @props.element_data.height
-      backgroundColor: 'rgb(24, 30, 44)'
-      color: '#fff'
+      # backgroundColor: 'rgb(24, 30, 44)'
+      # color: '#fff'
       border: 0
-      outline: '3px solid white'
+      # outline: '1px solid white'
     }
 
     original_styles = _.pick JSON.parse(@props.element_data.style),
+      'color',
       'font',
       'padding',
       'lineHeight',

@@ -16,12 +16,9 @@ module.exports = React.createClass({
     field_styles = {
       width: this.props.element_data.width,
       height: this.props.element_data.height,
-      backgroundColor: 'rgb(24, 30, 44)',
-      color: '#fff',
-      border: 0,
-      outline: '3px solid white'
+      border: 0
     };
-    original_styles = _.pick(JSON.parse(this.props.element_data.style), 'font', 'padding', 'lineHeight', 'textAlign', 'textTransform');
+    original_styles = _.pick(JSON.parse(this.props.element_data.style), 'color', 'font', 'padding', 'lineHeight', 'textAlign', 'textTransform');
     return _.merge(original_styles, field_styles);
   },
   onChange: function(new_value) {

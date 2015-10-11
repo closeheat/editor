@@ -307,6 +307,15 @@ body {
 .row .col.full {
   padding: 0; }
 
+.prompt .prompt-actions .prompt-action {
+  height: 20px;
+  width: 50px;
+  text-align: center;
+  background-color: #EBEAEB;
+  color: #9D9D9D;
+  text-transform: uppercase;
+  cursor: pointer; }
+
 .guide-button {
   font-weight: 600;
   text-transform: uppercase;
