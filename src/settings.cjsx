@@ -45,7 +45,7 @@ React.createClass
   render: ->
     <div className='settings'>
       <div className='row'>
-        <div className='settings-container col offset-s4 s4 offset-m3 m6 offset-l4 l4'>
+        <div className='settings-container col s12 offset-m2 m8 offset-l3 l6'>
           <div className='row'>
             <div className='settings-title'>
               Website Settings

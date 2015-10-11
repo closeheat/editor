@@ -47,8 +47,8 @@ body {
   .editor-wrapper .header-in-progress {
     color: #b3b3b3; }
   .editor-wrapper .header-mode-active {
-    color: #EE4340;
-    border-bottom: 2px solid #EE4340;
+    color: #ee423f;
+    border-bottom: 2px solid #ee423f;
     box-sizing: border-box; }
     .editor-wrapper .header-mode-active:hover {
       color: #e61714; }
@@ -88,7 +88,7 @@ body {
       width: 10%;
       display: inline-block; }
       .editor-wrapper .tabs-row a.tab-close i:hover {
-        color: #EE4340; }
+        color: #ee423f; }
     .editor-wrapper .tabs-row .tab-new a {
       color: #9D9D9D;
       display: inline-block;
@@ -106,7 +106,7 @@ body {
     .editor-wrapper .file-list-path li {
       display: inline-block; }
     .editor-wrapper .file-list-path .file-list-start {
-      color: #EE4340; }
+      color: #ee423f; }
     .editor-wrapper .file-list-path .file-list-sep {
       color: #C1C6D1;
       padding: 0 10px; }
@@ -129,7 +129,7 @@ body {
       .editor-wrapper .file-list td:nth-child(2) {
         width: 300px; }
     .editor-wrapper .file-list .file-list-icon i {
-      color: #EE4340;
+      color: #ee423f;
       font-size: 40px; }
     .editor-wrapper .file-list .file-list-uneditable .file-list-name, .editor-wrapper .file-list .file-list-uneditable .file-list-icon i {
       color: #C1C6D1; }
@@ -155,7 +155,7 @@ body {
     background-color: #FDFDFD; }
     .editor-wrapper .published .published-icon i {
       font-size: 150px;
-      color: #EE4340; }
+      color: #ee423f; }
     .editor-wrapper .published .published-container {
       margin: 0 auto; }
     .editor-wrapper .published .published-title {
@@ -250,7 +250,7 @@ body {
     .editor-wrapper .error .error-title {
       text-align: left;
       font-size: 12px;
-      background-color: #EE4340;
+      background-color: #ee423f;
       color: #fafafa;
       padding: 10px 20px; }
     .editor-wrapper .error .error-content {
@@ -263,7 +263,11 @@ body {
     padding: 50px 0; }
     .editor-wrapper .settings .settings-container {
       background-color: #fff;
-      padding: 50px; }
+      padding: 50px;
+      border-radius: 3px;
+      border: 1px solid rgba(158, 158, 158, 0.2);
+      box-shadow: 0 1px 2px rgba(26, 30, 45, 0.4);
+      text-align: center; }
     .editor-wrapper .settings .settings-title {
       text-align: left;
       font-size: 32px;
@@ -272,10 +276,17 @@ body {
       margin: 45px 0; }
     .editor-wrapper .settings .settings-save-changes-button {
       box-shadow: none;
-      width: 100%; }
+      color: #ee423f;
+      background-color: transparent;
+      border: 1px solid #ee423f; }
+      .editor-wrapper .settings .settings-save-changes-button:hover {
+        background-color: rgba(238, 66, 63, 0.1);
+        color: #e61714; }
     .editor-wrapper .settings .settings-slug {
       display: inline-block;
-      width: 50%; }
+      text-align: left;
+      width: 50%;
+      font-weight: 600; }
   .editor-wrapper .custom-toast {
     position: fixed;
     bottom: 15px;

@@ -1,7 +1,7 @@
 $primary-color: #1A1E2D;
 $secondary-color: #F5534E;
 
-$pretty-red: #EE4340;
+$pretty-red: hsla(1, 84%, 59%, 1);
 $hover-red-bg: hsla(1, 84%, 59%, .1);
 $hover-red-text: hsla(1, 84%, 49%, 1);
 $pretty-grey: #C1C6D1;
@@ -9,6 +9,10 @@ $dark-grey: hsla(227, 27%, 14%, .4);
 $light-grey: hsla(221, 15%, 79%, .2);
 $even-lighter-grey: hsla(221, 15%, 79%, .1);
 $pretty-white: #fff;
+$pretty-black: #000;
+$bit-darker-white: #F9F9FB;
+$transparent-whitener: hsla(0, 0%, 100%, .2);
+$transparent-little-whitener: hsla(0, 0%, 100%, .1);
 $darker-white: hsla(0, 0%, 90%, 1);
 $whiter-grey: hsla(0, 0%, 90%, .3);
 $header-in-progress-text-color: hsla(0, 0%, 70%, 1);
@@ -17,6 +21,7 @@ $pretty-green: #4EB876;
 $light-green: hsla(143, 43%, 51%, .7);
 $very-light-green: hsla(143, 43%, 51%, .5);
 $pretty-blue: hsla(204, 61%, 57%, 1);
+$transparent: hsla(0, 0%, 0%, 0);
 
 $dropdown-hover-bg: #2F212F;
 

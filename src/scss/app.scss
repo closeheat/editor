@@ -409,12 +409,18 @@ body {
   }
 
   .settings {
-    background-color: #F9F9FB;
+    background-color: $bit-darker-white;
     padding: 50px 0;
+
+    $box-radius: 3px;
 
     .settings-container {
       background-color: $pretty-white;
       padding: 50px;
+      border-radius: $box-radius;
+      border: 1px solid $tab-border-color;
+      box-shadow: 0 1px 2px $dark-grey;
+      text-align: center;
     }
 
     .settings-title {
@@ -429,12 +435,21 @@ body {
 
     .settings-save-changes-button {
       box-shadow: none;
-      width: 100%;
+      color: $pretty-red;
+      background-color: $transparent;
+      border: 1px solid $pretty-red;
+
+      &:hover {
+        background-color: $hover-red-bg;
+        color: $hover-red-text;
+      }
     }
 
     .settings-slug {
       display: inline-block;
+      text-align: left;
       width: 50%;
+      font-weight: 600;
     }
   }
 

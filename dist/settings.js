@@ -80,7 +80,7 @@ module.exports = React.createClass({
     }, React.createElement("div", {
       "className": 'row'
     }, React.createElement("div", {
-      "className": 'settings-container col offset-s4 s4 offset-m3 m6 offset-l4 l4'
+      "className": 'settings-container col s12 offset-m2 m8 offset-l3 l6'
     }, React.createElement("div", {
       "className": 'row'
     }, React.createElement("div", {
