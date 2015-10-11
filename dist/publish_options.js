@@ -1,4 +1,4 @@
-var Promise, React, request;
+var BranchOptions, Promise, React, request;
 
 React = require('react/addons');
 
@@ -6,13 +6,30 @@ Promise = require('bluebird');
 
 request = require('request');
 
+BranchOptions = require('./branch_options');
+
 module.exports = React.createClass({
   getInitialState: function() {
     return {
-      commit_msg: ''
+      commit_msg: '',
+      branch: 'master',
+      title: ''
     };
   },
+  check: function(type) {
+    return this.setState({
+      branch: type
+    });
+  },
+  titleChange: function(new_title) {
+    return this.setState({
+      title: new_title
+    });
+  },
   changeCommitMsg: function(e) {},
+  publish: function() {
+    debugger;
+  },
   render: function() {
     return React.createElement("div", {
       "className": 'publish-options settings'
@@ -33,30 +50,15 @@ module.exports = React.createClass({
       "value": this.state.commit_msg,
       "onChange": this.changeCommitMsg
     }), React.createElement("label", {
-      "htmlFor": 'commit-msg',
-      "className": 'active'
-    }, "Change comment (commit message)")), React.createElement("div", {
-      "className": 'branch-options'
-    }, React.createElement("div", null, React.createElement("input", {
-      "type": 'radio',
-      "id": 'branch-master'
-    }), React.createElement("label", {
-      "htmlFor": 'branch-master'
-    }, "Deploy to website (master branch)")), React.createElement("div", null, React.createElement("input", {
-      "type": 'radio',
-      "id": 'branch-pr'
-    }), React.createElement("label", {
-      "htmlFor": 'branch-pr'
-    }, "Create a Pull Request with changes (create new branch)")), React.createElement("div", {
-      "className": 'input-field'
-    }, React.createElement("input", {
-      "id": 'dist-dir',
-      "type": 'text'
-    }), React.createElement("label", {
-      "htmlFor": 'dist-dir',
-      "className": 'active'
-    }, "Title for a Pull Request"))), React.createElement("div", {
+      "htmlFor": 'commit-msg'
+    }, "Change comment (commit message)")), React.createElement(BranchOptions, {
+      "branch": this.state.branch,
+      "onCheck": this.check,
+      "title": this.state.title,
+      "onTitleChange": this.titleChange
+    }), React.createElement("div", {
+      "onClick": this.publish,
       "className": "btn btn-large waves-effect waves-light settings-save-changes-button"
-    }, "Publish"))));
+    }, "Continue"))));
   }
 });

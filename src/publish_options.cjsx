@@ -2,11 +2,22 @@ React = require 'react/addons'
 Promise = require 'bluebird'
 request = require 'request'
 
+BranchOptions = require './branch_options'
+
 module.exports =
 React.createClass
   getInitialState: ->
     commit_msg: ''
+    branch: 'master'
+    title: ''
+  check: (type) ->
+    @setState(branch: type)
+  titleChange: (new_title) ->
+    @setState(title: new_title)
   changeCommitMsg: (e) ->
+
+  publish: ->
+    debugger
 
   render: ->
     <div className='publish-options settings'>
@@ -20,35 +31,19 @@ React.createClass
 
           <div className='input-field'>
             <textarea className='materialize-textarea' id='commit-msg' type='text' value={@state.commit_msg} onChange={@changeCommitMsg}/>
-            <label htmlFor='commit-msg' className='active'>
+            <label htmlFor='commit-msg'>
               Change comment (commit message)
             </label>
           </div>
 
-          <div className='branch-options'>
-            <div>
-              <input type='radio' id='branch-master' />
-              <label htmlFor='branch-master'>
-                Deploy to website (master branch)
-              </label>
-            </div>
-            <div>
-              <input type='radio' id='branch-pr' />
-              <label htmlFor='branch-pr'>
-                Create a Pull Request with changes (create new branch)
-              </label>
-            </div>
+          <BranchOptions
+            branch={@state.branch}
+            onCheck={@check}
+            title={@state.title}
+            onTitleChange={@titleChange} />
 
-            <div className='input-field'>
-              <input id='dist-dir' type='text'/>
-              <label htmlFor='dist-dir' className='active'>
-                Title for a Pull Request
-              </label>
-            </div>
-          </div>
-
-          <div className="btn btn-large waves-effect waves-light settings-save-changes-button">
-            Publish
+          <div onClick={@publish} className="btn btn-large waves-effect waves-light settings-save-changes-button">
+            Continue
           </div>
 
         </div>
