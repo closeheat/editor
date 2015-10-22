@@ -11,7 +11,7 @@ editingPrompt = ->
 
 mouseoverCode = ->
   element = document.querySelector('SELECTOR')
-  element.style.outline = '1px solid #E5E5E5'
+  element.style.outline = '1px solid hsla(225, 7%, 55%, .4)'
 
 mouseoutCode = ->
   element = document.querySelector('SELECTOR')
@@ -68,13 +68,13 @@ React.createClass
     @refs.browser.evalInIframe(code)
   onClick: (event) ->
     element_data = @editableElement(event)
-    @removePrompt()
 
-    return unless element_data
-
-    @setState
-      show_prompt: true
-      current_element_data: element_data
+    if element_data
+      @setState
+        show_prompt: true
+        current_element_data: element_data
+    else
+      @removePrompt()
 
   removePrompt: ->
     @setState

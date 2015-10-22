@@ -24,7 +24,7 @@ editingPrompt = function() {
 mouseoverCode = function() {
   var element;
   element = document.querySelector('SELECTOR');
-  return element.style.outline = '1px solid #E5E5E5';
+  return element.style.outline = '1px solid hsla(225, 7%, 55%, .4)';
 };
 
 mouseoutCode = function() {
@@ -104,14 +104,14 @@ module.exports = React.createClass({
   onClick: function(event) {
     var element_data;
     element_data = this.editableElement(event);
-    this.removePrompt();
-    if (!element_data) {
-      return;
+    if (element_data) {
+      return this.setState({
+        show_prompt: true,
+        current_element_data: element_data
+      });
+    } else {
+      return this.removePrompt();
     }
-    return this.setState({
-      show_prompt: true,
-      current_element_data: element_data
-    });
   },
   removePrompt: function() {
     return this.setState({
