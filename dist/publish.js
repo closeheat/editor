@@ -23,7 +23,7 @@ module.exports = React.createClass({
         _this.setState({
           published_to_github: true
         });
-        return _this.props.waitForPublishToServer().timeout(40000, _this.timeoutMsg()).then(function() {
+        return _this.props.waitForPublishToServer().timeout(60000, _this.timeoutMsg()).then(function() {
           return _this.setState({
             published_to_server: true
           });
@@ -50,7 +50,7 @@ module.exports = React.createClass({
     } else if (this.state.published_to_github) {
       return React.createElement(Loader, {
         "title": 'Your files are now in Github.',
-        "subtitle": 'Publishing to server...'
+        "subtitle": 'Publishing to server (~30 sec)...'
       });
     } else {
       return React.createElement(Loader, {
