@@ -34,6 +34,7 @@ module.exports = React.createClass({
     }, _.map(this.props.tabs, (function(_this) {
       return function(tab) {
         return React.createElement(Tab, {
+          "key": tab.href,
           "href": tab.href,
           "close_href": tab.close_href,
           "name": tab.name,

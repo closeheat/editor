@@ -61,6 +61,7 @@ module.exports = React.createClass({
     }), _.map(this.folderFiles(), (function(_this) {
       return function(file) {
         return React.createElement(File, {
+          "key": file.path,
           "file": file,
           "active": _this.props.active,
           "supported_modes": _this.props.supported_modes
