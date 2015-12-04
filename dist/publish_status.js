@@ -1,6 +1,8 @@
-var PublishStatus, React;
+var PublishStatus, React, classNames;
 
 React = require('react/addons');
+
+classNames = require('classnames');
 
 module.exports = PublishStatus = React.createClass({
   currentStage: function() {
@@ -15,27 +17,25 @@ module.exports = PublishStatus = React.createClass({
     }, "App name ", this.props.error);
   },
   render: function() {
-    var cx;
     if (this.currentStage() === 0) {
       return React.createElement("span", {
         "className": 'deploy-steps'
       });
     }
-    cx = React.addons.classSet;
     return React.createElement("ul", {
       "className": "deploy-steps collection"
     }, _.map(this.props.stages, (function(_this) {
       return function(stage, i) {
         var icon_classes, li_classes;
         li_classes = function(_this) {
-          return cx({
+          return classNames({
             'collection-item': true,
             success: !_this.props.error && _this.currentStage() > i + 1,
             failure: _this.props.error && _this.currentStage() === i + 1
           });
         };
         icon_classes = function(_this) {
-          return cx({
+          return classNames({
             fa: true,
             icon: true,
             'secondary-content': true,

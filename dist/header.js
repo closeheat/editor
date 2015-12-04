@@ -1,12 +1,14 @@
-var $, Header, PublishStatus, React, Tour, _;
+var $, Header, PublishStatus, React, Tour, _, classNames;
 
 React = require('react/addons');
+
+classNames = require('classnames');
+
+_ = require('lodash');
 
 PublishStatus = require('./publish_status');
 
 Tour = require('./tour');
-
-_ = require('lodash');
 
 $ = window.jQuery = window.$ = require('jquery');
 
@@ -17,7 +19,7 @@ module.exports = Header = React.createClass({
   goToStep: function(tour_step) {},
   activeModeClass: function(type, cols) {
     var obj;
-    return React.addons.classSet((
+    return classNames((
       obj = {
         col: true,
         'header-mode': true,

@@ -1,8 +1,9 @@
 React = require 'react/addons'
+classNames = require 'classnames'
+_ = require 'lodash'
+
 PublishStatus = require './publish_status'
 Tour = require './tour'
-
-_ = require 'lodash'
 
 $ = window.jQuery = window.$ = require 'jquery'
 
@@ -25,7 +26,7 @@ Header = React.createClass
     # @setState(tour_step: tour_step)
 
   activeModeClass: (type, cols) ->
-    React.addons.classSet
+    classNames
       col: true
       'header-mode': true
       'center-align': true
