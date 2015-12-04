@@ -18,7 +18,7 @@ React.createClass
   render: ->
     <ul className='row tabs-row'>
       {_.map @props.tabs, (tab) =>
-        <Tab href={tab.href} close_href={tab.close_href} name={tab.name} active={tab.active} flash={@state.flash}/>
+        <Tab key={tab.href} href={tab.href} close_href={tab.close_href} name={tab.name} active={tab.active} flash={@state.flash}/>
       }
       <li className='tab tab-new col s2'>
         <Link to='file' params={{ splat: @props.new_tab_href }} onClick={@onNewTab}>

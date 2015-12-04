@@ -44,7 +44,7 @@ React.createClass
               </tr>
               <FileUp show={!!@props.path} href={@upHref()}/>
               {_.map @folderFiles(), (file) =>
-                <File file={file} active={@props.active} supported_modes={@props.supported_modes}/>
+                <File key={file.path} file={file} active={@props.active} supported_modes={@props.supported_modes}/>
               }
             </tbody>
           </table>
