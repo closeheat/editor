@@ -45,6 +45,7 @@ module.exports = PublishStatus = React.createClass({
           });
         };
         return React.createElement("li", {
+          "key": stage,
           "className": li_classes(_this)
         }, React.createElement("span", {
           "className": 'stage-name'

@@ -46,7 +46,9 @@ module.exports = React.createClass({
     }, React.createElement("li", {
       "className": 'file-list-start'
     }, "Files"), _.map(this.pathParts(), function(part) {
-      return React.createElement("li", null, React.createElement("span", {
+      return React.createElement("li", {
+        "key": part
+      }, React.createElement("span", {
         "className": 'file-list-sep'
       }, "\x2F"), React.createElement("span", {
         "className": 'file-list-name'

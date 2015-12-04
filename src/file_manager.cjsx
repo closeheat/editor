@@ -29,7 +29,7 @@ React.createClass
             <li className='file-list-start'>Files</li>
 
             {_.map @pathParts(), (part) ->
-              <li>
+              <li key={part}>
                 <span className='file-list-sep'>/</span>
                 <span className='file-list-name'>{part}</span>
               </li>
