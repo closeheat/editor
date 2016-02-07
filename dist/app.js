@@ -1,6 +1,6 @@
 var $, ChangeDistDirToast, Filesystem, Header, Navigation, NewApp, Promise, React, RouteHandler, Router, _, cookies, flatten, request;
 
-React = require('react/addons');
+React = require('react');
 
 flatten = require('flat');
 

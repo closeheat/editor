@@ -1,6 +1,6 @@
 var Browser, Loader, React;
 
-React = require('react/addons');
+React = require('react');
 
 Browser = require('./browser');
 

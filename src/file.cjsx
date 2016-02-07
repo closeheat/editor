@@ -1,4 +1,4 @@
-React = require 'react/addons'
+React = require 'react'
 
 Router = require 'react-router'
 Navigation = Router.Navigation

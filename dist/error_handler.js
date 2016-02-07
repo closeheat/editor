@@ -1,6 +1,6 @@
 var Promise, React, request;
 
-React = require('react/addons');
+React = require('react');
 
 Promise = require('bluebird');
 

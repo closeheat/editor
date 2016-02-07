@@ -1,6 +1,8 @@
-var $, Header, PublishStatus, React, Tour, _, classNames;
+var $, Header, PublishStatus, React, ReactDOM, Tour, _, classNames;
 
-React = require('react/addons');
+React = require('react');
+
+ReactDOM = require('react-dom');
 
 classNames = require('classnames');
 
@@ -40,7 +42,7 @@ module.exports = Header = React.createClass({
     return this.addDropdowns();
   },
   addDropdowns: function() {
-    return $(this.getDOMNode()).find('.dropdown-button').dropdown({
+    return $(this.refs.dropdown_button).dropdown({
       hover: true,
       belowOrigin: true,
       gutter: 20,
@@ -51,7 +53,7 @@ module.exports = Header = React.createClass({
     var elements;
     elements = _.map(['code', 'preview', 'publish', 'website_url'], (function(_this) {
       return function(name) {
-        return React.findDOMNode(_this.refs[name]);
+        return ReactDOM.findDOMNode(_this.refs[name]);
       };
     })(this));
     return $(elements).tooltip({
@@ -102,6 +104,7 @@ module.exports = Header = React.createClass({
     }, React.createElement("a", {
       "href": "mailto:support@closeheat.com?subject=I'm having a problem with the editor"
     }, "Support")), React.createElement("div", {
+      "ref": 'dropdown_button',
       "className": 'col s1 center-align dropdown-button',
       "data-activates": 'avatar-dropdown'
     }, React.createElement("div", {

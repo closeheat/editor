@@ -1,4 +1,4 @@
-React = require 'react/addons'
+React = require 'react'
 flatten = require('flat')
 _ = require 'lodash'
 $ = window.jQuery = window.$ = require 'jquery'

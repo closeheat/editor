@@ -1,6 +1,6 @@
 var PublishStatus, React, classNames;
 
-React = require('react/addons');
+React = require('react');
 
 classNames = require('classnames');
 

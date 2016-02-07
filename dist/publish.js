@@ -1,6 +1,6 @@
 var Loader, Promise, Published, React, request;
 
-React = require('react/addons');
+React = require('react');
 
 Promise = require('bluebird');
 

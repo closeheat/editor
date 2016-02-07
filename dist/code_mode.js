@@ -1,6 +1,6 @@
 var Link, Navigation, React, RouteHandler, Router, Tabs, _;
 
-React = require('react/addons');
+React = require('react');
 
 _ = require('lodash');
 

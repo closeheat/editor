@@ -1,6 +1,6 @@
 var React, Tour;
 
-React = require('react/addons');
+React = require('react');
 
 module.exports = Tour = React.createClass({
   step1: function() {

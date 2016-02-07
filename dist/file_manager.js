@@ -1,6 +1,6 @@
 var File, FileUp, Filesystem, Link, React, Router, _;
 
-React = require('react/addons');
+React = require('react');
 
 _ = require('lodash');
 

@@ -1,4 +1,5 @@
-React = require 'react/addons'
+React = require 'react'
+ReactDOM = require 'react-dom'
 classNames = require 'classnames'
 _ = require 'lodash'
 
@@ -43,11 +44,11 @@ Header = React.createClass
     @addDropdowns()
 
   addDropdowns: ->
-    $(@getDOMNode()).find('.dropdown-button').dropdown(hover: true, belowOrigin: true, gutter: 20, constrain_width: false)
+    $(@refs.dropdown_button).dropdown(hover: true, belowOrigin: true, gutter: 20, constrain_width: false)
 
   addTooltips: ->
     elements = _.map ['code', 'preview', 'publish', 'website_url'], (name) =>
-      React.findDOMNode(@refs[name])
+      ReactDOM.findDOMNode(@refs[name])
 
     $(elements).tooltip
       delay: 100
@@ -88,7 +89,7 @@ Header = React.createClass
             Support
           </a>
         </div>
-        <div className='col s1 center-align dropdown-button' data-activates='avatar-dropdown'>
+        <div ref='dropdown_button' className='col s1 center-align dropdown-button' data-activates='avatar-dropdown'>
           <div className='header-avatar'>
             <img src={@props.avatar}/>
           </div>
