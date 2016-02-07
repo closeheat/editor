@@ -64,8 +64,9 @@ module.exports = Header = React.createClass({
     return this.props.website_url.replace('http://', '');
   },
   render: function() {
-    var dashboard_url;
-    dashboard_url = "http://app.closeheat.com/apps/" + APP_SLUG + "/";
+    var cli_url, dashboard_url;
+    dashboard_url = "https://app.closeheat.com/apps/" + APP_SLUG + "/";
+    cli_url = "https://app.closeheat.com/cli/";
     return React.createElement("div", null, React.createElement("div", {
       "className": 'row header-row'
     }, React.createElement("div", {
@@ -118,12 +119,15 @@ module.exports = Header = React.createClass({
       "href": 'javascript:void(0);',
       "onClick": this.props.onSettingsClick
     }, "Settings")), React.createElement("li", null, React.createElement("a", {
-      "href": 'javascript:void(0);',
-      "onClick": this.props.onNewWebsiteClick
-    }, "Create a New Website")), React.createElement("li", null, React.createElement("a", {
       "href": dashboard_url,
       "target": '_blank'
-    }, "Website Dashboard"))), React.createElement(Tour, {
+    }, "Website Dashboard")), React.createElement("li", null, React.createElement("a", {
+      "href": cli_url,
+      "target": '_blank'
+    }, "Command Line Tools")), React.createElement("li", null, React.createElement("a", {
+      "href": 'javascript:void(0);',
+      "onClick": this.props.onNewWebsiteClick
+    }, "Create a New Website"))), React.createElement(Tour, {
       "step": this.state.tour_step,
       "done": this.state.tour_done
     }));

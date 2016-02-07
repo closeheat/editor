@@ -57,7 +57,8 @@ Header = React.createClass
     @props.website_url.replace('http://', '')
 
   render: ->
-    dashboard_url = "http://app.closeheat.com/apps/#{APP_SLUG}/"
+    dashboard_url = "https://app.closeheat.com/apps/#{APP_SLUG}/"
+    cli_url = "https://app.closeheat.com/cli/"
 
     <div>
       <div className='row header-row'>
@@ -103,13 +104,18 @@ Header = React.createClass
           </a>
         </li>
         <li>
-          <a href='javascript:void(0);' onClick={@props.onNewWebsiteClick}>
-            Create a New Website
+          <a href={dashboard_url} target='_blank'>
+            Website Dashboard
           </a>
         </li>
         <li>
-          <a href={dashboard_url} target='_blank'>
-            Website Dashboard
+          <a href={cli_url} target='_blank'>
+            Command Line Tools
+          </a>
+        </li>
+        <li>
+          <a href='javascript:void(0);' onClick={@props.onNewWebsiteClick}>
+            Create a New Website
           </a>
         </li>
       </ul>
