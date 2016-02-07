@@ -8,7 +8,7 @@ class Filesystem
   @ls: (path) ->
     return window.fs unless path
 
-    _.select window.fs, (file) ->
+    _.filter window.fs, (file) ->
       file.path.match(///^#{path}///)
 
   @read: (path) ->
@@ -43,8 +43,7 @@ class Filesystem
       else
         result.push(_.merge(file, type: 'file', name: name))
 
-    _.uniq result, (file) ->
-      file.name
+    _.uniqBy result, 'name'
 
   @write: (path, new_content) ->
     file = @read(path)
@@ -56,7 +55,7 @@ class Filesystem
 
   # traverse = require 'traverse'
   # @createDirs: (files) ->
-  #   files_in_dirs = _.select files, (file) ->
+  #   files_in_dirs = _.filter files, (file) ->
   #     file_dir_split = file.path.split('/')
   #     file_dir_split.length > 1
   #

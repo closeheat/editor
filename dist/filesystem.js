@@ -13,7 +13,7 @@ module.exports = Filesystem = (function() {
     if (!path) {
       return window.fs;
     }
-    return _.select(window.fs, function(file) {
+    return _.filter(window.fs, function(file) {
       return file.path.match(RegExp("^" + path));
     });
   };
@@ -54,9 +54,7 @@ module.exports = Filesystem = (function() {
         }));
       }
     });
-    return _.uniq(result, function(file) {
-      return file.name;
-    });
+    return _.uniqBy(result, 'name');
   };
 
   Filesystem.write = function(path, new_content) {

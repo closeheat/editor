@@ -94,7 +94,10 @@ module.exports = React.createClass({
       "onChange": this.onChange,
       "onLoad": this.onLoad,
       "value": this.props.value,
-      "ref": 'editor_container'
+      "ref": 'editor_container',
+      "editorProps": {
+        $blockScrolling: true
+      }
     });
   }
 });
