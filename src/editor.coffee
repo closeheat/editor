@@ -81,4 +81,5 @@ React.createClass
       onLoad={@onLoad}
       value={@props.value}
       ref='editor_container'
+      editorProps={{$blockScrolling: true}}
     />

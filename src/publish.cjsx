@@ -1,4 +1,4 @@
-React = require 'react/addons'
+React = require 'react'
 Promise = require 'bluebird'
 request = require 'request'
 
@@ -16,7 +16,7 @@ React.createClass
     @props.publishToGithub().then((resp) =>
       @setState(published_to_github: true)
 
-      @props.waitForPublishToServer().timeout(40000, @timeoutMsg()).then =>
+      @props.waitForPublishToServer().timeout(60000, @timeoutMsg()).then =>
         @setState(published_to_server: true)
     ).catch (err) =>
       @props.handleError(err)
@@ -31,6 +31,6 @@ React.createClass
     else if @state.published_to_github
       <Loader
         title='Your files are now in Github.'
-        subtitle='Publishing to server...'/>
+        subtitle='Publishing to server (~30 sec)...'/>
     else
       <Loader title='I am publishing your landing page...'/>

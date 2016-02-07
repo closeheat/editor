@@ -1,4 +1,4 @@
-React = require 'react/addons'
+React = require 'react'
 _ = require 'lodash'
 
 Router = require 'react-router'
@@ -29,7 +29,7 @@ React.createClass
             <li className='file-list-start'>Files</li>
 
             {_.map @pathParts(), (part) ->
-              <li>
+              <li key={part}>
                 <span className='file-list-sep'>/</span>
                 <span className='file-list-name'>{part}</span>
               </li>
@@ -44,7 +44,7 @@ React.createClass
               </tr>
               <FileUp show={!!@props.path} href={@upHref()}/>
               {_.map @folderFiles(), (file) =>
-                <File file={file} active={@props.active} supported_modes={@props.supported_modes}/>
+                <File key={file.path} file={file} active={@props.active} supported_modes={@props.supported_modes}/>
               }
             </tbody>
           </table>

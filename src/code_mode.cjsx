@@ -1,4 +1,4 @@
-React = require 'react/addons'
+React = require 'react'
 _ = require 'lodash'
 
 Router = require 'react-router'
@@ -34,7 +34,7 @@ React.createClass
     @fullPath().split('&')
 
   activeTabPath: ->
-    active_with_asterix = _.detect @tabPaths(), (tab_path) ->
+    active_with_asterix = _.find @tabPaths(), (tab_path) ->
       _.last(tab_path) == '*'
 
     if active_with_asterix
@@ -76,8 +76,7 @@ React.createClass
       path: path
       active: true
 
-    unique_tabs = _.uniq _.flatten([@tabs(), new_active_tab]), (tab) ->
-      tab.path
+    unique_tabs = _.uniqBy _.flatten([@tabs(), new_active_tab]), 'path'
 
     @href(unique_tabs, new_active_tab)
 
@@ -86,8 +85,7 @@ React.createClass
       tab.path = path if tab.active
       tab
 
-    unique_tabs = _.uniq new_tabs, (tab) ->
-      tab.path
+    unique_tabs = _.uniqBy new_tabs, 'path'
 
     with_active_tab = _.map unique_tabs, (tab) ->
       tab.active = true if tab.path == path

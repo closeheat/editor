@@ -1,8 +1,10 @@
-React = require 'react/addons'
+React = require 'react'
+ReactDOM = require 'react-dom'
+classNames = require 'classnames'
+_ = require 'lodash'
+
 PublishStatus = require './publish_status'
 Tour = require './tour'
-
-_ = require 'lodash'
 
 $ = window.jQuery = window.$ = require 'jquery'
 
@@ -25,7 +27,7 @@ Header = React.createClass
     # @setState(tour_step: tour_step)
 
   activeModeClass: (type, cols) ->
-    React.addons.classSet
+    classNames
       col: true
       'header-mode': true
       'center-align': true
@@ -42,11 +44,11 @@ Header = React.createClass
     @addDropdowns()
 
   addDropdowns: ->
-    $(@getDOMNode()).find('.dropdown-button').dropdown(hover: true, belowOrigin: true, gutter: 20, constrain_width: false)
+    $(@refs.dropdown_button).dropdown(hover: true, belowOrigin: true, gutter: 20, constrain_width: false)
 
   addTooltips: ->
     elements = _.map ['code', 'preview', 'publish', 'website_url'], (name) =>
-      React.findDOMNode(@refs[name])
+      ReactDOM.findDOMNode(@refs[name])
 
     $(elements).tooltip
       delay: 100
@@ -55,7 +57,8 @@ Header = React.createClass
     @props.website_url.replace('http://', '')
 
   render: ->
-    dashboard_url = "http://app.closeheat.com/apps/#{APP_SLUG}/"
+    dashboard_url = "https://app.closeheat.com/apps/#{APP_SLUG}/"
+    cli_url = "https://app.closeheat.com/cli/"
 
     <div>
       <div className='row header-row'>
@@ -87,7 +90,7 @@ Header = React.createClass
             Support
           </a>
         </div>
-        <div className='col s1 center-align dropdown-button' data-activates='avatar-dropdown'>
+        <div ref='dropdown_button' className='col s1 center-align dropdown-button' data-activates='avatar-dropdown'>
           <div className='header-avatar'>
             <img src={@props.avatar}/>
           </div>
@@ -101,13 +104,18 @@ Header = React.createClass
           </a>
         </li>
         <li>
-          <a href='javascript:void(0);' onClick={@props.onNewWebsiteClick}>
-            Create a New Website
+          <a href={dashboard_url} target='_blank'>
+            Website Dashboard
           </a>
         </li>
         <li>
-          <a href={dashboard_url} target='_blank'>
-            Website Dashboard
+          <a href={cli_url} target='_blank'>
+            Command Line Tools
+          </a>
+        </li>
+        <li>
+          <a href='javascript:void(0);' onClick={@props.onNewWebsiteClick}>
+            Create a New Website
           </a>
         </li>
       </ul>

@@ -1,4 +1,5 @@
-React = require 'react/addons'
+React = require 'react'
+classNames = require 'classnames'
 
 module.exports =
 PublishStatus = React.createClass
@@ -13,18 +14,16 @@ PublishStatus = React.createClass
   render: ->
     return <span className='deploy-steps'/> if @currentStage() == 0
 
-    cx = React.addons.classSet
-
     <ul className="deploy-steps collection">
       {_.map @props.stages, (stage, i) =>
         li_classes = (_this) =>
-          cx
+          classNames
             'collection-item': true
             success: !_this.props.error && _this.currentStage() > i + 1
             failure: _this.props.error && _this.currentStage() == i + 1
 
         icon_classes = (_this) =>
-          cx
+          classNames
             fa: true
             icon: true
             'secondary-content': true
@@ -32,7 +31,7 @@ PublishStatus = React.createClass
             'fa-circle-o-notch fa-spin': !_this.props.error && _this.currentStage() == i + 1
             'fa-exclamation-circle': _this.props.error && _this.currentStage() == i + 1
 
-        <li className={li_classes(@)}>
+        <li key={stage} className={li_classes(@)}>
           <span className='stage-name'>{stage}</span>
           <i className={icon_classes(@)}></i>
           {@error(i)}

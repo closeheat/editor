@@ -1,6 +1,7 @@
 md = require 'marked'
 $ = require 'jquery'
 React = require 'react'
+ReactDOM = require 'react-dom'
 
 Router = require 'react-router'
 Route = Router.Route
@@ -26,7 +27,7 @@ class Core
       @data = data
 
       Router.run @routes(), (Handler) =>
-        React.render(<Handler
+        ReactDOM.render(<Handler
           website_url={@data.app_domain}
           slug={@data.slug}
           avatar={@data.avatar}
@@ -34,7 +35,7 @@ class Core
           dist_dir={@data.dist_dir}
           is_demo_app={@data.is_demo_app}
           first_build={@data.first_build}
-        />, document.body)
+        />, document.getElementById('editor-container'))
 
   routes: ->
     <Route handler={App} path='/'>
