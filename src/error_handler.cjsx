@@ -4,10 +4,11 @@ request = require 'request'
 
 module.exports =
 React.createClass
-  getInitialState: ->
+  componentWillMount: ->
     @props.transitionWithCodeModeHistory('code', '/code/*?') unless @props.error
     @props.actionStopped()
 
+  getInitialState: ->
     {}
   message: ->
     return unless @props.error

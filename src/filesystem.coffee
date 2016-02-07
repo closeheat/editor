@@ -12,7 +12,7 @@ class Filesystem
       file.path.match(///^#{path}///)
 
   @read: (path) ->
-    file_on_path = _.detect @ls(), (file) ->
+    file_on_path = _.find @ls(), (file) ->
       file.path == path
 
     return file_on_path if file_on_path
@@ -51,7 +51,7 @@ class Filesystem
     file.content = new_content
 
   @isFile: (path) ->
-    _.detect @ls(), (file) ->
+    _.find @ls(), (file) ->
       file.path == path
 
   # traverse = require 'traverse'

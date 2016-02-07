@@ -7,11 +7,13 @@ Promise = require('bluebird');
 request = require('request');
 
 module.exports = React.createClass({
-  getInitialState: function() {
+  componentWillMount: function() {
     if (!this.props.error) {
       this.props.transitionWithCodeModeHistory('code', '/code/*?');
     }
-    this.props.actionStopped();
+    return this.props.actionStopped();
+  },
+  getInitialState: function() {
     return {};
   },
   message: function() {

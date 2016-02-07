@@ -23,11 +23,11 @@ React.createClass
     track('loaded', ch_initial_referrer: cookies.get('ch_initial_referrer'))
 
     {
-      clean_files: _.cloneDeep(Filesystem.ls()),
-      action_in_progress: false,
-      first_build_done: false,
-      show_free_hosting: false,
-      show_change_dist_dir: !@props.is_demo_app && @props.first_build,
+      clean_files: _.cloneDeep(Filesystem.ls())
+      action_in_progress: false
+      first_build_done: false
+      show_free_hosting: false
+      show_change_dist_dir: !@props.is_demo_app && @props.first_build
       dist_dir: @props.dist_dir
     }
 
@@ -96,7 +96,7 @@ React.createClass
 
   changedFiles: ->
     _.reject Filesystem.ls(), (new_file) =>
-      clean_file = _.detect @state.clean_files, (file) ->
+      clean_file = _.find @state.clean_files, (file) ->
         file.path == new_file.path
 
       clean_file.content == new_file.content

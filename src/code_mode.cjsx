@@ -34,7 +34,7 @@ React.createClass
     @fullPath().split('&')
 
   activeTabPath: ->
-    active_with_asterix = _.detect @tabPaths(), (tab_path) ->
+    active_with_asterix = _.find @tabPaths(), (tab_path) ->
       _.last(tab_path) == '*'
 
     if active_with_asterix

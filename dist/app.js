@@ -139,7 +139,7 @@ module.exports = React.createClass({
     return _.reject(Filesystem.ls(), (function(_this) {
       return function(new_file) {
         var clean_file;
-        clean_file = _.detect(_this.state.clean_files, function(file) {
+        clean_file = _.find(_this.state.clean_files, function(file) {
           return file.path === new_file.path;
         });
         return clean_file.content === new_file.content;

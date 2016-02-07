@@ -20,7 +20,7 @@ module.exports = Filesystem = (function() {
 
   Filesystem.read = function(path) {
     var file_on_path;
-    file_on_path = _.detect(this.ls(), function(file) {
+    file_on_path = _.find(this.ls(), function(file) {
       return file.path === path;
     });
     if (file_on_path) {
@@ -66,7 +66,7 @@ module.exports = Filesystem = (function() {
   };
 
   Filesystem.isFile = function(path) {
-    return _.detect(this.ls(), function(file) {
+    return _.find(this.ls(), function(file) {
       return file.path === path;
     });
   };

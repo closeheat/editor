@@ -49,7 +49,7 @@ module.exports = React.createClass({
   },
   activeTabPath: function() {
     var active_with_asterix;
-    active_with_asterix = _.detect(this.tabPaths(), function(tab_path) {
+    active_with_asterix = _.find(this.tabPaths(), function(tab_path) {
       return _.last(tab_path) === '*';
     });
     if (active_with_asterix) {
