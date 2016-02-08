@@ -1,6 +1,8 @@
-var FrontMatterAnalizer, HTMLAnalizer, SourceFinder, _;
+var FrontMatterAnalizer, HTMLAnalizer, SourceFinder, _, matter;
 
 _ = require('lodash');
+
+matter = require('gray-matter');
 
 HTMLAnalizer = require('./html_analizer');
 
@@ -27,16 +29,19 @@ module.exports = SourceFinder = (function() {
   };
 
   SourceFinder.prototype.calculateCombinedScore = function(file_analysis) {
-    return file_analysis.html.score;
+    return _.max([file_analysis.html.score, file_analysis.front_matter.score]);
   };
 
   SourceFinder.prototype.analizedFiles = function() {
     return _.map(this.files, (function(_this) {
       return function(file) {
+        var parsed_file;
+        parsed_file = matter(file.content);
         return {
-          front_matter: new FrontMatterAnalizer(file, _this.event).analize(),
-          html: new HTMLAnalizer(file, _this.event).analize(),
-          inner_text: _this.event.inner_text
+          front_matter: new FrontMatterAnalizer(parsed_file.data, _this.event).analize(),
+          html: new HTMLAnalizer(parsed_file.content, _this.event).analize(),
+          inner_text: _this.event.inner_text,
+          file: file.path
         };
       };
     })(this));

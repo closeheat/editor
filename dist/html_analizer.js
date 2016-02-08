@@ -7,10 +7,9 @@ Parser = new DOMParser();
 require('string_score');
 
 module.exports = HTMLAnalizer = (function() {
-  function HTMLAnalizer(file, event) {
-    this.file = file;
+  function HTMLAnalizer(content, event) {
     this.event = event;
-    this.dom = $(Parser.parseFromString(this.file.content, "text/html"));
+    this.dom = $(Parser.parseFromString(content, 'text/html'));
     this.selector_parts = this.event.selector.split(' > ');
   }
 

@@ -4,8 +4,8 @@ require('string_score')
 
 module.exports =
 class HTMLAnalizer
-  constructor: (@file, @event) ->
-    @dom = $(Parser.parseFromString(@file.content, "text/html"))
+  constructor: (content, @event) ->
+    @dom = $(Parser.parseFromString(content, 'text/html'))
     @selector_parts = @event.selector.split(' > ')
 
   analize: ->
@@ -44,28 +44,3 @@ class HTMLAnalizer
         element: element
 
     result
-
-
-      # window.THINGS.push(element_data)
-      # console.log combinations.length
-      # if combinations.length
-      #   console.log combinations
-      #   console.log file
-      #   console.log '------'
-    #   locations.push(_.merge(element_data, event))
-    #
-    # return unless locations.length
-    #
-    # window.EV = event
-    # console.log event
-    # strongest = _.maxBy(locations, 'strength')
-    # console.log _.sortBy(locations, 'strength')
-    # console.log 'MOST PROBABLE'
-    # console.log strongest.file.content
-    # console.log "selector: #{strongest.selector}"
-    # console.log "original: #{strongest.original_inner_text}"
-    # console.log "el: #{strongest.element_inner_text}"
-    # console.log "selector strength: #{strongest.selector_strength}"
-    # console.log "string score: #{strongest.string_score}"
-    # console.log "strength: #{strongest.strength}"
-    # console.log "file: #{strongest.file.path}"

@@ -86,7 +86,7 @@ React.createClass
   editableElement: (event) ->
     locations = []
 
-    final = new SourceFinder(event, @htmlFiles()).source()
+    final = new SourceFinder(event, @editableFiles()).source()
     console.log final
     return
 
@@ -119,9 +119,8 @@ React.createClass
 
     true
 
-  htmlFiles: ->
-    _.filter Filesystem.ls(), (file) ->
-      file.path.match(/\.html$/)
+  editableFiles: ->
+    _.filter Filesystem.ls(), 'editable'
 
   onScroll: (data) ->
     @setState(iframe_scroll_top: data.top, iframe_scroll_left: data.left)

@@ -124,7 +124,7 @@ module.exports = React.createClass({
   editableElement: function(event) {
     var final, locations, strongest;
     locations = [];
-    final = new SourceFinder(event, this.htmlFiles()).source();
+    final = new SourceFinder(event, this.editableFiles()).source();
     console.log(final);
     return;
     window.EV = event;
@@ -155,10 +155,8 @@ module.exports = React.createClass({
     }
     return true;
   },
-  htmlFiles: function() {
-    return _.filter(Filesystem.ls(), function(file) {
-      return file.path.match(/\.html$/);
-    });
+  editableFiles: function() {
+    return _.filter(Filesystem.ls(), 'editable');
   },
   onScroll: function(data) {
     return this.setState({
