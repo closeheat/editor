@@ -15,6 +15,8 @@ module.exports = SourceFinder = (function() {
   }
 
   SourceFinder.prototype.source = function() {
+    console.log('RUNNER UP');
+    console.log(_.first(_.takeRight(_.sortBy(this.scores(), 'combined_score'), 2)));
     return _.maxBy(this.scores(), 'combined_score');
   };
 

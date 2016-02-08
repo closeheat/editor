@@ -5,7 +5,7 @@ React = require('react');
 window._ = require('lodash');
 
 inlineInject = function() {
-  var bindEvent, bindScrollEvent, event, events, getElementOffset, getSelector, i, len, positionInDom;
+  var bindEvents, bindScrollEvent, edit, getElementOffset, getSelector, positionInDom;
   positionInDom = function(el, count) {
     var new_el;
     if (count == null) {
@@ -50,14 +50,14 @@ inlineInject = function() {
       }, 'http://localhost:4000');
     });
   };
-  bindEvent = function(event) {
-    return window.addEventListener(event, function(e) {
+  edit = function(e) {
+    return function() {
       var offsets, selector;
       e.preventDefault();
       selector = getSelector(e.target);
       offsets = getElementOffset(e.target);
       return parent.postMessage({
-        action: event,
+        action: 'edit',
         selector: selector,
         top: offsets.top,
         left: offsets.left,
@@ -67,6 +67,19 @@ inlineInject = function() {
         inner_text: e.target.innerText,
         style: JSON.stringify(window.getComputedStyle(e.target))
       }, 'http://1142649e.ngrok.com');
+    };
+  };
+  bindEvents = function() {
+    var hold_timeout_id;
+    hold_timeout_id = 0;
+    window.addEventListener('mousedown', function(e) {
+      return hold_timeout_id = setTimeout(edit(e), 1000);
+    });
+    window.addEventListener('mouseup', function(e) {
+      return clearTimeout(hold_timeout_id);
+    });
+    return window.addEventListener('mouseleave', function(e) {
+      return clearTimeout(hold_timeout_id);
     });
   };
   getElementOffset = function(element) {
@@ -80,12 +93,7 @@ inlineInject = function() {
       left: left
     };
   };
-  events = ['click', 'mouseover', 'mouseout'];
-  for (i = 0, len = events.length; i < len; i++) {
-    event = events[i];
-    bindEvent(event);
-  }
-  bindScrollEvent();
+  bindEvents();
   return console.log('injected her');
 };
 

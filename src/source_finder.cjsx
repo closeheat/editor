@@ -9,6 +9,8 @@ class SourceFinder
   constructor: (@event, @files) ->
 
   source: ->
+    console.log 'RUNNER UP'
+    console.log _.first(_.takeRight(_.sortBy(@scores(), 'combined_score'), 2))
     _.maxBy @scores(), 'combined_score'
 
   scores: ->

@@ -66,9 +66,8 @@ module.exports = React.createClass({
     return this.build();
   },
   onMessage: function(e) {
-    if (e.data.action === 'click') {
-      console.log(e);
-      return this.onClick(e.data);
+    if (e.data.action === 'edit') {
+      return this.onEdit(e.data);
     } else if (e.data.action === 'prompt') {
       return this.state.editing_location.element.html(e.data.new_content);
     } else if (e.data.action === 'mouseover') {
@@ -102,7 +101,7 @@ module.exports = React.createClass({
     code = mouseoutCode.toString().replace('SELECTOR', element_data.selector);
     return this.refs.browser.evalInIframe(code);
   },
-  onClick: function(event) {
+  onEdit: function(event) {
     var element_data;
     console.log('cicked');
     element_data = this.editableElement(event);

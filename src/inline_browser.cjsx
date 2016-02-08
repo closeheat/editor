@@ -37,8 +37,8 @@ inlineInject = ->
         left: e.srcElement.body.scrollLeft
       , 'http://localhost:4000'
 
-  bindEvent = (event) ->
-    window.addEventListener event, (e) ->
+  edit = (e) ->
+    ->
       e.preventDefault()
       selector = getSelector(e.target)
 
@@ -46,7 +46,7 @@ inlineInject = ->
       # debugger if event == 'click'
 
       parent.postMessage
-        action: event
+        action: 'edit'
         selector: selector
         top: offsets.top
         left: offsets.left
@@ -57,6 +57,18 @@ inlineInject = ->
         style: JSON.stringify(window.getComputedStyle(e.target))
       , 'http://1142649e.ngrok.com'
 
+  bindEvents = ->
+    hold_timeout_id = 0
+
+    window.addEventListener 'mousedown', (e) ->
+      hold_timeout_id = setTimeout(edit(e), 1000)
+
+    window.addEventListener 'mouseup', (e) ->
+      clearTimeout(hold_timeout_id)
+
+    window.addEventListener 'mouseleave', (e) ->
+      clearTimeout(hold_timeout_id)
+
   getElementOffset = (element) ->
     de = document.documentElement
     box = element.getBoundingClientRect()
@@ -64,14 +76,16 @@ inlineInject = ->
     left = box.left + window.pageXOffset - de.clientLeft
     { top: top, left: left }
 
-  events = [
-    'click'
-    'mouseover'
-    'mouseout'
-  ]
+  #
+  # events = [
+  #   'click'
+  #   'mouseover'
+  #   'mouseout'
+  # ]
 
-  bindEvent(event) for event in events
-  bindScrollEvent()
+  bindEvents()
+  # bindEvent(event) for event in events
+  # bindScrollEvent()
   console.log('injected her')
 
   # browser.on 'focus', '[contenteditable]', ->

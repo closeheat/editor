@@ -40,9 +40,8 @@ React.createClass
     @setState(build_finished: false)
     @build()
   onMessage: (e) ->
-    if e.data.action == 'click'
-      console.log e
-      @onClick(e.data)
+    if e.data.action == 'edit'
+      @onEdit(e.data)
     else if e.data.action == 'prompt'
       @state.editing_location.element.html(e.data.new_content)
     else if e.data.action == 'mouseover'
@@ -67,7 +66,7 @@ React.createClass
 
     code = mouseoutCode.toString().replace('SELECTOR', element_data.selector)
     @refs.browser.evalInIframe(code)
-  onClick: (event) ->
+  onEdit: (event) ->
     console.log('cicked')
     element_data = @editableElement(event)
 
