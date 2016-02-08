@@ -64,8 +64,9 @@ inlineInject = function() {
         height: e.target.offsetHeight,
         width: e.target.offsetWidth,
         old_outline: e.target.outline,
+        inner_text: e.target.innerText,
         style: JSON.stringify(window.getComputedStyle(e.target))
-      }, 'http://localhost:4000');
+      }, 'http://1142649e.ngrok.com');
     });
   };
   getElementOffset = function(element) {
@@ -84,7 +85,8 @@ inlineInject = function() {
     event = events[i];
     bindEvent(event);
   }
-  return bindScrollEvent();
+  bindScrollEvent();
+  return console.log('injected her');
 };
 
 module.exports = React.createClass({
@@ -109,6 +111,7 @@ module.exports = React.createClass({
     return "evalFunction = " + code + "; evalFunction()";
   },
   inject: function() {
+    console.log('inkecting');
     return this.evalInIframe(inlineInject.toString());
   },
   evalInIframe: function(code) {

@@ -1,6 +1,6 @@
 var Link, Navigation, React, RouteHandler, Router, Tabs, _;
 
-React = require('react/addons');
+React = require('react');
 
 _ = require('lodash');
 
@@ -49,7 +49,7 @@ module.exports = React.createClass({
   },
   activeTabPath: function() {
     var active_with_asterix;
-    active_with_asterix = _.detect(this.tabPaths(), function(tab_path) {
+    active_with_asterix = _.find(this.tabPaths(), function(tab_path) {
       return _.last(tab_path) === '*';
     });
     if (active_with_asterix) {
@@ -99,9 +99,7 @@ module.exports = React.createClass({
       path: path,
       active: true
     };
-    unique_tabs = _.uniq(_.flatten([this.tabs(), new_active_tab]), function(tab) {
-      return tab.path;
-    });
+    unique_tabs = _.uniqBy(_.flatten([this.tabs(), new_active_tab]), 'path');
     return this.href(unique_tabs, new_active_tab);
   },
   reuseTabHref: function(path) {
@@ -112,9 +110,7 @@ module.exports = React.createClass({
       }
       return tab;
     });
-    unique_tabs = _.uniq(new_tabs, function(tab) {
-      return tab.path;
-    });
+    unique_tabs = _.uniqBy(new_tabs, 'path');
     with_active_tab = _.map(unique_tabs, function(tab) {
       if (tab.path === path) {
         tab.active = true;

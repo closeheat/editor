@@ -29,9 +29,10 @@
     "react-router": "^0.13.3",
     "react-wysiwyg": "Nedomas/react-wysiwyg",
     "request": "^2.54.0",
+    "string_score": "^0.1.22",
     "stringify": "^3.1.0",
+    "traverse": "^0.6.6",
     "walk": "Nedomas/node-walk"
-    "traverse": "^0.6.6"
   },
   "keywords": [
     "closeheat",

@@ -13,14 +13,14 @@ module.exports = Filesystem = (function() {
     if (!path) {
       return window.fs;
     }
-    return _.select(window.fs, function(file) {
+    return _.filter(window.fs, function(file) {
       return file.path.match(RegExp("^" + path));
     });
   };
 
   Filesystem.read = function(path) {
     var file_on_path;
-    file_on_path = _.detect(this.ls(), function(file) {
+    file_on_path = _.find(this.ls(), function(file) {
       return file.path === path;
     });
     if (file_on_path) {
@@ -54,9 +54,7 @@ module.exports = Filesystem = (function() {
         }));
       }
     });
-    return _.uniq(result, function(file) {
-      return file.name;
-    });
+    return _.uniqBy(result, 'name');
   };
 
   Filesystem.write = function(path, new_content) {
@@ -66,7 +64,7 @@ module.exports = Filesystem = (function() {
   };
 
   Filesystem.isFile = function(path) {
-    return _.detect(this.ls(), function(file) {
+    return _.find(this.ls(), function(file) {
       return file.path === path;
     });
   };

@@ -53,8 +53,9 @@ inlineInject = ->
         height: e.target.offsetHeight
         width: e.target.offsetWidth
         old_outline: e.target.outline
+        inner_text: e.target.innerText
         style: JSON.stringify(window.getComputedStyle(e.target))
-      , 'http://localhost:4000'
+      , 'http://1142649e.ngrok.com'
 
   getElementOffset = (element) ->
     de = document.documentElement
@@ -71,6 +72,7 @@ inlineInject = ->
 
   bindEvent(event) for event in events
   bindScrollEvent()
+  console.log('injected her')
 
   # browser.on 'focus', '[contenteditable]', ->
   #   console.log('focus')
@@ -96,6 +98,7 @@ React.createClass
   wrapEvalFunction: (code) ->
     "evalFunction = #{code}; evalFunction()"
   inject: ->
+    console.log 'inkecting'
     @evalInIframe(inlineInject.toString())
   evalInIframe: (code) ->
     @iframe().contentWindow.postMessage(@wrapEvalFunction(code), 'http://localhost:9000')

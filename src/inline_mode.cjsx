@@ -1,9 +1,10 @@
-React = require 'react/addons'
+React = require 'react'
 _ = require 'lodash'
 InlineBrowser = require('./inline_browser')
 Prompt = require('./prompt')
 Loader = require('./loader')
 Filesystem = require('./filesystem')
+require('string_score')
 Parser = new DOMParser()
 
 editingPrompt = ->
@@ -41,13 +42,14 @@ React.createClass
     @build()
   onMessage: (e) ->
     if e.data.action == 'click'
+      console.log e
       @onClick(e.data)
     else if e.data.action == 'prompt'
       @state.editing_location.element.html(e.data.new_content)
     else if e.data.action == 'mouseover'
-      @onMouseover(e.data)
+      # @onMouseover(e.data)
     else if e.data.action == 'mouseout'
-      @onMouseout(e.data)
+      # @onMouseout(e.data)
     else if e.data.action == 'scroll'
       @onScroll(e.data)
     else
@@ -67,6 +69,7 @@ React.createClass
     code = mouseoutCode.toString().replace('SELECTOR', element_data.selector)
     @refs.browser.evalInIframe(code)
   onClick: (event) ->
+    console.log('cicked')
     element_data = @editableElement(event)
 
     if element_data
@@ -84,19 +87,77 @@ React.createClass
   editableElement: (event) ->
     locations = []
 
+    window.THINGS = []
+    window.Pa = Parser
+
+    selector_parts = event.selector.split(' > ')
+
     _.each @htmlFiles(), (file) =>
       dom = $(Parser.parseFromString(file.content, "text/html"))
-      element = dom.find(event.selector)
+
+      combinations = []
+
+      _.times selector_parts.length + 1, (i) =>
+        combination = _.takeRight(selector_parts, i).join(' > ')
+        element = dom.find(combination)
+        return true unless element[0]
+
+        combinations.push(combination)
+
+      # return true unless combinations.length
+
+      # GREY MATTER
+      strongest_selector = _.last(combinations)
+      selector_strength = combinations.length
+
+      element = dom.find(strongest_selector)
+      element_inner_text = element[0].innerText
+      string_score = event.inner_text.score(element_inner_text)
+
+      max_selector_scale = 12
+      strength = selector_strength * 0.2 + (string_score * max_selector_scale) * 0.8
+
       element_data =
         file: file
-        element: element
+        element: element[0]
         dom: dom
+        selector_strength: selector_strength
+        selector_combinations: combinations
+        original_inner_text: event.inner_text
+        element_inner_text: element_inner_text
+        string_score: string_score
+        strength: strength
 
+      # window.THINGS.push(element_data)
+      # console.log combinations.length
+      # if combinations.length
+      #   console.log combinations
+      #   console.log file
+      #   console.log '------'
       locations.push(_.merge(element_data, event))
 
-    return unless @isEditableElement(locations)
+    return unless locations.length
 
-    locations[0]
+    window.EV = event
+    console.log event
+    strongest = _.maxBy(locations, 'strength')
+    console.log _.sortBy(locations, 'strength')
+    console.log 'MOST PROBABLE'
+    console.log strongest.file.content
+    console.log "selector: #{strongest.selector}"
+    console.log "original: #{strongest.original_inner_text}"
+    console.log "el: #{strongest.element_inner_text}"
+    console.log "selector strength: #{strongest.selector_strength}"
+    console.log "string score: #{strongest.string_score}"
+    console.log "strength: #{strongest.strength}"
+    console.log "file: #{strongest.file.path}"
+
+    # if locations.length != 1
+    #   window.SEL = event.selector
+    #   console.log locations
+    # return unless @isEditableElement(locations)
+    #
+    # locations[0]
   isEditableElement: (locations) ->
     return unless locations.length == 1
 
@@ -107,7 +168,7 @@ React.createClass
     true
 
   htmlFiles: ->
-    _.select Filesystem.ls(), (file) ->
+    _.filter Filesystem.ls(), (file) ->
       file.path.match(/\.html$/)
 
   onScroll: (data) ->

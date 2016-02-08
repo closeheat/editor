@@ -1,6 +1,6 @@
 var $, ChangeDistDirToast, Filesystem, Header, Navigation, NewApp, Promise, React, RouteHandler, Router, _, cookies, flatten, request;
 
-React = require('react/addons');
+React = require('react');
 
 flatten = require('flat');
 
@@ -94,9 +94,6 @@ module.exports = React.createClass({
   },
   previewClick: function() {
     track('preview_clicked');
-    if (this.props.is_demo_app && !this.state.free_hosting_shown) {
-      setTimeout(this.showFreeHosting, 18000);
-    }
     if (this.state.action_in_progress) {
       return;
     }
@@ -142,7 +139,7 @@ module.exports = React.createClass({
     return _.reject(Filesystem.ls(), (function(_this) {
       return function(new_file) {
         var clean_file;
-        clean_file = _.detect(_this.state.clean_files, function(file) {
+        clean_file = _.find(_this.state.clean_files, function(file) {
           return file.path === new_file.path;
         });
         return clean_file.content === new_file.content;

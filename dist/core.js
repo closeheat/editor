@@ -1,10 +1,12 @@
-var $, App, CodeMode, Core, ErrorHandler, InitialLoader, InlineMode, PreviewMode, Publish, React, Redirect, Route, Router, Settings, TabManager, md;
+var $, App, CodeMode, Core, ErrorHandler, InitialLoader, InlineMode, PreviewMode, Publish, React, ReactDOM, Redirect, Route, Router, Settings, TabManager, md;
 
 md = require('marked');
 
 $ = require('jquery');
 
 React = require('react');
+
+ReactDOM = require('react-dom');
 
 Router = require('react-router');
 
@@ -42,7 +44,7 @@ module.exports = Core = (function() {
       return function(data) {
         _this.data = data;
         return Router.run(_this.routes(), function(Handler) {
-          return React.render(React.createElement(Handler, {
+          return ReactDOM.render(React.createElement(Handler, {
             "website_url": _this.data.app_domain,
             "slug": _this.data.slug,
             "avatar": _this.data.avatar,
@@ -50,7 +52,7 @@ module.exports = Core = (function() {
             "dist_dir": _this.data.dist_dir,
             "is_demo_app": _this.data.is_demo_app,
             "first_build": _this.data.first_build
-          }), document.body);
+          }), document.getElementById('editor-container'));
         });
       };
     })(this));

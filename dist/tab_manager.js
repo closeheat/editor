@@ -1,6 +1,6 @@
 var Editor, FileManager, Filesystem, React, _;
 
-React = require('react/addons');
+React = require('react');
 
 _ = require('lodash');
 

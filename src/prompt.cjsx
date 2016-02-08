@@ -1,4 +1,4 @@
-React = require 'react/addons'
+React = require 'react'
 ContentEditable = require('react-wysiwyg')
 
 module.exports =

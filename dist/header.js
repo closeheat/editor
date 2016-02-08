@@ -1,12 +1,16 @@
-var $, Header, PublishStatus, React, Tour, _;
+var $, Header, PublishStatus, React, ReactDOM, Tour, _, classNames;
 
-React = require('react/addons');
+React = require('react');
+
+ReactDOM = require('react-dom');
+
+classNames = require('classnames');
+
+_ = require('lodash');
 
 PublishStatus = require('./publish_status');
 
 Tour = require('./tour');
-
-_ = require('lodash');
 
 $ = window.jQuery = window.$ = require('jquery');
 
@@ -17,7 +21,7 @@ module.exports = Header = React.createClass({
   goToStep: function(tour_step) {},
   activeModeClass: function(type, cols) {
     var obj;
-    return React.addons.classSet((
+    return classNames((
       obj = {
         col: true,
         'header-mode': true,
@@ -38,7 +42,7 @@ module.exports = Header = React.createClass({
     return this.addDropdowns();
   },
   addDropdowns: function() {
-    return $(this.getDOMNode()).find('.dropdown-button').dropdown({
+    return $(this.refs.dropdown_button).dropdown({
       hover: true,
       belowOrigin: true,
       gutter: 20,
@@ -49,7 +53,7 @@ module.exports = Header = React.createClass({
     var elements;
     elements = _.map(['code', 'preview', 'publish', 'website_url'], (function(_this) {
       return function(name) {
-        return React.findDOMNode(_this.refs[name]);
+        return ReactDOM.findDOMNode(_this.refs[name]);
       };
     })(this));
     return $(elements).tooltip({
@@ -60,8 +64,9 @@ module.exports = Header = React.createClass({
     return this.props.website_url.replace('http://', '');
   },
   render: function() {
-    var dashboard_url;
-    dashboard_url = "http://app.closeheat.com/apps/" + APP_SLUG + "/";
+    var cli_url, dashboard_url;
+    dashboard_url = "https://app.closeheat.com/apps/" + APP_SLUG + "/";
+    cli_url = "https://app.closeheat.com/cli/";
     return React.createElement("div", null, React.createElement("div", {
       "className": 'row header-row'
     }, React.createElement("div", {
@@ -100,6 +105,7 @@ module.exports = Header = React.createClass({
     }, React.createElement("a", {
       "href": "mailto:support@closeheat.com?subject=I'm having a problem with the editor"
     }, "Support")), React.createElement("div", {
+      "ref": 'dropdown_button',
       "className": 'col s1 center-align dropdown-button',
       "data-activates": 'avatar-dropdown'
     }, React.createElement("div", {
@@ -113,12 +119,15 @@ module.exports = Header = React.createClass({
       "href": 'javascript:void(0);',
       "onClick": this.props.onSettingsClick
     }, "Settings")), React.createElement("li", null, React.createElement("a", {
-      "href": 'javascript:void(0);',
-      "onClick": this.props.onNewWebsiteClick
-    }, "Create a New Website")), React.createElement("li", null, React.createElement("a", {
       "href": dashboard_url,
       "target": '_blank'
-    }, "Website Dashboard"))), React.createElement(Tour, {
+    }, "Website Dashboard")), React.createElement("li", null, React.createElement("a", {
+      "href": cli_url,
+      "target": '_blank'
+    }, "Command Line Tools")), React.createElement("li", null, React.createElement("a", {
+      "href": 'javascript:void(0);',
+      "onClick": this.props.onNewWebsiteClick
+    }, "Create a New Website"))), React.createElement(Tour, {
       "step": this.state.tour_step,
       "done": this.state.tour_done
     }));

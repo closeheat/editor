@@ -1,6 +1,6 @@
 var Link, React, Router, Tab, _;
 
-React = require('react/addons');
+React = require('react');
 
 _ = require('lodash');
 
@@ -34,6 +34,7 @@ module.exports = React.createClass({
     }, _.map(this.props.tabs, (function(_this) {
       return function(tab) {
         return React.createElement(Tab, {
+          "key": tab.href,
           "href": tab.href,
           "close_href": tab.close_href,
           "name": tab.name,

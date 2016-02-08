@@ -1,6 +1,6 @@
 var Filesystem, InlineBrowser, Loader, Parser, Prompt, React, _, editingPrompt, mouseoutCode, mouseoverCode;
 
-React = require('react/addons');
+React = require('react');
 
 _ = require('lodash');
 
@@ -11,6 +11,8 @@ Prompt = require('./prompt');
 Loader = require('./loader');
 
 Filesystem = require('./filesystem');
+
+require('string_score');
 
 Parser = new DOMParser();
 
@@ -67,13 +69,14 @@ module.exports = React.createClass({
   },
   onMessage: function(e) {
     if (e.data.action === 'click') {
+      console.log(e);
       return this.onClick(e.data);
     } else if (e.data.action === 'prompt') {
       return this.state.editing_location.element.html(e.data.new_content);
     } else if (e.data.action === 'mouseover') {
-      return this.onMouseover(e.data);
+
     } else if (e.data.action === 'mouseout') {
-      return this.onMouseout(e.data);
+
     } else if (e.data.action === 'scroll') {
       return this.onScroll(e.data);
     } else {
@@ -103,6 +106,7 @@ module.exports = React.createClass({
   },
   onClick: function(event) {
     var element_data;
+    console.log('cicked');
     element_data = this.editableElement(event);
     if (element_data) {
       return this.setState({
@@ -120,25 +124,62 @@ module.exports = React.createClass({
     });
   },
   editableElement: function(event) {
-    var locations;
+    var locations, selector_parts, strongest;
     locations = [];
+    window.THINGS = [];
+    window.Pa = Parser;
+    selector_parts = event.selector.split(' > ');
     _.each(this.htmlFiles(), (function(_this) {
       return function(file) {
-        var dom, element, element_data;
+        var combinations, dom, element, element_data, element_inner_text, max_selector_scale, selector_strength, strength, string_score, strongest_selector;
         dom = $(Parser.parseFromString(file.content, "text/html"));
-        element = dom.find(event.selector);
+        combinations = [];
+        _.times(selector_parts.length + 1, function(i) {
+          var combination, element;
+          combination = _.takeRight(selector_parts, i).join(' > ');
+          element = dom.find(combination);
+          if (!element[0]) {
+            return true;
+          }
+          return combinations.push(combination);
+        });
+        strongest_selector = _.last(combinations);
+        selector_strength = combinations.length;
+        element = dom.find(strongest_selector);
+        element_inner_text = element[0].innerText;
+        string_score = event.inner_text.score(element_inner_text);
+        max_selector_scale = 12;
+        strength = selector_strength * 0.2 + (string_score * max_selector_scale) * 0.8;
         element_data = {
           file: file,
-          element: element,
-          dom: dom
+          element: element[0],
+          dom: dom,
+          selector_strength: selector_strength,
+          selector_combinations: combinations,
+          original_inner_text: event.inner_text,
+          element_inner_text: element_inner_text,
+          string_score: string_score,
+          strength: strength
         };
         return locations.push(_.merge(element_data, event));
       };
     })(this));
-    if (!this.isEditableElement(locations)) {
+    if (!locations.length) {
       return;
     }
-    return locations[0];
+    window.EV = event;
+    console.log(event);
+    strongest = _.maxBy(locations, 'strength');
+    console.log(_.sortBy(locations, 'strength'));
+    console.log('MOST PROBABLE');
+    console.log(strongest.file.content);
+    console.log("selector: " + strongest.selector);
+    console.log("original: " + strongest.original_inner_text);
+    console.log("el: " + strongest.element_inner_text);
+    console.log("selector strength: " + strongest.selector_strength);
+    console.log("string score: " + strongest.string_score);
+    console.log("strength: " + strongest.strength);
+    return console.log("file: " + strongest.file.path);
   },
   isEditableElement: function(locations) {
     var element;
@@ -155,7 +196,7 @@ module.exports = React.createClass({
     return true;
   },
   htmlFiles: function() {
-    return _.select(Filesystem.ls(), function(file) {
+    return _.filter(Filesystem.ls(), function(file) {
       return file.path.match(/\.html$/);
     });
   },

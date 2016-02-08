@@ -1,6 +1,6 @@
 var File, FileUp, Filesystem, Link, React, Router, _;
 
-React = require('react/addons');
+React = require('react');
 
 _ = require('lodash');
 
@@ -46,7 +46,9 @@ module.exports = React.createClass({
     }, React.createElement("li", {
       "className": 'file-list-start'
     }, "Files"), _.map(this.pathParts(), function(part) {
-      return React.createElement("li", null, React.createElement("span", {
+      return React.createElement("li", {
+        "key": part
+      }, React.createElement("span", {
         "className": 'file-list-sep'
       }, "\x2F"), React.createElement("span", {
         "className": 'file-list-name'
@@ -61,6 +63,7 @@ module.exports = React.createClass({
     }), _.map(this.folderFiles(), (function(_this) {
       return function(file) {
         return React.createElement(File, {
+          "key": file.path,
           "file": file,
           "active": _this.props.active,
           "supported_modes": _this.props.supported_modes
