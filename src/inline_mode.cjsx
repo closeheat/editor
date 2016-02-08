@@ -4,8 +4,7 @@ InlineBrowser = require('./inline_browser')
 Prompt = require('./prompt')
 Loader = require('./loader')
 Filesystem = require('./filesystem')
-require('string_score')
-Parser = new DOMParser()
+SourceFinder = require('./source_finder')
 
 editingPrompt = ->
   parent.postMessage(action: 'prompt', new_content: prompt('', 'CONTENT_VALUE'), 'http://localhost:4000')
@@ -87,56 +86,9 @@ React.createClass
   editableElement: (event) ->
     locations = []
 
-    window.THINGS = []
-    window.Pa = Parser
-
-    selector_parts = event.selector.split(' > ')
-
-    _.each @htmlFiles(), (file) =>
-      dom = $(Parser.parseFromString(file.content, "text/html"))
-
-      combinations = []
-
-      _.times selector_parts.length + 1, (i) =>
-        combination = _.takeRight(selector_parts, i).join(' > ')
-        element = dom.find(combination)
-        return true unless element[0]
-
-        combinations.push(combination)
-
-      # return true unless combinations.length
-
-      # GREY MATTER
-      strongest_selector = _.last(combinations)
-      selector_strength = combinations.length
-
-      element = dom.find(strongest_selector)
-      element_inner_text = element[0].innerText
-      string_score = event.inner_text.score(element_inner_text)
-
-      max_selector_scale = 12
-      strength = selector_strength * 0.2 + (string_score * max_selector_scale) * 0.8
-
-      element_data =
-        file: file
-        element: element[0]
-        dom: dom
-        selector_strength: selector_strength
-        selector_combinations: combinations
-        original_inner_text: event.inner_text
-        element_inner_text: element_inner_text
-        string_score: string_score
-        strength: strength
-
-      # window.THINGS.push(element_data)
-      # console.log combinations.length
-      # if combinations.length
-      #   console.log combinations
-      #   console.log file
-      #   console.log '------'
-      locations.push(_.merge(element_data, event))
-
-    return unless locations.length
+    final = new SourceFinder(event, @htmlFiles()).source()
+    console.log final
+    return
 
     window.EV = event
     console.log event
