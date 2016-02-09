@@ -118,10 +118,10 @@ React.createClass
 
     new_source = source.replace(old_text, new_text)
     console.log new_source
-    # Filesystem.write(@state.current_element_data.file, new_source)
+    Filesystem.write(@state.current_element_data.file, new_source)
 
     @removePrompt()
-    # @rebuild()
+    @rebuild()
   prompt: ->
     return <div></div> unless @state.show_prompt
 

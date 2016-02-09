@@ -156,7 +156,9 @@ module.exports = React.createClass({
     }
     new_source = source.replace(old_text, new_text);
     console.log(new_source);
-    return this.removePrompt();
+    Filesystem.write(this.state.current_element_data.file, new_source);
+    this.removePrompt();
+    return this.rebuild();
   },
   prompt: function() {
     if (!this.state.show_prompt) {
