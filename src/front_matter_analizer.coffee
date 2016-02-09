@@ -4,7 +4,7 @@ require('string_score')
 module.exports =
 class FrontMatterAnalizer
   constructor: (@data, @event) ->
-    @inner_text = _.trim(@event.inner_text)
+    @text = _.trim(@event.text)
 
   analize: ->
     text_keys = @textKeys()
@@ -13,7 +13,7 @@ class FrontMatterAnalizer
     result = []
 
     _.each text_keys, (val, key) =>
-      string_score = val.score(@inner_text)
+      string_score = val.score(@text)
 
       result.push
         type: 'front_matter'

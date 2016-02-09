@@ -5,7 +5,7 @@ React = require('react');
 window._ = require('lodash');
 
 inlineInject = function() {
-  var bindEvents, bindScrollEvent, edit, getElementOffset, getSelector, positionInDom;
+  var bindEvents, bindScrollEvent, edit, getElementOffset, getSelector, positionInDom, text;
   positionInDom = function(el, count) {
     var new_el;
     if (count == null) {
@@ -64,10 +64,23 @@ inlineInject = function() {
         height: e.target.offsetHeight,
         width: e.target.offsetWidth,
         old_outline: e.target.outline,
-        inner_text: e.target.innerText,
+        text: text(e.target),
         style: JSON.stringify(window.getComputedStyle(e.target))
       }, 'http://1142649e.ngrok.com');
     };
+  };
+  text = function(target) {
+    var WHITESPACE_REGEX, i, len, node, ref, result;
+    WHITESPACE_REGEX = /^\s*$/;
+    result = [];
+    ref = target.childNodes;
+    for (i = 0, len = ref.length; i < len; i++) {
+      node = ref[i];
+      if (node.nodeName === "#text" && !(WHITESPACE_REGEX.test(node.nodeValue))) {
+        result.push(node.nodeValue);
+      }
+    }
+    return result[0];
   };
   bindEvents = function() {
     var hold_timeout_id;

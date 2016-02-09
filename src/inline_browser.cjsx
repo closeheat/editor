@@ -53,9 +53,22 @@ inlineInject = ->
         height: e.target.offsetHeight
         width: e.target.offsetWidth
         old_outline: e.target.outline
-        inner_text: e.target.innerText
+        text: text(e.target)
         style: JSON.stringify(window.getComputedStyle(e.target))
       , 'http://1142649e.ngrok.com'
+
+  text = (target) ->
+    WHITESPACE_REGEX = /^\s*$/
+
+    result = []
+
+    for node in target.childNodes
+      if node.nodeName == "#text" && !(WHITESPACE_REGEX.test(node.nodeValue))
+        result.push node.nodeValue
+
+    # TODO: handle "hello<a>some</a> super" editing super
+
+    result[0]
 
   bindEvents = ->
     hold_timeout_id = 0

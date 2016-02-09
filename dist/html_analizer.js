@@ -35,7 +35,6 @@ module.exports = HTMLAnalizer = (function() {
         combination.type = 'html';
         combination.dom = _this.dom;
         combination.string_score = _this.stringScore(combination);
-        combination.text = combination.element.innerText;
         combination.score = combination.string_score * 0.8 + combination.selector_score * 0.2;
         return combination;
       };
@@ -46,7 +45,7 @@ module.exports = HTMLAnalizer = (function() {
   HTMLAnalizer.prototype.stringScore = function(combination) {
     var max_selector_scale;
     max_selector_scale = 12;
-    return _.trim(this.event.inner_text).score(_.trim(combination.element.innerText)) * max_selector_scale;
+    return _.trim(this.event.text).score(_.trim(combination.text)) * max_selector_scale;
   };
 
   HTMLAnalizer.prototype.allCombinations = function() {
@@ -64,19 +63,37 @@ module.exports = HTMLAnalizer = (function() {
         return result.push({
           selector: selector,
           selector_score: i,
-          element: element
+          element: element,
+          text: _this.text(element)
         });
       };
     })(this));
     bare_selector = _.last(this.selector_parts).replace(NTH_CHILD_REGEX, '');
-    _.each(this.dom.find(bare_selector), function(element) {
-      return result.push({
-        selector: bare_selector,
-        selector_score: 0.1,
-        element: element
-      });
-    });
+    _.each(this.dom.find(bare_selector), (function(_this) {
+      return function(element) {
+        return result.push({
+          selector: bare_selector,
+          selector_score: 0.1,
+          element: element,
+          text: _this.text(element)
+        });
+      };
+    })(this));
     return result;
+  };
+
+  HTMLAnalizer.prototype.text = function(target) {
+    var WHITESPACE_REGEX, j, len, node, ref, result;
+    WHITESPACE_REGEX = /^\s*$/;
+    result = [];
+    ref = target.childNodes;
+    for (j = 0, len = ref.length; j < len; j++) {
+      node = ref[j];
+      if (node.nodeName === "#text" && !(WHITESPACE_REGEX.test(node.nodeValue))) {
+        result.push(node.nodeValue);
+      }
+    }
+    return result[0];
   };
 
   return HTMLAnalizer;

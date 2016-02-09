@@ -49,7 +49,7 @@ module.exports = SourceFinder = (function() {
         return {
           front_matter: new FrontMatterAnalizer(parsed_file.data, _this.event).analize(),
           html: new HTMLAnalizer(parsed_file.content, _this.event).analize(),
-          inner_text: _this.event.inner_text,
+          text: _this.event.text,
           file: file.path
         };
       };

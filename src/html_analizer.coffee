@@ -22,15 +22,17 @@ class HTMLAnalizer
       combination.type = 'html'
       combination.dom = @dom
       combination.string_score = @stringScore(combination)
-      combination.text = combination.element.innerText
       combination.score = combination.string_score * 0.8 + combination.selector_score * 0.2
+      # console.log @event.text
+      # console.log combination.text
+      # console.log "SEL: #{combination.selector_score}, STR: #{combination.string_score}, TO: #{combination.score}"
       combination
 
     _.maxBy scored_combinations, 'score'
 
   stringScore: (combination) ->
     max_selector_scale = 12
-    _.trim(@event.inner_text).score(_.trim(combination.element.innerText)) * max_selector_scale
+    _.trim(@event.text).score(_.trim(combination.text)) * max_selector_scale
 
   allCombinations: ->
     result = []
@@ -45,12 +47,32 @@ class HTMLAnalizer
         selector: selector
         selector_score: i
         element: element
+        text: @text(element)
 
     bare_selector = _.last(@selector_parts).replace(NTH_CHILD_REGEX, '')
-    _.each @dom.find(bare_selector), (element) ->
+    _.each @dom.find(bare_selector), (element) =>
       result.push
         selector: bare_selector
         selector_score: 0.1
         element: element
+        text: @text(element)
 
     result
+
+  # matching with inject script
+  text: (target) ->
+    WHITESPACE_REGEX = /^\s*$/
+
+    result = []
+
+    for node in target.childNodes
+      if node.nodeName == "#text" && !(WHITESPACE_REGEX.test(node.nodeValue))
+        result.push node.nodeValue
+
+    # TODO: handle "hello<a>some</a> super" editing super
+
+    # console.log 'here'
+    # console.log node.nodeValue
+    # debugger if result[0].toString() == 'true'
+    result[0]
+    # 'Lenz'
