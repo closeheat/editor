@@ -482,16 +482,35 @@ body {
 }
 
 .prompt {
-  .prompt-actions {
-    .prompt-action {
-      height: 20px;
-      width: 50px;
-      text-align: center;
-      background-color: $tab-bg-color;
-      color: $tab-text-color;
-      text-transform: uppercase;
-      cursor: pointer;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #1A1E2D;
+  min-height: 75px;
+  color: white;
+  font-size: 20px;
+  text-align: center;
 
+  .ContentEditable {
+    min-height: 75px;
+    line-height: 75px;
+    margin: 0;
+  }
+
+  .prompt-actions {
+    position: fixed;
+    height: 20px;
+    width: 50px;
+    text-align: center;
+    color: $pretty-red;
+    text-transform: uppercase;
+    cursor: pointer;
+    right: 50px;
+    bottom: 32.5px;
+
+    .prompt-action {
+      padding-right: 15px;
     }
   }
 }

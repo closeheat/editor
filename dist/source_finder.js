@@ -16,18 +16,25 @@ module.exports = SourceFinder = (function() {
 
   SourceFinder.prototype.source = function() {
     console.log('RUNNER UP');
-    console.log(_.first(_.takeRight(_.sortBy(this.scores(), 'combined_score'), 2)));
-    return _.maxBy(this.scores(), 'combined_score');
+    console.log(_.first(_.takeRight(_.sortBy(this.scores(), 'winner_score'), 2)));
+    return _.maxBy(this.scores(), 'winner_score');
   };
 
   SourceFinder.prototype.scores = function() {
     return _.map(this.analizedFiles(), (function(_this) {
       return function(file_analysis) {
+        var winner;
+        winner = _this.chooseWinner(file_analysis);
         return _.merge({
-          combined_score: _this.calculateCombinedScore(file_analysis)
+          winner_type: winner.type,
+          winner_score: winner.score
         }, file_analysis);
       };
     })(this));
+  };
+
+  SourceFinder.prototype.chooseWinner = function(file_analysis) {
+    return _.maxBy([file_analysis.html, file_analysis.front_matter], 'score');
   };
 
   SourceFinder.prototype.calculateCombinedScore = function(file_analysis) {

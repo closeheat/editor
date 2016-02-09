@@ -41,7 +41,7 @@ module.exports = React.createClass({
       action_in_progress: false,
       first_build_done: false,
       show_free_hosting: false,
-      show_change_dist_dir: !this.props.is_demo_app && this.props.first_build,
+      show_change_dist_dir: false,
       dist_dir: this.props.dist_dir
     };
   },

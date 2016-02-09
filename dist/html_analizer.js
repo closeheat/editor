@@ -32,8 +32,10 @@ module.exports = HTMLAnalizer = (function() {
     }
     scored_combinations = _.map(all_combinations, (function(_this) {
       return function(combination) {
+        combination.type = 'html';
+        combination.dom = _this.dom;
         combination.string_score = _this.stringScore(combination);
-        combination.inner_text = combination.element.innerText;
+        combination.text = combination.element.innerText;
         combination.score = combination.string_score * 0.8 + combination.selector_score * 0.2;
         return combination;
       };

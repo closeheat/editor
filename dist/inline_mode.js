@@ -103,16 +103,11 @@ module.exports = React.createClass({
   },
   onEdit: function(event) {
     var element_data;
-    console.log('cicked');
     element_data = this.editableElement(event);
-    if (element_data) {
-      return this.setState({
-        show_prompt: true,
-        current_element_data: element_data
-      });
-    } else {
-      return this.removePrompt();
-    }
+    return this.setState({
+      show_prompt: true,
+      current_element_data: element_data
+    });
   },
   removePrompt: function() {
     return this.setState({
@@ -121,24 +116,11 @@ module.exports = React.createClass({
     });
   },
   editableElement: function(event) {
-    var final, locations, strongest;
+    var final, locations;
     locations = [];
     final = new SourceFinder(event, this.editableFiles()).source();
     console.log(final);
-    return;
-    window.EV = event;
-    console.log(event);
-    strongest = _.maxBy(locations, 'strength');
-    console.log(_.sortBy(locations, 'strength'));
-    console.log('MOST PROBABLE');
-    console.log(strongest.file.content);
-    console.log("selector: " + strongest.selector);
-    console.log("original: " + strongest.original_inner_text);
-    console.log("el: " + strongest.element_inner_text);
-    console.log("selector strength: " + strongest.selector_strength);
-    console.log("string score: " + strongest.string_score);
-    console.log("strength: " + strongest.strength);
-    return console.log("file: " + strongest.file.path);
+    return final;
   },
   isEditableElement: function(locations) {
     var element;
@@ -163,18 +145,18 @@ module.exports = React.createClass({
       iframe_scroll_left: data.left
     });
   },
-  onSave: function(new_value) {
-    var found_element, new_content, new_element_html, old_element_html;
-    old_element_html = this.state.current_element_data.element.prop('outerHTML');
-    new_element_html = this.state.current_element_data.element.html(new_value).prop('outerHTML');
-    found_element = this.state.current_element_data.file.content.match(old_element_html);
+  currentElementDataFile: function() {},
+  onApply: function(new_text) {
+    var found_element, new_source, old_text, source;
+    old_text = this.state.current_element_data[this.state.current_element_data.winner_type].text;
+    source = Filesystem.read(this.state.current_element_data.file).content;
+    found_element = source.match(old_text);
     if (!found_element) {
       return alert('Cant find the element in code. Formatting?');
     }
-    new_content = this.state.current_element_data.file.content.replace(old_element_html, new_element_html);
-    Filesystem.write(this.state.current_element_data.file.path, new_content);
-    this.removePrompt();
-    return this.rebuild();
+    new_source = source.replace(old_text, new_text);
+    console.log(new_source);
+    return this.removePrompt();
   },
   prompt: function() {
     if (!this.state.show_prompt) {
@@ -184,7 +166,8 @@ module.exports = React.createClass({
       "element_data": this.state.current_element_data,
       "iframe_scroll_top": this.state.iframe_scroll_top,
       "iframe_scroll_left": this.state.iframe_scroll_left,
-      "onSave": this.onSave
+      "onApply": this.onApply,
+      "onClose": this.removePrompt
     });
   },
   browser: function() {

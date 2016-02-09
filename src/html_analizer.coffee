@@ -19,8 +19,10 @@ class HTMLAnalizer
     return unless all_combinations.length
 
     scored_combinations = _.map all_combinations, (combination) =>
+      combination.type = 'html'
+      combination.dom = @dom
       combination.string_score = @stringScore(combination)
-      combination.inner_text = combination.element.innerText
+      combination.text = combination.element.innerText
       combination.score = combination.string_score * 0.8 + combination.selector_score * 0.2
       combination
 

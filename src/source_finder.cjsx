@@ -10,14 +10,20 @@ class SourceFinder
 
   source: ->
     console.log 'RUNNER UP'
-    console.log _.first(_.takeRight(_.sortBy(@scores(), 'combined_score'), 2))
-    _.maxBy @scores(), 'combined_score'
+    console.log _.first(_.takeRight(_.sortBy(@scores(), 'winner_score'), 2))
+    _.maxBy @scores(), 'winner_score'
 
   scores: ->
     _.map @analizedFiles(), (file_analysis) =>
+      winner = @chooseWinner(file_analysis)
+
       _.merge {
-        combined_score: @calculateCombinedScore(file_analysis)
+        winner_type: winner.type
+        winner_score: winner.score
       }, file_analysis
+
+  chooseWinner: (file_analysis) ->
+    _.maxBy([file_analysis.html, file_analysis.front_matter], 'score')
 
   calculateCombinedScore: (file_analysis) ->
     _.max([file_analysis.html.score, file_analysis.front_matter.score])

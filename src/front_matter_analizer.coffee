@@ -16,8 +16,9 @@ class FrontMatterAnalizer
       string_score = val.score(@inner_text)
 
       result.push
+        type: 'front_matter'
         key: key
-        val: val
+        text: val
         score: string_score * 10
 
     _.maxBy(result, 'score')

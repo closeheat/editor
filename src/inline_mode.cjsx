@@ -67,15 +67,17 @@ React.createClass
     code = mouseoutCode.toString().replace('SELECTOR', element_data.selector)
     @refs.browser.evalInIframe(code)
   onEdit: (event) ->
-    console.log('cicked')
     element_data = @editableElement(event)
 
-    if element_data
-      @setState
-        show_prompt: true
-        current_element_data: element_data
-    else
-      @removePrompt()
+    @setState
+      show_prompt: true
+      current_element_data: element_data
+    # if element_data
+    #   @setState
+    #     show_prompt: true
+    #     current_element_data: element_data
+    # else
+    #   @removePrompt()
 
   removePrompt: ->
     @setState
@@ -87,28 +89,8 @@ React.createClass
 
     final = new SourceFinder(event, @editableFiles()).source()
     console.log final
-    return
+    final
 
-    window.EV = event
-    console.log event
-    strongest = _.maxBy(locations, 'strength')
-    console.log _.sortBy(locations, 'strength')
-    console.log 'MOST PROBABLE'
-    console.log strongest.file.content
-    console.log "selector: #{strongest.selector}"
-    console.log "original: #{strongest.original_inner_text}"
-    console.log "el: #{strongest.element_inner_text}"
-    console.log "selector strength: #{strongest.selector_strength}"
-    console.log "string score: #{strongest.string_score}"
-    console.log "strength: #{strongest.strength}"
-    console.log "file: #{strongest.file.path}"
-
-    # if locations.length != 1
-    #   window.SEL = event.selector
-    #   console.log locations
-    # return unless @isEditableElement(locations)
-    #
-    # locations[0]
   isEditableElement: (locations) ->
     return unless locations.length == 1
 
@@ -123,18 +105,24 @@ React.createClass
 
   onScroll: (data) ->
     @setState(iframe_scroll_top: data.top, iframe_scroll_left: data.left)
-  onSave: (new_value) ->
-    old_element_html = @state.current_element_data.element.prop('outerHTML')
-    new_element_html = @state.current_element_data.element.html(new_value).prop('outerHTML')
 
-    # DO THIS CHECK BEFORE
-    found_element = @state.current_element_data.file.content.match(old_element_html)
+  currentElementDataFile: ->
+  onApply: (new_text) ->
+    old_text = @state.current_element_data[@state.current_element_data.winner_type].text
+
+    source = Filesystem.read(@state.current_element_data.file).content
+    found_element = source.match(old_text)
     return alert('Cant find the element in code. Formatting?') unless found_element
+    # make sure its once only one
+    # or match on exact line (use some vdom, attach line/col numbers)
 
-    new_content = @state.current_element_data.file.content.replace(old_element_html, new_element_html)
-    Filesystem.write(@state.current_element_data.file.path, new_content)
+    new_source = source.replace(old_text, new_text)
+    console.log new_source
+    # Filesystem.write(@state.current_element_data.file, new_source)
+
+    # console.log Filesystem.read(state.current_element_data.file)
     @removePrompt()
-    @rebuild()
+    # @rebuild()
   prompt: ->
     return <div></div> unless @state.show_prompt
 
@@ -142,7 +130,8 @@ React.createClass
       element_data={@state.current_element_data}
       iframe_scroll_top={@state.iframe_scroll_top}
       iframe_scroll_left={@state.iframe_scroll_left}
-      onSave={@onSave}
+      onApply={@onApply}
+      onClose={@removePrompt}
     />
   browser: ->
     <div>

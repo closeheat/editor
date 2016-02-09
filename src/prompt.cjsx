@@ -5,53 +5,19 @@ module.exports =
 React.createClass
   getInitialState: ->
     {
-      value: @props.element_data.element.html()
-      field_style: @initialStyle()
+      value: @props.element_data[@props.element_data.winner_type].text
     }
-
-  initialStyle: ->
-    field_styles = {
-      width: @props.element_data.width
-      height: @props.element_data.height
-      # backgroundColor: 'rgb(24, 30, 44)'
-      # color: '#fff'
-      border: 0
-      # outline: '1px solid white'
-    }
-
-    original_styles = _.pick JSON.parse(@props.element_data.style),
-      'color',
-      'font',
-      'padding',
-      'lineHeight',
-      'textAlign',
-      'textTransform',
-
-    _.merge(original_styles, field_styles)
 
   onChange: (new_value) ->
     @setState(value: new_value)
 
-  onSave: ->
-    @props.onSave(@state.value)
-
-  positionStyle: ->
-    {
-      position: 'absolute'
-      top: @props.element_data.top + 54 - @props.iframe_scroll_top - 20
-      left: @props.element_data.left - @props.iframe_scroll_left
-    }
+  onApply: ->
+    @props.onApply(@state.value)
 
   render: ->
-    <div
-      className='prompt'
-      style={@positionStyle()}
-      key={@props.iframe_scroll_top}>
-
-      <div className='prompt-actions'>
-        <div className='prompt-action' onClick={@onSave}>Save</div>
-      </div>
-
+    console.log 'renderin'
+    console.log @state.value
+    <div className='prompt'>
       <ContentEditable
         tagName='div'
         onChange={@onChange}
@@ -59,6 +25,10 @@ React.createClass
         preventStyling
         noLinebreaks
         editing=true
-        style={@state.field_style}
       />
+
+      <div className='prompt-actions'>
+        <span className='prompt-action' onClick={@onApply}>Apply</span>
+        <span className='prompt-action' onClick={@props.onClose}>X</span>
+      </div>
     </div>

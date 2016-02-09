@@ -25,8 +25,9 @@ module.exports = FrontMatterAnalizer = (function() {
         var string_score;
         string_score = val.score(_this.inner_text);
         return result.push({
+          type: 'front_matter',
           key: key,
-          val: val,
+          text: val,
           score: string_score * 10
         });
       };
