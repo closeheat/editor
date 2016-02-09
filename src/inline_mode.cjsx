@@ -5,6 +5,7 @@ Prompt = require('./prompt')
 Loader = require('./loader')
 Filesystem = require('./filesystem')
 SourceFinder = require('./source_finder')
+SourceModifier = require('./source_modifier')
 
 editingPrompt = ->
   parent.postMessage(action: 'prompt', new_content: prompt('', 'CONTENT_VALUE'), 'http://localhost:4000')
@@ -108,20 +109,10 @@ React.createClass
 
   currentElementDataFile: ->
   onApply: (new_text) ->
-    old_text = @state.current_element_data[@state.current_element_data.winner_type].text
-
-    source = Filesystem.read(@state.current_element_data.file).content
-    found_element = source.match(old_text)
-    return alert('Cant find the element in code. Formatting?') unless found_element
-    # make sure its once only one
-    # or match on exact line (use some vdom, attach line/col numbers)
-
-    new_source = source.replace(old_text, new_text)
-    console.log new_source
-    Filesystem.write(@state.current_element_data.file, new_source)
+    new SourceModifier(@state.current_element_data, new_text).apply()
 
     @removePrompt()
-    @rebuild()
+    # @rebuild()
   prompt: ->
     return <div></div> unless @state.show_prompt
 

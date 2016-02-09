@@ -1,5 +1,11 @@
 _ = require 'lodash'
-Parser = new DOMParser()
+DOMParser = require('xmldom').DOMParser
+Parser = new DOMParser(locator: {}, errorHandler: ->)
+# # parse5 = require('parse5')
+# # jsdom = require('jsdom')
+# whacko = require 'whacko'
+# cheerio = require 'cheerio'
+# queryDom = require 'query-dom'
 require('string_score')
 
 module.exports =

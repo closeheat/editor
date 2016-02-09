@@ -1,4 +1,4 @@
-var Filesystem, InlineBrowser, Loader, Prompt, React, SourceFinder, _, editingPrompt, mouseoutCode, mouseoverCode;
+var Filesystem, InlineBrowser, Loader, Prompt, React, SourceFinder, SourceModifier, _, editingPrompt, mouseoutCode, mouseoverCode;
 
 React = require('react');
 
@@ -13,6 +13,8 @@ Loader = require('./loader');
 Filesystem = require('./filesystem');
 
 SourceFinder = require('./source_finder');
+
+SourceModifier = require('./source_modifier');
 
 editingPrompt = function() {
   return parent.postMessage({
@@ -147,18 +149,8 @@ module.exports = React.createClass({
   },
   currentElementDataFile: function() {},
   onApply: function(new_text) {
-    var found_element, new_source, old_text, source;
-    old_text = this.state.current_element_data[this.state.current_element_data.winner_type].text;
-    source = Filesystem.read(this.state.current_element_data.file).content;
-    found_element = source.match(old_text);
-    if (!found_element) {
-      return alert('Cant find the element in code. Formatting?');
-    }
-    new_source = source.replace(old_text, new_text);
-    console.log(new_source);
-    Filesystem.write(this.state.current_element_data.file, new_source);
-    this.removePrompt();
-    return this.rebuild();
+    new SourceModifier(this.state.current_element_data, new_text).apply();
+    return this.removePrompt();
   },
   prompt: function() {
     if (!this.state.show_prompt) {

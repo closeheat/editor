@@ -48,7 +48,7 @@ module.exports = SourceFinder = (function() {
         parsed_file = matter(file.content);
         return {
           front_matter: new FrontMatterAnalizer(parsed_file.data, _this.event).analize(),
-          html: new HTMLAnalizer(parsed_file.content, _this.event).analize(),
+          html: new HTMLAnalizer(file.content, _this.event).analize(),
           text: _this.event.text,
           file: file.path
         };

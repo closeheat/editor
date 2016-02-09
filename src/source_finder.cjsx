@@ -34,7 +34,7 @@ class SourceFinder
 
       {
         front_matter: new FrontMatterAnalizer(parsed_file.data, @event).analize()
-        html: new HTMLAnalizer(parsed_file.content, @event).analize()
+        html: new HTMLAnalizer(file.content, @event).analize()
         text: @event.text
         file: file.path
       }

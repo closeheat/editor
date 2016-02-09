@@ -1,8 +1,13 @@
-var HTMLAnalizer, Parser, _;
+var DOMParser, HTMLAnalizer, Parser, _;
 
 _ = require('lodash');
 
-Parser = new DOMParser();
+DOMParser = require('xmldom').DOMParser;
+
+Parser = new DOMParser({
+  locator: {},
+  errorHandler: function() {}
+});
 
 require('string_score');
 
