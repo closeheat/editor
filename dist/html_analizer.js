@@ -50,8 +50,9 @@ module.exports = HTMLAnalizer = (function() {
   };
 
   HTMLAnalizer.prototype.allCombinations = function() {
-    var result;
+    var NTH_CHILD_REGEX, bare_selector, result;
     result = [];
+    NTH_CHILD_REGEX = /:nth\-child\(\d\)/;
     _.times(this.selector_parts.length + 1, (function(_this) {
       return function(i) {
         var element, selector;
@@ -67,6 +68,14 @@ module.exports = HTMLAnalizer = (function() {
         });
       };
     })(this));
+    bare_selector = _.last(this.selector_parts).replace(NTH_CHILD_REGEX, '');
+    _.each(this.dom.find(bare_selector), function(element) {
+      return result.push({
+        selector: bare_selector,
+        selector_score: 0.1,
+        element: element
+      });
+    });
     return result;
   };
 

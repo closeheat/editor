@@ -120,7 +120,6 @@ React.createClass
     console.log new_source
     # Filesystem.write(@state.current_element_data.file, new_source)
 
-    # console.log Filesystem.read(state.current_element_data.file)
     @removePrompt()
     # @rebuild()
   prompt: ->

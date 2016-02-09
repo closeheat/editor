@@ -34,6 +34,7 @@ class HTMLAnalizer
 
   allCombinations: ->
     result = []
+    NTH_CHILD_REGEX = /:nth\-child\(\d\)/
 
     _.times @selector_parts.length + 1, (i) =>
       selector = _.takeRight(@selector_parts, i).join(' > ')
@@ -43,6 +44,13 @@ class HTMLAnalizer
       result.push
         selector: selector
         selector_score: i
+        element: element
+
+    bare_selector = _.last(@selector_parts).replace(NTH_CHILD_REGEX, '')
+    _.each @dom.find(bare_selector), (element) ->
+      result.push
+        selector: bare_selector
+        selector_score: 0.1
         element: element
 
     result

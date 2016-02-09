@@ -19,8 +19,6 @@ module.exports = React.createClass({
     return this.props.onApply(this.state.value);
   },
   render: function() {
-    console.log('renderin');
-    console.log(this.state.value);
     return React.createElement("div", {
       "className": 'prompt'
     }, React.createElement(ContentEditable, {

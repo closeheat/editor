@@ -15,8 +15,6 @@ React.createClass
     @props.onApply(@state.value)
 
   render: ->
-    console.log 'renderin'
-    console.log @state.value
     <div className='prompt'>
       <ContentEditable
         tagName='div'
