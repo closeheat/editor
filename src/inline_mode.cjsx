@@ -4,8 +4,10 @@ InlineBrowser = require('./inline_browser')
 Prompt = require('./prompt')
 Loader = require('./loader')
 Filesystem = require('./filesystem')
+FilesystemHistory = require('./filesystem_history')
 SourceFinder = require('./source_finder')
 SourceModifier = require('./source_modifier')
+AfterApplyToast = require('./after_apply_toast')
 
 editingPrompt = ->
   parent.postMessage(action: 'prompt', new_content: prompt('', 'CONTENT_VALUE'), 'http://localhost:4000')
@@ -27,6 +29,7 @@ React.createClass
       iframe_scroll_top: 0
       iframe_scroll_left: 0
       current_element_data: {}
+      last_element_data: {}
     }
   componentDidMount: ->
     @build()
@@ -73,6 +76,7 @@ React.createClass
     @setState
       show_prompt: true
       current_element_data: element_data
+      last_element_data: {}
     # if element_data
     #   @setState
     #     show_prompt: true
@@ -83,7 +87,6 @@ React.createClass
   removePrompt: ->
     @setState
       show_prompt: false
-      current_element_data: {}
 
   editableElement: (event) ->
     locations = []
@@ -107,12 +110,20 @@ React.createClass
   onScroll: (data) ->
     @setState(iframe_scroll_top: data.top, iframe_scroll_left: data.left)
 
-  currentElementDataFile: ->
   onApply: (new_text) ->
     new SourceModifier(@state.current_element_data, new_text).apply()
 
+    @setState
+      current_element_data: {}
+      last_element_data: @state.current_element_data
+
     @removePrompt()
-    # @rebuild()
+    @rebuild()
+
+  removeAfterApplyToast: ->
+    @setState
+      last_element_data: {}
+
   prompt: ->
     return <div></div> unless @state.show_prompt
 
@@ -123,6 +134,26 @@ React.createClass
       onApply={@onApply}
       onClose={@removePrompt}
     />
+
+  reviewApplied: ->
+    clearTimeout(@after_apply_timer_id)
+    console.log 'review'
+
+  undoApplied: ->
+    clearTimeout(@after_apply_timer_id)
+    last_change = FilesystemHistory.last()
+    Filesystem.write(last_change.path, last_change.content)
+    console.log 'did the undo'
+
+  afterApplyToast: ->
+    return <div></div> if _.isEmpty(@state.last_element_data)
+
+    <AfterApplyToast
+      file_path={@state.last_element_data.file}
+      onUndo={@undoApplied}
+      onReview={@reviewApplied}
+      onClose={@removeAfterApplyToast}
+    />
   browser: ->
     <div>
       <div className='row'>
@@ -131,6 +162,7 @@ React.createClass
         </div>
       </div>
       {@prompt()}
+      {@afterApplyToast()}
     </div>
   render: ->
     if @state.build_finished

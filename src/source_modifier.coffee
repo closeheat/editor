@@ -1,4 +1,5 @@
 Filesystem = require('./filesystem')
+HTMLModifier = require('./html_modifier')
 _ = require 'lodash'
 
 module.exports =
@@ -11,9 +12,9 @@ class SourceModifier
       when 'html'
         new HTMLModifier(@analysis, @source, @new_text).modifiedSource()
       when 'front_matter'
-        console.log 'front matter not imple'
+        console.log 'FRONT MATTER NOT IMPLEMENTED YET'
       else
-        console.log 'not implemented'
+        console.log 'NOT IMPLEMENTED'
 
     Filesystem.write(@analysis.file, new_source)
     console.log new_source

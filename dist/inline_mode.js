@@ -1,4 +1,4 @@
-var Filesystem, InlineBrowser, Loader, Prompt, React, SourceFinder, SourceModifier, _, editingPrompt, mouseoutCode, mouseoverCode;
+var AfterApplyToast, Filesystem, FilesystemHistory, InlineBrowser, Loader, Prompt, React, SourceFinder, SourceModifier, _, editingPrompt, mouseoutCode, mouseoverCode;
 
 React = require('react');
 
@@ -12,9 +12,13 @@ Loader = require('./loader');
 
 Filesystem = require('./filesystem');
 
+FilesystemHistory = require('./filesystem_history');
+
 SourceFinder = require('./source_finder');
 
 SourceModifier = require('./source_modifier');
+
+AfterApplyToast = require('./after_apply_toast');
 
 editingPrompt = function() {
   return parent.postMessage({
@@ -42,7 +46,8 @@ module.exports = React.createClass({
       show_prompt: false,
       iframe_scroll_top: 0,
       iframe_scroll_left: 0,
-      current_element_data: {}
+      current_element_data: {},
+      last_element_data: {}
     };
   },
   componentDidMount: function() {
@@ -108,13 +113,13 @@ module.exports = React.createClass({
     element_data = this.editableElement(event);
     return this.setState({
       show_prompt: true,
-      current_element_data: element_data
+      current_element_data: element_data,
+      last_element_data: {}
     });
   },
   removePrompt: function() {
     return this.setState({
-      show_prompt: false,
-      current_element_data: {}
+      show_prompt: false
     });
   },
   editableElement: function(event) {
@@ -147,10 +152,19 @@ module.exports = React.createClass({
       iframe_scroll_left: data.left
     });
   },
-  currentElementDataFile: function() {},
   onApply: function(new_text) {
     new SourceModifier(this.state.current_element_data, new_text).apply();
-    return this.removePrompt();
+    this.setState({
+      current_element_data: {},
+      last_element_data: this.state.current_element_data
+    });
+    this.removePrompt();
+    return this.rebuild();
+  },
+  removeAfterApplyToast: function() {
+    return this.setState({
+      last_element_data: {}
+    });
   },
   prompt: function() {
     if (!this.state.show_prompt) {
@@ -164,6 +178,28 @@ module.exports = React.createClass({
       "onClose": this.removePrompt
     });
   },
+  reviewApplied: function() {
+    clearTimeout(this.after_apply_timer_id);
+    return console.log('review');
+  },
+  undoApplied: function() {
+    var last_change;
+    clearTimeout(this.after_apply_timer_id);
+    last_change = FilesystemHistory.last();
+    Filesystem.write(last_change.path, last_change.content);
+    return console.log('did the undo');
+  },
+  afterApplyToast: function() {
+    if (_.isEmpty(this.state.last_element_data)) {
+      return React.createElement("div", null);
+    }
+    return React.createElement(AfterApplyToast, {
+      "file_path": this.state.last_element_data.file,
+      "onUndo": this.undoApplied,
+      "onReview": this.reviewApplied,
+      "onClose": this.removeAfterApplyToast
+    });
+  },
   browser: function() {
     return React.createElement("div", null, React.createElement("div", {
       "className": 'row'
@@ -173,7 +209,7 @@ module.exports = React.createClass({
       "ref": 'browser',
       "browser_url": 'http://localhost:9000' || this.props.browser_url,
       "onMessage": this.onMessage
-    }))), this.prompt());
+    }))), this.prompt(), this.afterApplyToast());
   },
   render: function() {
     if (this.state.build_finished) {

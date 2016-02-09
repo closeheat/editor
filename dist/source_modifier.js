@@ -1,6 +1,8 @@
-var Filesystem, SourceModifier, _;
+var Filesystem, HTMLModifier, SourceModifier, _;
 
 Filesystem = require('./filesystem');
+
+HTMLModifier = require('./html_modifier');
 
 _ = require('lodash');
 
@@ -18,9 +20,9 @@ module.exports = SourceModifier = (function() {
         case 'html':
           return new HTMLModifier(this.analysis, this.source, this.new_text).modifiedSource();
         case 'front_matter':
-          return console.log('front matter not imple');
+          return console.log('FRONT MATTER NOT IMPLEMENTED YET');
         default:
-          return console.log('not implemented');
+          return console.log('NOT IMPLEMENTED');
       }
     }).call(this);
     Filesystem.write(this.analysis.file, new_source);

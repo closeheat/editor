@@ -1,4 +1,5 @@
 _ = require 'lodash'
+FilesystemHistory = require './filesystem_history'
 
 module.exports =
 class Filesystem
@@ -47,6 +48,7 @@ class Filesystem
 
   @write: (path, new_content) ->
     file = @read(path)
+    FilesystemHistory.write(file)
     file.content = new_content
 
   @isFile: (path) ->

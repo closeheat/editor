@@ -1,6 +1,8 @@
-var Filesystem, _;
+var Filesystem, FilesystemHistory, _;
 
 _ = require('lodash');
+
+FilesystemHistory = require('./filesystem_history');
 
 module.exports = Filesystem = (function() {
   function Filesystem() {}
@@ -60,6 +62,7 @@ module.exports = Filesystem = (function() {
   Filesystem.write = function(path, new_content) {
     var file;
     file = this.read(path);
+    FilesystemHistory.write(file);
     return file.content = new_content;
   };
 

@@ -1,4 +1,4 @@
-var Filesystem, InitialLoader, Promise, _, request;
+var Filesystem, FilesystemHistory, InitialLoader, Promise, _, request;
 
 _ = require('lodash');
 
@@ -7,6 +7,8 @@ request = require('request');
 Promise = require('bluebird');
 
 Filesystem = require('./filesystem');
+
+FilesystemHistory = require('./filesystem_history');
 
 module.exports = InitialLoader = (function() {
   function InitialLoader() {}
@@ -19,6 +21,7 @@ module.exports = InitialLoader = (function() {
     return this.getInitialData().then((function(_this) {
       return function(data) {
         window.CloseheatFileSettings = {};
+        FilesystemHistory.create();
         Filesystem.create(data.files);
         return data;
       };

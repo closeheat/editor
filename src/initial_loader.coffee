@@ -2,6 +2,7 @@ _ = require 'lodash'
 request = require 'request'
 Promise = require 'bluebird'
 Filesystem = require './filesystem'
+FilesystemHistory = require './filesystem_history'
 
 module.exports =
 class InitialLoader
@@ -13,6 +14,7 @@ class InitialLoader
   addFiles: ->
     @getInitialData().then((data) =>
       window.CloseheatFileSettings = {}
+      FilesystemHistory.create()
       Filesystem.create(data.files)
 
       data
