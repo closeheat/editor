@@ -17,6 +17,7 @@
     "brace": "0.7.0",
     "browser-cookies": "^1.0.8",
     "classnames": "^2.2.1",
+    "diff": "^2.2.1",
     "flat": "^1.6.0",
     "gray-matter": "^2.0.2",
     "hammerjs": "^2.0.6",

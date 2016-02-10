@@ -8,6 +8,7 @@ FilesystemHistory = require('./filesystem_history')
 SourceFinder = require('./source_finder')
 SourceModifier = require('./source_modifier')
 AfterApplyToast = require('./after_apply_toast')
+ReviewModal = require('./review_modal')
 
 editingPrompt = ->
   parent.postMessage(action: 'prompt', new_content: prompt('', 'CONTENT_VALUE'), 'http://localhost:4000')
@@ -26,6 +27,7 @@ React.createClass
     {
       build_finished: false
       show_prompt: false
+      show_review: false
       iframe_scroll_top: 0
       iframe_scroll_left: 0
       current_element_data: {}
@@ -136,8 +138,12 @@ React.createClass
     />
 
   reviewApplied: ->
-    clearTimeout(@after_apply_timer_id)
     console.log 'review'
+    clearTimeout(@after_apply_timer_id)
+
+    @setState
+      show_review: true
+      show_after_apply_toast: false
 
   undoApplied: ->
     clearTimeout(@after_apply_timer_id)
@@ -154,8 +160,17 @@ React.createClass
       onReview={@reviewApplied}
       onClose={@removeAfterApplyToast}
     />
+  hideReview: ->
+    @setState
+      show_review: false
   browser: ->
     <div>
+      <ReviewModal
+        show={@state.show_review}
+        onUndo={@undoApplied}
+        onClose={@hideReview}
+        file_path={@state.last_element_data.file}
+      />
       <div className='row'>
         <div className='col browser-col full m12'>
           <InlineBrowser ref='browser' browser_url={'http://localhost:9000' || @props.browser_url} onMessage={@onMessage}/>

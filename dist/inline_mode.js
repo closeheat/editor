@@ -1,4 +1,4 @@
-var AfterApplyToast, Filesystem, FilesystemHistory, InlineBrowser, Loader, Prompt, React, SourceFinder, SourceModifier, _, editingPrompt, mouseoutCode, mouseoverCode;
+var AfterApplyToast, Filesystem, FilesystemHistory, InlineBrowser, Loader, Prompt, React, ReviewModal, SourceFinder, SourceModifier, _, editingPrompt, mouseoutCode, mouseoverCode;
 
 React = require('react');
 
@@ -19,6 +19,8 @@ SourceFinder = require('./source_finder');
 SourceModifier = require('./source_modifier');
 
 AfterApplyToast = require('./after_apply_toast');
+
+ReviewModal = require('./review_modal');
 
 editingPrompt = function() {
   return parent.postMessage({
@@ -44,6 +46,7 @@ module.exports = React.createClass({
     return {
       build_finished: false,
       show_prompt: false,
+      show_review: false,
       iframe_scroll_top: 0,
       iframe_scroll_left: 0,
       current_element_data: {},
@@ -179,8 +182,12 @@ module.exports = React.createClass({
     });
   },
   reviewApplied: function() {
+    console.log('review');
     clearTimeout(this.after_apply_timer_id);
-    return console.log('review');
+    return this.setState({
+      show_review: true,
+      show_after_apply_toast: false
+    });
   },
   undoApplied: function() {
     var last_change;
@@ -200,8 +207,18 @@ module.exports = React.createClass({
       "onClose": this.removeAfterApplyToast
     });
   },
+  hideReview: function() {
+    return this.setState({
+      show_review: false
+    });
+  },
   browser: function() {
-    return React.createElement("div", null, React.createElement("div", {
+    return React.createElement("div", null, React.createElement(ReviewModal, {
+      "show": this.state.show_review,
+      "onUndo": this.undoApplied,
+      "onClose": this.hideReview,
+      "file_path": this.state.last_element_data.file
+    }), React.createElement("div", {
       "className": 'row'
     }, React.createElement("div", {
       "className": 'col browser-col full m12'
