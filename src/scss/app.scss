@@ -521,3 +521,31 @@ body {
   font-family: 'Source Code Pro', 'Open Sans', sans-serif;
   padding: 0 5px;
 }
+
+$light-green: hsla(143, 43%, 51%, .3);
+$light-red: hsla(1, 84%, 59%, .3);
+
+.review-modal {
+  min-width: 90vw;
+  min-height: 85vh;
+
+  .review-modal-code {
+    font-size: 13px;
+    font-family: 'Source Code Pro', sans-serif;
+
+    .review-diff-line-added {
+      background-color: $light-green;
+    }
+
+    .review-diff-line-removed {
+      background-color: $light-red;
+    }
+  }
+
+  .review-modal-file-path {
+    line-height: 50px;
+    padding-left: 20px;
+    font-size: 13px;
+    font-family: 'Source Sans Pro';
+  }
+}

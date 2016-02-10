@@ -359,3 +359,19 @@ body {
   text-transform: uppercase;
   font-family: 'Source Code Pro', 'Open Sans', sans-serif;
   padding: 0 5px; }
+
+.review-modal {
+  min-width: 90vw;
+  min-height: 85vh; }
+  .review-modal .review-modal-code {
+    font-size: 13px;
+    font-family: 'Source Code Pro', sans-serif; }
+    .review-modal .review-modal-code .review-diff-line-added {
+      background-color: rgba(76, 184, 118, 0.3); }
+    .review-modal .review-modal-code .review-diff-line-removed {
+      background-color: rgba(238, 66, 63, 0.3); }
+  .review-modal .review-modal-file-path {
+    line-height: 50px;
+    padding-left: 20px;
+    font-size: 13px;
+    font-family: 'Source Sans Pro'; }

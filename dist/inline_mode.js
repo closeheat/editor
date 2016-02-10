@@ -47,6 +47,7 @@ module.exports = React.createClass({
       build_finished: false,
       show_prompt: false,
       show_review: false,
+      show_after_apply_toast: false,
       iframe_scroll_top: 0,
       iframe_scroll_left: 0,
       current_element_data: {},
@@ -116,6 +117,7 @@ module.exports = React.createClass({
     element_data = this.editableElement(event);
     return this.setState({
       show_prompt: true,
+      show_after_apply_toast: false,
       current_element_data: element_data,
       last_element_data: {}
     });
@@ -159,14 +161,15 @@ module.exports = React.createClass({
     new SourceModifier(this.state.current_element_data, new_text).apply();
     this.setState({
       current_element_data: {},
-      last_element_data: this.state.current_element_data
+      last_element_data: this.state.current_element_data,
+      show_after_apply_toast: true
     });
     this.removePrompt();
     return this.rebuild();
   },
   removeAfterApplyToast: function() {
     return this.setState({
-      last_element_data: {}
+      show_after_apply_toast: true
     });
   },
   prompt: function() {
@@ -197,7 +200,7 @@ module.exports = React.createClass({
     return console.log('did the undo');
   },
   afterApplyToast: function() {
-    if (_.isEmpty(this.state.last_element_data)) {
+    if (!this.state.show_after_apply_toast) {
       return React.createElement("div", null);
     }
     return React.createElement(AfterApplyToast, {

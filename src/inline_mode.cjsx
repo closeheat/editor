@@ -28,6 +28,7 @@ React.createClass
       build_finished: false
       show_prompt: false
       show_review: false
+      show_after_apply_toast: false
       iframe_scroll_top: 0
       iframe_scroll_left: 0
       current_element_data: {}
@@ -77,6 +78,7 @@ React.createClass
 
     @setState
       show_prompt: true
+      show_after_apply_toast: false
       current_element_data: element_data
       last_element_data: {}
     # if element_data
@@ -118,13 +120,14 @@ React.createClass
     @setState
       current_element_data: {}
       last_element_data: @state.current_element_data
+      show_after_apply_toast: true
 
     @removePrompt()
     @rebuild()
 
   removeAfterApplyToast: ->
     @setState
-      last_element_data: {}
+      show_after_apply_toast: true
 
   prompt: ->
     return <div></div> unless @state.show_prompt
@@ -152,7 +155,7 @@ React.createClass
     console.log 'did the undo'
 
   afterApplyToast: ->
-    return <div></div> if _.isEmpty(@state.last_element_data)
+    return <div></div> unless @state.show_after_apply_toast
 
     <AfterApplyToast
       file_path={@state.last_element_data.file}

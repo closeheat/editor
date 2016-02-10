@@ -31,23 +31,26 @@ module.exports = React.createClass({
     }, "There we\'re no differences. Weird.");
   },
   lines: function() {
-    if (!this.diff.length) {
+    if (!this.diff().length) {
       return this.noDiff();
     }
-    return _.map(this.diff(), (function(_this) {
+    return React.createElement("pre", {
+      "className": 'review-modal-code'
+    }, _.map(this.diff(), (function(_this) {
       return function(line, i) {
         return React.createElement("div", {
           "key": i,
           "className": _this.lineClass(line)
         }, line.value);
       };
-    })(this));
+    })(this)));
   },
   componentDidUpdate: function() {
     var el;
     el = $(ReactDOM.findDOMNode(this));
     if (this.props.show) {
-      return el.openModal();
+      el.openModal();
+      return el.find('.modal-content').scrollTo('.review-diff-line-added, .review-diff-line-removed');
     } else {
       return el.closeModal();
     }
@@ -58,14 +61,19 @@ module.exports = React.createClass({
     }
     return React.createElement("div", {
       "id": "modal1",
-      "className": "modal modal-fixed-footer"
+      "className": "modal modal-fixed-footer review-modal"
     }, React.createElement("div", {
       "className": "modal-content"
-    }), React.createElement("div", {
+    }, this.lines()), React.createElement("div", {
       "className": "modal-footer"
-    }, React.createElement("a", {
-      "href": "#!",
-      "className": "modal-action modal-close waves-effect waves-green btn-flat "
-    }, "Agree")));
+    }, React.createElement("span", {
+      "className": 'review-modal-file-path'
+    }, this.props.file_path), React.createElement("button", {
+      "onClick": this.props.onUndo,
+      "className": "modal-action modal-close waves-effect red-text waves-red btn-flat "
+    }, "Undo changes"), React.createElement("button", {
+      "onClick": this.props.onClose,
+      "className": "modal-action modal-close waves-effect green-text waves-green btn-flat "
+    }, "Looks good")));
   }
 });
