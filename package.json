@@ -29,7 +29,7 @@
     "react-ace": "3.1.0",
     "react-dom": "0.14.7",
     "react-router": "^0.13.3",
-    "react-wysiwyg": "Nedomas/react-wysiwyg",
+    "react-wysiwyg": "2.2.1",
     "request": "^2.54.0",
     "string-alter": "^0.7.3",
     "string_score": "^0.1.22",
