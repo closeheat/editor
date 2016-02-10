@@ -1,5 +1,7 @@
 React = require 'react'
+ReactDOM = require 'react-dom'
 ContentEditable = require('react-wysiwyg')
+require('jquery-ui/draggable')
 
 module.exports =
 React.createClass
@@ -8,25 +10,26 @@ React.createClass
       value: @props.element_data[@props.element_data.winner_type].text
     }
 
-  onChange: (new_value) ->
-    @setState(value: new_value)
+  onChange: (e) ->
+    @setState(value: e.target.value)
 
   onApply: ->
     @props.onApply(@state.value)
 
+  componentDidMount: ->
+    $(ReactDOM.findDOMNode(@)).draggable(handle: '.prompt-header')
+
   render: ->
     <div className='prompt'>
-      <ContentEditable
-        tagName='div'
-        onChange={@onChange}
-        html={@state.value}
-        preventStyling
-        noLinebreaks
-        editing=true
-      />
+      <div className='prompt-header'>
+        Text
+      </div>
+      <div className='prompt-content'>
+        <input className='prompt-input' value={@state.value} onChange={@onChange}/>
+      </div>
 
-      <div className='prompt-actions'>
-        <span className='prompt-action' onClick={@onApply}>Apply</span>
-        <span className='prompt-action' onClick={@props.onClose}>X</span>
+      <div className='prompt-actions row'>
+        <div className='prompt-action col s6 blue-text' onClick={@onApply}>Apply</div>
+        <div className='prompt-action col s6' onClick={@props.onClose}>Cancel</div>
       </div>
     </div>

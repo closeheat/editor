@@ -22,6 +22,7 @@
     "gray-matter": "^2.0.2",
     "hammerjs": "^2.0.6",
     "jquery": "^2.1.3",
+    "jquery-ui": "^1.10.5",
     "lodash": "4.2.1",
     "marked": "^0.3.3",
     "materialize-css": "Dogfalo/materialize#753f7bcf1d51ac9b1064520752649d64579a3eb4",

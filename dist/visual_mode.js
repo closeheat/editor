@@ -172,18 +172,6 @@ module.exports = React.createClass({
       show_after_apply_toast: true
     });
   },
-  prompt: function() {
-    if (!this.state.show_prompt) {
-      return React.createElement("div", null);
-    }
-    return React.createElement(Prompt, {
-      "element_data": this.state.current_element_data,
-      "iframe_scroll_top": this.state.iframe_scroll_top,
-      "iframe_scroll_left": this.state.iframe_scroll_left,
-      "onApply": this.onApply,
-      "onClose": this.removePrompt
-    });
-  },
   reviewApplied: function() {
     console.log('review');
     clearTimeout(this.after_apply_timer_id);
@@ -229,7 +217,13 @@ module.exports = React.createClass({
       "ref": 'browser',
       "browser_url": 'http://localhost:9000' || this.props.browser_url,
       "onMessage": this.onMessage
-    }))), this.prompt(), this.afterApplyToast());
+    }))), this.state.show_prompt && React.createElement(Prompt, {
+      "element_data": this.state.current_element_data,
+      "iframe_scroll_top": this.state.iframe_scroll_top,
+      "iframe_scroll_left": this.state.iframe_scroll_left,
+      "onApply": this.onApply,
+      "onClose": this.removePrompt
+    }), this.afterApplyToast());
   },
   render: function() {
     if (this.state.build_finished) {

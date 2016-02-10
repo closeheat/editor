@@ -1,8 +1,12 @@
-var ContentEditable, React;
+var ContentEditable, React, ReactDOM;
 
 React = require('react');
 
+ReactDOM = require('react-dom');
+
 ContentEditable = require('react-wysiwyg');
+
+require('jquery-ui/draggable');
 
 module.exports = React.createClass({
   getInitialState: function() {
@@ -10,32 +14,38 @@ module.exports = React.createClass({
       value: this.props.element_data[this.props.element_data.winner_type].text
     };
   },
-  onChange: function(new_value) {
+  onChange: function(e) {
     return this.setState({
-      value: new_value
+      value: e.target.value
     });
   },
   onApply: function() {
     return this.props.onApply(this.state.value);
   },
+  componentDidMount: function() {
+    return $(ReactDOM.findDOMNode(this)).draggable({
+      handle: '.prompt-header'
+    });
+  },
   render: function() {
     return React.createElement("div", {
       "className": 'prompt'
-    }, React.createElement(ContentEditable, {
-      "tagName": 'div',
-      "onChange": this.onChange,
-      "html": this.state.value,
-      "preventStyling": true,
-      "noLinebreaks": true,
-      "editing": true
-    }), React.createElement("div", {
-      "className": 'prompt-actions'
-    }, React.createElement("span", {
-      "className": 'prompt-action',
+    }, React.createElement("div", {
+      "className": 'prompt-header'
+    }, "Text"), React.createElement("div", {
+      "className": 'prompt-content'
+    }, React.createElement("input", {
+      "className": 'prompt-input',
+      "value": this.state.value,
+      "onChange": this.onChange
+    })), React.createElement("div", {
+      "className": 'prompt-actions row'
+    }, React.createElement("div", {
+      "className": 'prompt-action col s6 blue-text',
       "onClick": this.onApply
-    }, "Apply"), React.createElement("span", {
-      "className": 'prompt-action',
+    }, "Apply"), React.createElement("div", {
+      "className": 'prompt-action col s6',
       "onClick": this.props.onClose
-    }, "X")));
+    }, "Cancel")));
   }
 });

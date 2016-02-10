@@ -328,31 +328,44 @@ body {
   padding: 0; }
 
 .prompt {
+  font-family: 'Source Sans Pro', sans-serif;
+  min-width: 300px;
   position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: #1A1E2D;
-  min-height: 75px;
-  color: white;
-  font-size: 20px;
-  text-align: center; }
-  .prompt .ContentEditable {
-    min-height: 75px;
-    line-height: 75px;
-    margin: 0; }
-  .prompt .prompt-actions {
-    position: fixed;
-    height: 20px;
-    width: 50px;
-    text-align: center;
-    color: #EE4340;
+  top: 150px;
+  left: 50vw;
+  background-color: #F2F2F2;
+  color: #1A1E2D;
+  font-size: 14px;
+  box-shadow: 3px 3px 30px 0px HSLA(227, 27%, 14%, 0.1);
+  border-radius: 3px;
+  border: 1px solid HSLA(227, 27%, 14%, 0.1); }
+  .prompt .prompt-header {
+    height: 50px;
+    padding: 15px 30px;
     text-transform: uppercase;
-    cursor: pointer;
-    right: 50px;
-    bottom: 32.5px; }
+    font-weight: 600;
+    border-bottom: 1px solid HSLA(227, 27%, 14%, 0.1);
+    cursor: move; }
+  .prompt .prompt-content {
+    padding: 40px 30px; }
+  .prompt .prompt-input {
+    border: 0;
+    width: 100%;
+    outline: 0;
+    padding: 10px; }
+  .prompt .prompt-actions {
+    border-top: 1px solid HSLA(227, 27%, 14%, 0.1);
+    margin-bottom: 0; }
     .prompt .prompt-actions .prompt-action {
-      padding-right: 15px; }
+      cursor: pointer;
+      text-align: center;
+      height: 50px;
+      text-transform: uppercase;
+      line-height: 50px;
+      font-weight: 600;
+      font-size: 13px; }
+      .prompt .prompt-actions .prompt-action:first-child {
+        border-right: 1px solid HSLA(227, 27%, 14%, 0.1); }
 
 .guide-button {
   font-weight: 600;

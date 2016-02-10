@@ -129,17 +129,6 @@ React.createClass
     @setState
       show_after_apply_toast: true
 
-  prompt: ->
-    return <div></div> unless @state.show_prompt
-
-    <Prompt
-      element_data={@state.current_element_data}
-      iframe_scroll_top={@state.iframe_scroll_top}
-      iframe_scroll_left={@state.iframe_scroll_left}
-      onApply={@onApply}
-      onClose={@removePrompt}
-    />
-
   reviewApplied: ->
     console.log 'review'
     clearTimeout(@after_apply_timer_id)
@@ -179,7 +168,13 @@ React.createClass
           <VisualBrowser ref='browser' browser_url={'http://localhost:9000' || @props.browser_url} onMessage={@onMessage}/>
         </div>
       </div>
-      {@prompt()}
+      {@state.show_prompt && <Prompt
+        element_data={@state.current_element_data}
+        iframe_scroll_top={@state.iframe_scroll_top}
+        iframe_scroll_left={@state.iframe_scroll_left}
+        onApply={@onApply}
+        onClose={@removePrompt}
+      />}
       {@afterApplyToast()}
     </div>
   render: ->
