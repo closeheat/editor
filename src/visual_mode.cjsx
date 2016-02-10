@@ -36,12 +36,12 @@ React.createClass
     }
   componentDidMount: ->
     @build()
+
   build: ->
     @props.build().then((resp) =>
       @setState(build_finished: true)
     ).catch (err) =>
       @props.handleError(err)
-
 
   rebuild: ->
     @setState(build_finished: false)
@@ -49,16 +49,16 @@ React.createClass
   onMessage: (e) ->
     if e.data.action == 'edit'
       @onEdit(e.data)
-    else if e.data.action == 'prompt'
-      @state.editing_location.element.html(e.data.new_content)
-    else if e.data.action == 'mouseover'
-      # @onMouseover(e.data)
-    else if e.data.action == 'mouseout'
-      # @onMouseout(e.data)
-    else if e.data.action == 'scroll'
-      @onScroll(e.data)
-    else
-      debugger
+    # else if e.data.action == 'prompt'
+    #   @state.editing_location.element.html(e.data.new_content)
+    # else if e.data.action == 'mouseover'
+    #   # @onMouseover(e.data)
+    # else if e.data.action == 'mouseout'
+    #   # @onMouseout(e.data)
+    # else if e.data.action == 'scroll'
+    #   @onScroll(e.data)
+    # else
+    #   debugger
 
   onMouseover: (event) ->
     element_data = @editableElement(event)
@@ -170,8 +170,6 @@ React.createClass
       </div>
       {@state.show_prompt && <Prompt
         element_data={@state.current_element_data}
-        iframe_scroll_top={@state.iframe_scroll_top}
-        iframe_scroll_left={@state.iframe_scroll_left}
         onApply={@onApply}
         onClose={@removePrompt}
       />}

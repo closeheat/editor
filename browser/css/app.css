@@ -331,12 +331,12 @@ body {
   font-family: 'Source Sans Pro', sans-serif;
   min-width: 300px;
   position: fixed;
-  top: 150px;
-  left: 50vw;
+  top: 100px;
+  left: 100px;
   background-color: #F2F2F2;
   color: #1A1E2D;
   font-size: 14px;
-  box-shadow: 3px 3px 30px 0px HSLA(227, 27%, 14%, 0.1);
+  box-shadow: 3px 3px 30px 0px HSLA(227, 27%, 14%, 0.2);
   border-radius: 3px;
   border: 1px solid HSLA(227, 27%, 14%, 0.1); }
   .prompt .prompt-header {
@@ -352,7 +352,8 @@ body {
     border: 0;
     width: 100%;
     outline: 0;
-    padding: 10px; }
+    padding: 10px;
+    background-color: #fff; }
   .prompt .prompt-actions {
     border-top: 1px solid HSLA(227, 27%, 14%, 0.1);
     margin-bottom: 0; }
@@ -366,6 +367,8 @@ body {
       font-size: 13px; }
       .prompt .prompt-actions .prompt-action:first-child {
         border-right: 1px solid HSLA(227, 27%, 14%, 0.1); }
+      .prompt .prompt-actions .prompt-action:hover {
+        background-color: HSLA(227, 27%, 14%, 0.05); }
 
 .guide-button {
   font-weight: 600;

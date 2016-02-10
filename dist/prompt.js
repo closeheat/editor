@@ -34,10 +34,10 @@ module.exports = React.createClass({
       "className": 'prompt-header'
     }, "Text"), React.createElement("div", {
       "className": 'prompt-content'
-    }, React.createElement("input", {
+    }, React.createElement("textarea", {
       "className": 'prompt-input',
-      "value": this.state.value,
-      "onChange": this.onChange
+      "onChange": this.onChange,
+      "value": this.state.value
     })), React.createElement("div", {
       "className": 'prompt-actions row'
     }, React.createElement("div", {

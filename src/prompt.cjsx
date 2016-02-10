@@ -25,7 +25,7 @@ React.createClass
         Text
       </div>
       <div className='prompt-content'>
-        <input className='prompt-input' value={@state.value} onChange={@onChange}/>
+        <textarea className='prompt-input' onChange={@onChange} value={@state.value}/>
       </div>
 
       <div className='prompt-actions row'>

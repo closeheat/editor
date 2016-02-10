@@ -79,16 +79,6 @@ module.exports = React.createClass({
   onMessage: function(e) {
     if (e.data.action === 'edit') {
       return this.onEdit(e.data);
-    } else if (e.data.action === 'prompt') {
-      return this.state.editing_location.element.html(e.data.new_content);
-    } else if (e.data.action === 'mouseover') {
-
-    } else if (e.data.action === 'mouseout') {
-
-    } else if (e.data.action === 'scroll') {
-      return this.onScroll(e.data);
-    } else {
-      debugger;
     }
   },
   onMouseover: function(event) {
@@ -219,8 +209,6 @@ module.exports = React.createClass({
       "onMessage": this.onMessage
     }))), this.state.show_prompt && React.createElement(Prompt, {
       "element_data": this.state.current_element_data,
-      "iframe_scroll_top": this.state.iframe_scroll_top,
-      "iframe_scroll_left": this.state.iframe_scroll_left,
       "onApply": this.onApply,
       "onClose": this.removePrompt
     }), this.afterApplyToast());

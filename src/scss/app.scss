@@ -485,12 +485,12 @@ body {
   font-family: 'Source Sans Pro', sans-serif;
   min-width: 300px;
   position: fixed;
-  top: 150px;
-  left: 50vw;
+  top: 100px;
+  left: 100px;
   background-color: #F2F2F2;
   color: $primary-color;
   font-size: 14px;
-  box-shadow: 3px 3px 30px 0px HSLA(227, 27%, 14%, .1);
+  box-shadow: 3px 3px 30px 0px HSLA(227, 27%, 14%, .2);
   border-radius: 3px;
   border: 1px solid HSLA(227, 27%, 14%, .1);
 
@@ -512,6 +512,7 @@ body {
     width: 100%;
     outline: 0;
     padding: 10px;
+    background-color: $pretty-white;
   }
 
   .prompt-actions {
@@ -521,6 +522,10 @@ body {
     .prompt-action {
       &:first-child {
         border-right: 1px solid HSLA(227, 27%, 14%, .1);
+      }
+
+      &:hover {
+        background-color: HSLA(227, 27%, 14%, 0.05);
       }
 
       cursor: pointer;

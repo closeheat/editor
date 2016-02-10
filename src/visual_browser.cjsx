@@ -48,8 +48,8 @@ visualInject = ->
       parent.postMessage
         action: 'edit'
         selector: selector
-        top: offsets.top
-        left: offsets.left
+        top: e.clientX
+        left: e.clientY
         height: e.target.offsetHeight
         width: e.target.offsetWidth
         old_outline: e.target.outline
