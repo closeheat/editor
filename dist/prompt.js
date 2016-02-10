@@ -11,8 +11,11 @@ require('jquery-ui/draggable');
 module.exports = React.createClass({
   getInitialState: function() {
     return {
-      value: this.props.element_data[this.props.element_data.winner_type].text
+      value: this.originalValue(this.props)
     };
+  },
+  originalValue: function(props) {
+    return props.element_data[props.element_data.winner_type].text;
   },
   onChange: function(e) {
     return this.setState({
@@ -21,6 +24,11 @@ module.exports = React.createClass({
   },
   onApply: function() {
     return this.props.onApply(this.state.value);
+  },
+  componentWillReceiveProps: function(next_props) {
+    return this.setState({
+      value: this.originalValue(next_props)
+    });
   },
   componentDidMount: function() {
     return $(ReactDOM.findDOMNode(this)).draggable({

@@ -7,14 +7,21 @@ module.exports =
 React.createClass
   getInitialState: ->
     {
-      value: @props.element_data[@props.element_data.winner_type].text
+      value: @originalValue(@props)
     }
+
+  originalValue: (props) ->
+    props.element_data[props.element_data.winner_type].text
 
   onChange: (e) ->
     @setState(value: e.target.value)
 
   onApply: ->
     @props.onApply(@state.value)
+
+  componentWillReceiveProps: (next_props) ->
+    @setState
+      value: @originalValue(next_props)
 
   componentDidMount: ->
     $(ReactDOM.findDOMNode(@)).draggable(handle: '.prompt-header')
