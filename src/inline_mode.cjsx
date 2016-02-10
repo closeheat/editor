@@ -152,7 +152,7 @@ React.createClass
     clearTimeout(@after_apply_timer_id)
     last_change = FilesystemHistory.last()
     Filesystem.write(last_change.path, last_change.content)
-    console.log 'did the undo'
+    @rebuild()
 
   afterApplyToast: ->
     return <div></div> unless @state.show_after_apply_toast

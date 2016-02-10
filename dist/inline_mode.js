@@ -197,7 +197,7 @@ module.exports = React.createClass({
     clearTimeout(this.after_apply_timer_id);
     last_change = FilesystemHistory.last();
     Filesystem.write(last_change.path, last_change.content);
-    return console.log('did the undo');
+    return this.rebuild();
   },
   afterApplyToast: function() {
     if (!this.state.show_after_apply_toast) {
