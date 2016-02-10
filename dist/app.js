@@ -103,6 +103,17 @@ module.exports = React.createClass({
       return this.transitionWithCodeModeHistory('preview', 'preview-with-history');
     }
   },
+  visualClick: function() {
+    track('visual_clicked');
+    if (this.state.action_in_progress) {
+      return;
+    }
+    if (this.context.router.getCurrentPath().match(/^\/visual/)) {
+      return this.buildOrRefresh();
+    } else {
+      return this.transitionWithCodeModeHistory('visual', 'visual-with-history');
+    }
+  },
   transitionWithCodeModeHistory: function(route, with_history_route) {
     track('transitioned_to', {
       route: route
@@ -332,6 +343,7 @@ module.exports = React.createClass({
       "active_mode": this.activeMode(),
       "onCodeClick": this.codeClick,
       "onPreviewClick": this.previewClick,
+      "onVisualClick": this.visualClick,
       "onPublishClick": this.publishClick,
       "onSettingsClick": this.settingsClick,
       "onNewWebsiteClick": this.showFreeHosting,

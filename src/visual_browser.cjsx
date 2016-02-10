@@ -1,7 +1,7 @@
 React = require 'react'
 window._ = require 'lodash'
 
-inlineInject = ->
+visualInject = ->
   positionInDom = (el, count = 1) ->
     if new_el = el.previousElementSibling
       positionInDom(new_el, count + 1)
@@ -126,7 +126,7 @@ React.createClass
     "evalFunction = #{code}; evalFunction()"
   inject: ->
     console.log 'inkecting'
-    @evalInIframe(inlineInject.toString())
+    @evalInIframe(visualInject.toString())
   evalInIframe: (code) ->
     @iframe().contentWindow.postMessage(@wrapEvalFunction(code), 'http://localhost:9000')
   render: ->

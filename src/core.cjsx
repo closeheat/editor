@@ -11,10 +11,10 @@ InitialLoader = require './initial_loader'
 App = require './app'
 CodeMode = require './code_mode'
 PreviewMode = require './preview_mode'
+VisualMode = require './visual_mode'
 TabManager = require './tab_manager'
 Publish = require './publish'
 ErrorHandler = require './error_handler'
-InlineMode = require './inline_mode'
 Settings = require './settings'
 
 module.exports =
@@ -46,8 +46,8 @@ class Core
       <Route name='preview' path='/preview' handler={PreviewMode} />
       <Route name='preview-with-history' path='/preview/*?' handler={PreviewMode} />
 
-      <Route name='inline' path='/inline' handler={InlineMode} />
-      <Route name='inline-with-history' path='/inline/*?' handler={InlineMode} />
+      <Route name='visual' path='/visual' handler={VisualMode} />
+      <Route name='visual-with-history' path='/visual/*?' handler={VisualMode} />
 
       <Route name='publish' path='/publish' handler={Publish} />
       <Route name='publish-with-history' path='/publish/*?' handler={Publish} />

@@ -72,6 +72,15 @@ React.createClass
     else
       @transitionWithCodeModeHistory('preview', 'preview-with-history')
 
+  visualClick: ->
+    track('visual_clicked')
+    return if @state.action_in_progress
+
+    if @context.router.getCurrentPath().match(/^\/visual/)
+      @buildOrRefresh()
+    else
+      @transitionWithCodeModeHistory('visual', 'visual-with-history')
+
   transitionWithCodeModeHistory: (route, with_history_route) ->
     track('transitioned_to', route: route)
 
@@ -231,6 +240,7 @@ React.createClass
         active_mode={@activeMode()}
         onCodeClick={@codeClick}
         onPreviewClick={@previewClick}
+        onVisualClick={@visualClick}
         onPublishClick={@publishClick}
         onSettingsClick={@settingsClick}
         onNewWebsiteClick={@showFreeHosting}

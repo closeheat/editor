@@ -51,7 +51,7 @@ module.exports = Header = React.createClass({
   },
   addTooltips: function() {
     var elements;
-    elements = _.map(['code', 'preview', 'publish', 'website_url'], (function(_this) {
+    elements = _.map(['code', 'visual', 'publish', 'website_url'], (function(_this) {
       return function(name) {
         return ReactDOM.findDOMNode(_this.refs[name]);
       };
@@ -77,13 +77,13 @@ module.exports = Header = React.createClass({
     }, React.createElement("i", {
       "className": 'material-icons'
     }, "code"), "Code"), React.createElement("div", {
-      "className": this.activeModeClass('preview', 'label-with-icon s2'),
-      "onClick": this.props.onPreviewClick,
+      "className": this.activeModeClass('visual', 'label-with-icon s2'),
+      "onClick": this.props.onVisualClick,
       "data-tooltip": 'Ctrl+S',
-      "ref": 'preview'
+      "ref": 'visual'
     }, React.createElement("i", {
       "className": 'material-icons'
-    }, "navigation"), "Preview"), React.createElement("div", {
+    }, "navigation"), "Visual"), React.createElement("div", {
       "className": 'header-website-url col s4 center-align label-with-icon',
       "ref": 'website_url',
       "data-tooltip": 'This is your public page URL'

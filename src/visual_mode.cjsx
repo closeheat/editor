@@ -1,6 +1,6 @@
 React = require 'react'
 _ = require 'lodash'
-InlineBrowser = require('./inline_browser')
+VisualBrowser = require('./visual_browser')
 Prompt = require('./prompt')
 Loader = require('./loader')
 Filesystem = require('./filesystem')
@@ -176,7 +176,7 @@ React.createClass
       />
       <div className='row'>
         <div className='col browser-col full m12'>
-          <InlineBrowser ref='browser' browser_url={'http://localhost:9000' || @props.browser_url} onMessage={@onMessage}/>
+          <VisualBrowser ref='browser' browser_url={'http://localhost:9000' || @props.browser_url} onMessage={@onMessage}/>
         </div>
       </div>
       {@prompt()}
@@ -186,4 +186,4 @@ React.createClass
     if @state.build_finished
       @browser()
     else
-      <Loader title='Hang in tight. Building your page preview...'/>
+      <Loader title='Hang in tight. Building your page...'/>
