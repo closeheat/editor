@@ -1,8 +1,6 @@
-var FrontMatterAnalizer, HTMLAnalizer, SourceFinder, _, matter;
+var FrontMatterAnalizer, HTMLAnalizer, SourceFinder, _;
 
 _ = require('lodash');
-
-matter = require('gray-matter');
 
 HTMLAnalizer = require('./html_analizer');
 
@@ -44,11 +42,9 @@ module.exports = SourceFinder = (function() {
   SourceFinder.prototype.analizedFiles = function() {
     return _.map(this.files, (function(_this) {
       return function(file) {
-        var parsed_file;
-        parsed_file = matter(file.content);
         return {
-          front_matter: new FrontMatterAnalizer(parsed_file.data, _this.event).analize(),
-          html: new HTMLAnalizer(file.content, _this.event).analize(),
+          front_matter: new FrontMatterAnalizer(file, _this.event).analize(),
+          html: new HTMLAnalizer(file, _this.event).analize(),
           text: _this.event.text,
           file: file.path
         };

@@ -12,14 +12,20 @@ Parser = new DOMParser({
 require('string_score');
 
 module.exports = HTMLAnalizer = (function() {
-  function HTMLAnalizer(content, event) {
+  function HTMLAnalizer(file, event) {
+    this.file = file;
     this.event = event;
-    this.dom = $(Parser.parseFromString(content, 'text/html'));
+    this.dom = $(Parser.parseFromString(this.file.content, 'text/html'));
     this.selector_parts = this.event.selector.split(' > ');
   }
 
   HTMLAnalizer.prototype.analize = function() {
     var strongest_combination;
+    if (!this.supportedFile()) {
+      return {
+        score: 0
+      };
+    }
     strongest_combination = this.strongestCombination();
     if (!strongest_combination) {
       return {
@@ -27,6 +33,12 @@ module.exports = HTMLAnalizer = (function() {
       };
     }
     return strongest_combination;
+  };
+
+  HTMLAnalizer.prototype.supportedFile = function() {
+    var SUPPORTED_EXTENSION_REGEX;
+    SUPPORTED_EXTENSION_REGEX = /(\.|\/)(html|htm)$/;
+    return this.file.path.match(SUPPORTED_EXTENSION_REGEX);
   };
 
   HTMLAnalizer.prototype.strongestCombination = function() {

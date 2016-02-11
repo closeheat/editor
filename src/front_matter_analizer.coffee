@@ -1,9 +1,11 @@
 _ = require 'lodash'
+matter = require('gray-matter')
 require('string_score')
 
 module.exports =
 class FrontMatterAnalizer
-  constructor: (@data, @event) ->
+  constructor: (file, @event) ->
+    @data = matter(file.content).data
     @text = _.trim(@event.text)
 
   analize: ->

@@ -1,5 +1,4 @@
 _ = require 'lodash'
-matter = require('gray-matter')
 
 HTMLAnalizer = require('./html_analizer')
 FrontMatterAnalizer = require('./front_matter_analizer')
@@ -30,11 +29,9 @@ class SourceFinder
 
   analizedFiles: ->
     _.map @files, (file) =>
-      parsed_file = matter(file.content)
-
       {
-        front_matter: new FrontMatterAnalizer(parsed_file.data, @event).analize()
-        html: new HTMLAnalizer(file.content, @event).analize()
+        front_matter: new FrontMatterAnalizer(file, @event).analize()
+        html: new HTMLAnalizer(file, @event).analize()
         text: @event.text
         file: file.path
       }

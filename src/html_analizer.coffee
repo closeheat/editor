@@ -10,15 +10,20 @@ require('string_score')
 
 module.exports =
 class HTMLAnalizer
-  constructor: (content, @event) ->
-    @dom = $(Parser.parseFromString(content, 'text/html'))
+  constructor: (@file, @event) ->
+    @dom = $(Parser.parseFromString(@file.content, 'text/html'))
     @selector_parts = @event.selector.split(' > ')
 
   analize: ->
+    return { score: 0 } unless @supportedFile()
     strongest_combination = @strongestCombination()
     return { score: 0 } unless strongest_combination
 
     strongest_combination
+
+  supportedFile: ->
+    SUPPORTED_EXTENSION_REGEX = /(\.|\/)(html|htm)$/
+    @file.path.match(SUPPORTED_EXTENSION_REGEX)
 
   strongestCombination: ->
     all_combinations = @allCombinations()

@@ -1,13 +1,15 @@
-var FrontMatterAnalizer, _;
+var FrontMatterAnalizer, _, matter;
 
 _ = require('lodash');
+
+matter = require('gray-matter');
 
 require('string_score');
 
 module.exports = FrontMatterAnalizer = (function() {
-  function FrontMatterAnalizer(data, event) {
-    this.data = data;
+  function FrontMatterAnalizer(file, event) {
     this.event = event;
+    this.data = matter(file.content).data;
     this.text = _.trim(this.event.text);
   }
 
