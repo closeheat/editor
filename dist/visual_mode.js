@@ -26,7 +26,7 @@ editingPrompt = function() {
   return parent.postMessage({
     action: 'prompt',
     new_content: prompt('', 'CONTENT_VALUE')
-  }, 'http://localhost:4000');
+  }, SERVER_URL);
 };
 
 mouseoverCode = function() {
@@ -205,7 +205,7 @@ module.exports = React.createClass({
       "className": 'col browser-col full m12'
     }, React.createElement(VisualBrowser, {
       "ref": 'browser',
-      "browser_url": 'http://localhost:9000' || this.props.browser_url,
+      "browser_url": this.props.browser_url,
       "onMessage": this.onMessage
     }))), this.state.show_prompt && React.createElement(Prompt, {
       "element_data": this.state.current_element_data,

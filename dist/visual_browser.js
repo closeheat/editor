@@ -5,7 +5,7 @@ React = require('react');
 window._ = require('lodash');
 
 visualInject = function() {
-  var bindEvents, bindScrollEvent, edit, getElementOffset, getSelector, positionInDom, text;
+  var bindEvents, edit, getElementOffset, getSelector, positionInDom, text;
   positionInDom = function(el, count) {
     var new_el;
     if (count == null) {
@@ -41,15 +41,6 @@ visualInject = function() {
     }
     return names.join(' > ');
   };
-  bindScrollEvent = function() {
-    return window.addEventListener('scroll', function(e) {
-      return parent.postMessage({
-        action: 'scroll',
-        top: e.srcElement.body.scrollTop,
-        left: e.srcElement.body.scrollLeft
-      }, 'http://localhost:4000');
-    });
-  };
   edit = function(e) {
     return function() {
       var offsets, selector;
@@ -66,7 +57,7 @@ visualInject = function() {
         old_outline: e.target.outline,
         text: text(e.target),
         style: JSON.stringify(window.getComputedStyle(e.target))
-      }, 'http://1142649e.ngrok.com');
+      }, SERVER_URL);
     };
   };
   text = function(target) {
@@ -136,7 +127,7 @@ module.exports = React.createClass({
     return this.evalInIframe(visualInject.toString());
   },
   evalInIframe: function(code) {
-    return this.iframe().contentWindow.postMessage(this.wrapEvalFunction(code), 'http://localhost:9000');
+    return this.iframe().contentWindow.postMessage(this.wrapEvalFunction(code), this.props.browser_url);
   },
   render: function() {
     return React.createElement("div", {
@@ -144,7 +135,7 @@ module.exports = React.createClass({
     }, React.createElement("iframe", {
       "id": 'browser',
       "name": 'browser-frame',
-      "src": 'http://localhost:9000' || this.props.browser_url
+      "src": this.props.browser_url
     }));
   }
 });

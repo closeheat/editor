@@ -29,14 +29,6 @@ visualInject = ->
 
     names.join ' > '
 
-  bindScrollEvent = ->
-    window.addEventListener 'scroll', (e) ->
-      parent.postMessage
-        action: 'scroll'
-        top: e.srcElement.body.scrollTop
-        left: e.srcElement.body.scrollLeft
-      , 'http://localhost:4000'
-
   edit = (e) ->
     ->
       e.preventDefault()
@@ -55,7 +47,7 @@ visualInject = ->
         old_outline: e.target.outline
         text: text(e.target)
         style: JSON.stringify(window.getComputedStyle(e.target))
-      , 'http://1142649e.ngrok.com'
+      , SERVER_URL
 
   text = (target) ->
     WHITESPACE_REGEX = /^\s*$/
@@ -128,8 +120,8 @@ React.createClass
     console.log 'inkecting'
     @evalInIframe(visualInject.toString())
   evalInIframe: (code) ->
-    @iframe().contentWindow.postMessage(@wrapEvalFunction(code), 'http://localhost:9000')
+    @iframe().contentWindow.postMessage(@wrapEvalFunction(code), @props.browser_url)
   render: ->
     <div className='browser'>
-      <iframe id='browser' name='browser-frame' src={'http://localhost:9000' || @props.browser_url}></iframe>
+      <iframe id='browser' name='browser-frame' src={@props.browser_url}></iframe>
     </div>

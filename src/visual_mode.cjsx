@@ -11,7 +11,7 @@ AfterApplyToast = require('./after_apply_toast')
 ReviewModal = require('./review_modal')
 
 editingPrompt = ->
-  parent.postMessage(action: 'prompt', new_content: prompt('', 'CONTENT_VALUE'), 'http://localhost:4000')
+  parent.postMessage(action: 'prompt', new_content: prompt('', 'CONTENT_VALUE'), SERVER_URL)
 
 mouseoverCode = ->
   element = document.querySelector('SELECTOR')
@@ -165,7 +165,7 @@ React.createClass
       />
       <div className='row'>
         <div className='col browser-col full m12'>
-          <VisualBrowser ref='browser' browser_url={'http://localhost:9000' || @props.browser_url} onMessage={@onMessage}/>
+          <VisualBrowser ref='browser' browser_url={@props.browser_url} onMessage={@onMessage}/>
         </div>
       </div>
       {@state.show_prompt && <Prompt
