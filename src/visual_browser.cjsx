@@ -53,7 +53,8 @@ visualInject = ->
     getTextNode(event).nodeValue
 
   getTextNode = (event) ->
-    document.getSelection().baseNode
+    # fallback for links
+    document.getSelection().baseNode || event.target.childNodes[0]
 
   bindEvents = ->
     hold_timeout_id = 0

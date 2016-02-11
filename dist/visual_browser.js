@@ -64,7 +64,7 @@ visualInject = function() {
     return getTextNode(event).nodeValue;
   };
   getTextNode = function(event) {
-    return document.getSelection().baseNode;
+    return document.getSelection().baseNode || event.target.childNodes[0];
   };
   bindEvents = function() {
     var hold_timeout_id;
