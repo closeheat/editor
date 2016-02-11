@@ -112,7 +112,7 @@ module.exports = Core = (function() {
       "handler": Settings
     }), React.createElement(Redirect, {
       "from": '',
-      "to": '/code/'
+      "to": '/visual/'
     }), React.createElement(Redirect, {
       "from": "/code",
       "to": "/code/"

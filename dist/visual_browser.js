@@ -42,24 +42,21 @@ visualInject = function() {
     return names.join(' > ');
   };
   edit = function(e) {
-    return function() {
-      var offsets, selector;
-      e.preventDefault();
-      selector = getSelector(e.target);
-      offsets = getElementOffset(e.target);
-      return parent.postMessage({
-        action: 'edit',
-        selector: selector,
-        top: e.clientX,
-        left: e.clientY,
-        height: e.target.offsetHeight,
-        width: e.target.offsetWidth,
-        old_outline: e.target.outline,
-        pathname: window.location.pathname,
-        text: text(e),
-        style: JSON.stringify(window.getComputedStyle(e.target))
-      }, 'SERVER_URL_PLACEHOLDER');
-    };
+    var selector;
+    e.preventDefault();
+    selector = getSelector(e.target);
+    return parent.postMessage({
+      action: 'edit',
+      selector: selector,
+      top: e.clientX,
+      left: e.clientY,
+      height: e.target.offsetHeight,
+      width: e.target.offsetWidth,
+      old_outline: e.target.outline,
+      pathname: window.location.pathname,
+      text: text(e),
+      style: JSON.stringify(window.getComputedStyle(e.target))
+    }, 'SERVER_URL_PLACEHOLDER');
   };
   text = function(event) {
     return getTextNode(event).nodeValue;
@@ -68,17 +65,7 @@ visualInject = function() {
     return document.getSelection().baseNode || event.target.childNodes[0];
   };
   bindEvents = function() {
-    var hold_timeout_id;
-    hold_timeout_id = 0;
-    window.addEventListener('mousedown', function(e) {
-      return hold_timeout_id = setTimeout(edit(e), 1000);
-    });
-    window.addEventListener('mouseup', function(e) {
-      return clearTimeout(hold_timeout_id);
-    });
-    return window.addEventListener('mouseleave', function(e) {
-      return clearTimeout(hold_timeout_id);
-    });
+    return window.addEventListener('click', edit);
   };
   getElementOffset = function(element) {
     var box, de, left, top;
@@ -118,7 +105,7 @@ module.exports = React.createClass({
   },
   inject: function() {
     console.log('inkecting');
-    return this.evalInIframe(visualInject.toString().replace('SERVER_URL_PLACEHOLDER', window.SERVER_URL));
+    return this.evalInIframe(visualInject.toString().replace(/SERVER_URL_PLACEHOLDER/g, window.SERVER_URL));
   },
   evalInIframe: function(code) {
     return this.iframe().contentWindow.postMessage(this.wrapEvalFunction(code), this.props.browser_url);

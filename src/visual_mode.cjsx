@@ -38,7 +38,6 @@ React.createClass
   onMessage: (e) ->
     if e.data.action == 'edit'
       @onEdit(e.data)
-
   onEdit: (event) ->
     element_data = @editableElement(event)
 

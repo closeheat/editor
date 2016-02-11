@@ -30,25 +30,33 @@ visualInject = ->
     names.join ' > '
 
   edit = (e) ->
-    ->
-      e.preventDefault()
-      selector = getSelector(e.target)
+    e.preventDefault()
+    selector = getSelector(e.target)
 
-      offsets = getElementOffset(e.target)
-      # debugger if event == 'click'
+    # offsets = getElementOffset(e.target)
+    # debugger if event == 'click'
 
-      parent.postMessage
-        action: 'edit'
-        selector: selector
-        top: e.clientX
-        left: e.clientY
-        height: e.target.offsetHeight
-        width: e.target.offsetWidth
-        old_outline: e.target.outline
-        pathname: window.location.pathname
-        text: text(e)
-        style: JSON.stringify(window.getComputedStyle(e.target))
-      , 'SERVER_URL_PLACEHOLDER'
+    parent.postMessage
+      action: 'edit'
+      selector: selector
+      top: e.clientX
+      left: e.clientY
+      height: e.target.offsetHeight
+      width: e.target.offsetWidth
+      old_outline: e.target.outline
+      pathname: window.location.pathname
+      text: text(e)
+      style: JSON.stringify(window.getComputedStyle(e.target))
+    , 'SERVER_URL_PLACEHOLDER'
+
+  # hold = (e) ->
+  #   console.log 'sendin'
+  #   console.log e
+  #   parent.postMessage
+  #     action: 'hold'
+  #     top: e.clientX
+  #     left: e.clientY
+  #   , 'SERVER_URL_PLACEHOLDER'
 
   text = (event) ->
     getTextNode(event).nodeValue
@@ -58,16 +66,7 @@ visualInject = ->
     document.getSelection().baseNode || event.target.childNodes[0]
 
   bindEvents = ->
-    hold_timeout_id = 0
-
-    window.addEventListener 'mousedown', (e) ->
-      hold_timeout_id = setTimeout(edit(e), 1000)
-
-    window.addEventListener 'mouseup', (e) ->
-      clearTimeout(hold_timeout_id)
-
-    window.addEventListener 'mouseleave', (e) ->
-      clearTimeout(hold_timeout_id)
+    window.addEventListener 'click', edit
 
   getElementOffset = (element) ->
     de = document.documentElement
@@ -113,7 +112,7 @@ React.createClass
     "evalFunction = #{code}; evalFunction()"
   inject: ->
     console.log 'inkecting'
-    @evalInIframe(visualInject.toString().replace('SERVER_URL_PLACEHOLDER', window.SERVER_URL))
+    @evalInIframe(visualInject.toString().replace(/SERVER_URL_PLACEHOLDER/g, window.SERVER_URL))
   evalInIframe: (code) ->
     @iframe().contentWindow.postMessage(@wrapEvalFunction(code), @props.browser_url)
   render: ->

@@ -58,7 +58,7 @@ class Core
       <Route name='settings' path='/settings' handler={Settings} />
       <Route name='settings-with-history' path='/settings/*?' handler={Settings} />
 
-      <Redirect from='' to='/code/' />
+      <Redirect from='' to='/visual/' />
       <Redirect from="/code" to="/code/" />
     </Route>
     # <DefaultRoute handler={Home} />
