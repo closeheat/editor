@@ -45,22 +45,15 @@ visualInject = ->
         height: e.target.offsetHeight
         width: e.target.offsetWidth
         old_outline: e.target.outline
-        text: text(e.target)
+        text: text(e)
         style: JSON.stringify(window.getComputedStyle(e.target))
       , 'SERVER_URL_PLACEHOLDER'
 
-  text = (target) ->
-    WHITESPACE_REGEX = /^\s*$/
+  text = (event) ->
+    getTextNode(event).nodeValue
 
-    result = []
-
-    for node in target.childNodes
-      if node.nodeName == "#text" && !(WHITESPACE_REGEX.test(node.nodeValue))
-        result.push node.nodeValue
-
-    # TODO: handle "hello<a>some</a> super" editing super
-
-    result[0]
+  getTextNode = (event) ->
+    document.getSelection().baseNode
 
   bindEvents = ->
     hold_timeout_id = 0

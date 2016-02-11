@@ -76,35 +76,41 @@ module.exports = HTMLAnalizer = (function() {
     NTH_CHILD_REGEX = /:nth\-child\(\d\)/;
     _.times(this.selector_parts.length + 1, (function(_this) {
       return function(i) {
-        var element, selector;
+        var selector, selector_element;
         selector = _.takeRight(_this.selector_parts, i).join(' > ');
-        element = _this.dom.find(selector)[0];
-        if (!element) {
+        selector_element = _this.dom.find(selector)[0];
+        if (!selector_element) {
           return true;
         }
-        return result.push({
-          selector: selector,
-          selector_score: i,
-          element: element,
-          text: _this.text(element)
+        return _.each(_this.nodes(selector_element), function(node) {
+          return result.push({
+            selector: selector,
+            selector_score: i,
+            selector_element: selector_element,
+            node: node,
+            text: node.nodeValue
+          });
         });
       };
     })(this));
     bare_selector = _.last(this.selector_parts).replace(NTH_CHILD_REGEX, '');
     _.each(this.dom.find(bare_selector), (function(_this) {
-      return function(element) {
-        return result.push({
-          selector: bare_selector,
-          selector_score: 0.1,
-          element: element,
-          text: _this.text(element)
+      return function(selector_element) {
+        return _.each(_this.nodes(selector_element), function(node) {
+          return result.push({
+            selector: bare_selector,
+            selector_score: 0.1,
+            selector_element: selector_element,
+            node: node,
+            text: node.nodeValue
+          });
         });
       };
     })(this));
     return result;
   };
 
-  HTMLAnalizer.prototype.text = function(target) {
+  HTMLAnalizer.prototype.nodes = function(target) {
     var WHITESPACE_REGEX, j, len, node, ref, result;
     WHITESPACE_REGEX = /^\s*$/;
     result = [];
@@ -112,10 +118,10 @@ module.exports = HTMLAnalizer = (function() {
     for (j = 0, len = ref.length; j < len; j++) {
       node = ref[j];
       if (node.nodeName === "#text" && !(WHITESPACE_REGEX.test(node.nodeValue))) {
-        result.push(node.nodeValue);
+        result.push(node);
       }
     }
-    return result[0];
+    return result;
   };
 
   return HTMLAnalizer;

@@ -11,8 +11,7 @@ class SourceModifier
     string.substr(0, start) + insertion + string.substr(end)
 
   modifiedFileContent: ->
-    @replaceAtCoords(@source, @new_text, @analysis.position.startTag.end,
-      @analysis.position.endTag.start)
+    @replaceAtCoords(@source, @new_text, @analysis.position.start, @analysis.position.end)
 
   apply: ->
     Filesystem.write(@analysis.file, @modifiedFileContent())

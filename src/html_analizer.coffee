@@ -53,39 +53,43 @@ class HTMLAnalizer
 
     _.times @selector_parts.length + 1, (i) =>
       selector = _.takeRight(@selector_parts, i).join(' > ')
-      element = @dom.find(selector)[0]
-      return true unless element
+      selector_element = @dom.find(selector)[0]
+      return true unless selector_element
 
-      result.push
-        selector: selector
-        selector_score: i
-        element: element
-        text: @text(element)
+      _.each @nodes(selector_element), (node) ->
+        result.push
+          selector: selector
+          selector_score: i
+          selector_element: selector_element
+          node: node
+          text: node.nodeValue
 
     bare_selector = _.last(@selector_parts).replace(NTH_CHILD_REGEX, '')
-    _.each @dom.find(bare_selector), (element) =>
-      result.push
-        selector: bare_selector
-        selector_score: 0.1
-        element: element
-        text: @text(element)
+    _.each @dom.find(bare_selector), (selector_element) =>
+      _.each @nodes(selector_element), (node) ->
+        result.push
+          selector: bare_selector
+          selector_score: 0.1
+          selector_element: selector_element
+          node: node
+          text: node.nodeValue
 
     result
 
   # matching with inject script
-  text: (target) ->
+  nodes: (target) ->
     WHITESPACE_REGEX = /^\s*$/
 
     result = []
 
     for node in target.childNodes
       if node.nodeName == "#text" && !(WHITESPACE_REGEX.test(node.nodeValue))
-        result.push node.nodeValue
+        result.push node
 
+    result
     # TODO: handle "hello<a>some</a> super" editing super
 
     # console.log 'here'
     # console.log node.nodeValue
     # debugger if result[0].toString() == 'true'
-    result[0]
     # 'Lenz'

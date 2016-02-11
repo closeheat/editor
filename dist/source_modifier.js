@@ -18,7 +18,7 @@ module.exports = SourceModifier = (function() {
   };
 
   SourceModifier.prototype.modifiedFileContent = function() {
-    return this.replaceAtCoords(this.source, this.new_text, this.analysis.position.startTag.end, this.analysis.position.endTag.start);
+    return this.replaceAtCoords(this.source, this.new_text, this.analysis.position.start, this.analysis.position.end);
   };
 
   SourceModifier.prototype.apply = function() {

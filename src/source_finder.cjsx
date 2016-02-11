@@ -15,8 +15,7 @@ class NodeLocationExtender
   coords: ->
     switch @analysis.winner_type
       when 'html'
-        position = jsdom.nodeLocation(@analysis.html.element)
-        throw new Error 'Cannot edit this element yet' unless position.startTag.end
+        position = jsdom.nodeLocation(@analysis.html.node)
 
         {
           position: position

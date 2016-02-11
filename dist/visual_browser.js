@@ -5,7 +5,7 @@ React = require('react');
 window._ = require('lodash');
 
 visualInject = function() {
-  var bindEvents, edit, getElementOffset, getSelector, positionInDom, text;
+  var bindEvents, edit, getElementOffset, getSelector, getTextNode, positionInDom, text;
   positionInDom = function(el, count) {
     var new_el;
     if (count == null) {
@@ -55,23 +55,16 @@ visualInject = function() {
         height: e.target.offsetHeight,
         width: e.target.offsetWidth,
         old_outline: e.target.outline,
-        text: text(e.target),
+        text: text(e),
         style: JSON.stringify(window.getComputedStyle(e.target))
       }, 'SERVER_URL_PLACEHOLDER');
     };
   };
-  text = function(target) {
-    var WHITESPACE_REGEX, i, len, node, ref, result;
-    WHITESPACE_REGEX = /^\s*$/;
-    result = [];
-    ref = target.childNodes;
-    for (i = 0, len = ref.length; i < len; i++) {
-      node = ref[i];
-      if (node.nodeName === "#text" && !(WHITESPACE_REGEX.test(node.nodeValue))) {
-        result.push(node.nodeValue);
-      }
-    }
-    return result[0];
+  text = function(event) {
+    return getTextNode(event).nodeValue;
+  };
+  getTextNode = function(event) {
+    return document.getSelection().baseNode;
   };
   bindEvents = function() {
     var hold_timeout_id;

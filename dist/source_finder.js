@@ -26,10 +26,7 @@ NodeLocationExtender = (function() {
     var position;
     switch (this.analysis.winner_type) {
       case 'html':
-        position = jsdom.nodeLocation(this.analysis.html.element);
-        if (!position.startTag.end) {
-          throw new Error('Cannot edit this element yet');
-        }
+        position = jsdom.nodeLocation(this.analysis.html.node);
         return {
           position: position
         };
