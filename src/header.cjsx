@@ -6,8 +6,6 @@ _ = require 'lodash'
 PublishStatus = require './publish_status'
 Tour = require './tour'
 
-$ = window.jQuery = window.$ = require 'jquery'
-
 module.exports =
 Header = React.createClass
   getInitialState: ->

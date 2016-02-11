@@ -1,5 +1,4 @@
-var HTMLModifier, _,
-  slice = [].slice;
+var HTMLModifier, _;
 
 _ = require('lodash');
 
@@ -54,29 +53,28 @@ module.exports = HTMLModifier = (function() {
     return this.flatStartColumnNumber() + this.analysis.text.length;
   };
 
-  HTMLModifier.prototype.replaceAtCoords = function(string, insertion, start, end) {
-    return string.substr(0, start) + insertion + string.substr(end);
-  };
-
   HTMLModifier.prototype.target = function() {
     return this.source.substr(this.flatStartColumnNumber(), this.analysis.text.length);
   };
 
   HTMLModifier.prototype.ensureTargetTextMatches = function() {
     if (this.target() !== this.analysis.text) {
-      console.log('NO MATCH');
       console.log(this.target());
-      return console.log(this.analysis.text);
+      console.log(this.analysis.text);
+      throw new Error('NO MATCH ^^^^');
     }
   };
 
   HTMLModifier.prototype.targetCoords = function() {
-    return [this.flatStartColumnNumber(), this.flatEndColumnNumber()];
+    return {
+      flat_start_column_number: this.flatStartColumnNumber(),
+      flat_end_column_number: this.flatEndColumnNumber()
+    };
   };
 
   HTMLModifier.prototype.modifiedSource = function() {
     this.ensureTargetTextMatches();
-    return this.replaceAtCoords.apply(this, [this.source, this.new_text].concat(slice.call(this.targetCoords())));
+    return this.targetCoords();
   };
 
   return HTMLModifier;

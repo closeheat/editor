@@ -1,10 +1,48 @@
-var FrontMatterAnalizer, HTMLAnalizer, SourceFinder, _;
+var Filesystem, FrontMatterAnalizer, HTMLAnalizer, HTMLModifier, NodeLocationExtender, SourceFinder, _, jsdom;
 
 _ = require('lodash');
 
+jsdom = require('jsdom');
+
 HTMLAnalizer = require('./html_analizer');
 
+HTMLModifier = require('./html_modifier');
+
+Filesystem = require('./filesystem');
+
 FrontMatterAnalizer = require('./front_matter_analizer');
+
+NodeLocationExtender = (function() {
+  function NodeLocationExtender(event, analysis) {
+    this.event = event;
+    this.analysis = analysis;
+  }
+
+  NodeLocationExtender.prototype.extend = function() {
+    return _.merge(this.analysis, this.coords());
+  };
+
+  NodeLocationExtender.prototype.coords = function() {
+    var position;
+    switch (this.analysis.winner_type) {
+      case 'html':
+        position = jsdom.nodeLocation(this.analysis.html.element);
+        if (!position.startTag.end) {
+          throw new Error('Cannot edit this element yet');
+        }
+        return {
+          position: position
+        };
+      case 'front_matter':
+        return console.log('FRONT MATTER NOT IMPLEMENTED YET');
+      default:
+        return console.log('NOT IMPLEMENTED');
+    }
+  };
+
+  return NodeLocationExtender;
+
+})();
 
 module.exports = SourceFinder = (function() {
   function SourceFinder(event, files) {
@@ -13,9 +51,11 @@ module.exports = SourceFinder = (function() {
   }
 
   SourceFinder.prototype.source = function() {
+    var winner;
     console.log('RUNNER UP');
     console.log(_.first(_.takeRight(_.sortBy(this.scores(), 'winner_score'), 2)));
-    return _.maxBy(this.scores(), 'winner_score');
+    winner = _.maxBy(this.scores(), 'winner_score');
+    return new NodeLocationExtender(this.event, winner).extend();
   };
 
   SourceFinder.prototype.scores = function() {

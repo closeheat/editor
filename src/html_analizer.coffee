@@ -1,17 +1,19 @@
 _ = require 'lodash'
-DOMParser = require('xmldom').DOMParser
-Parser = new DOMParser(locator: {}, errorHandler: ->)
-# # parse5 = require('parse5')
-# # jsdom = require('jsdom')
-# whacko = require 'whacko'
-# cheerio = require 'cheerio'
-# queryDom = require 'query-dom'
+jsdom = require('jsdom')
 require('string_score')
 
 module.exports =
 class HTMLAnalizer
   constructor: (@file, @event) ->
-    @dom = $(Parser.parseFromString(@file.content, 'text/html'))
+    return unless @supportedFile()
+
+    vdom = jsdom.jsdom @file.content,
+      features:
+        FetchExternalResources: false
+        ProcessExternalResources: false
+
+    @dom = $(vdom)
+
     @selector_parts = @event.selector.split(' > ')
 
   analize: ->

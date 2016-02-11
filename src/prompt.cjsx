@@ -1,7 +1,7 @@
 React = require 'react'
 ReactDOM = require 'react-dom'
 ContentEditable = require('react-wysiwyg')
-require('jquery-ui/draggable')
+Draggabilly = require 'draggabilly'
 
 module.exports =
 React.createClass
@@ -24,7 +24,7 @@ React.createClass
       value: @originalValue(next_props)
 
   componentDidMount: ->
-    $(ReactDOM.findDOMNode(@)).draggable(handle: '.prompt-header')
+    new Draggabilly(ReactDOM.findDOMNode(@), handle: '.prompt-header')
 
   render: ->
     <div className='prompt'>

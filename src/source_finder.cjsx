@@ -1,7 +1,30 @@
 _ = require 'lodash'
+jsdom = require 'jsdom'
 
 HTMLAnalizer = require('./html_analizer')
+HTMLModifier = require('./html_modifier')
+Filesystem = require('./filesystem')
 FrontMatterAnalizer = require('./front_matter_analizer')
+
+class NodeLocationExtender
+  constructor: (@event, @analysis) ->
+
+  extend: ->
+    _.merge(@analysis, @coords())
+
+  coords: ->
+    switch @analysis.winner_type
+      when 'html'
+        position = jsdom.nodeLocation(@analysis.html.element)
+        throw new Error 'Cannot edit this element yet' unless position.startTag.end
+
+        {
+          position: position
+        }
+      when 'front_matter'
+        console.log 'FRONT MATTER NOT IMPLEMENTED YET'
+      else
+        console.log 'NOT IMPLEMENTED'
 
 module.exports =
 class SourceFinder
@@ -10,7 +33,8 @@ class SourceFinder
   source: ->
     console.log 'RUNNER UP'
     console.log _.first(_.takeRight(_.sortBy(@scores(), 'winner_score'), 2))
-    _.maxBy @scores(), 'winner_score'
+    winner = _.maxBy(@scores(), 'winner_score')
+    new NodeLocationExtender(@event, winner).extend()
 
   scores: ->
     _.map @analizedFiles(), (file_analysis) =>

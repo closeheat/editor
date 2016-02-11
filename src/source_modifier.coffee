@@ -7,14 +7,13 @@ class SourceModifier
   constructor: (@analysis, @new_text) ->
     @source = Filesystem.read(@analysis.file).content
 
-  apply: ->
-    new_source = switch @analysis.winner_type
-      when 'html'
-        new HTMLModifier(@analysis, @source, @new_text).modifiedSource()
-      when 'front_matter'
-        console.log 'FRONT MATTER NOT IMPLEMENTED YET'
-      else
-        console.log 'NOT IMPLEMENTED'
+  replaceAtCoords: (string, insertion, start, end) ->
+    string.substr(0, start) + insertion + string.substr(end)
 
-    Filesystem.write(@analysis.file, new_source)
-    console.log new_source
+  modifiedFileContent: ->
+    @replaceAtCoords(@source, @new_text, @analysis.position.startTag.end,
+      @analysis.position.endTag.start)
+
+  apply: ->
+    Filesystem.write(@analysis.file, @modifiedFileContent())
+    console.log @modifiedFileContent()

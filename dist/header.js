@@ -1,4 +1,4 @@
-var $, Header, PublishStatus, React, ReactDOM, Tour, _, classNames;
+var Header, PublishStatus, React, ReactDOM, Tour, _, classNames;
 
 React = require('react');
 
@@ -11,8 +11,6 @@ _ = require('lodash');
 PublishStatus = require('./publish_status');
 
 Tour = require('./tour');
-
-$ = window.jQuery = window.$ = require('jquery');
 
 module.exports = Header = React.createClass({
   getInitialState: function() {

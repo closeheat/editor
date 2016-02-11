@@ -2,11 +2,11 @@ var $, App, CodeMode, Core, ErrorHandler, InitialLoader, PreviewMode, Publish, R
 
 md = require('marked');
 
-$ = require('jquery');
-
 React = require('react');
 
 ReactDOM = require('react-dom');
+
+$ = window.jQuery = window.$ = require('jquery');
 
 Router = require('react-router');
 

@@ -1,21 +1,26 @@
-var DOMParser, HTMLAnalizer, Parser, _;
+var HTMLAnalizer, _, jsdom;
 
 _ = require('lodash');
 
-DOMParser = require('xmldom').DOMParser;
-
-Parser = new DOMParser({
-  locator: {},
-  errorHandler: function() {}
-});
+jsdom = require('jsdom');
 
 require('string_score');
 
 module.exports = HTMLAnalizer = (function() {
   function HTMLAnalizer(file, event) {
+    var vdom;
     this.file = file;
     this.event = event;
-    this.dom = $(Parser.parseFromString(this.file.content, 'text/html'));
+    if (!this.supportedFile()) {
+      return;
+    }
+    vdom = jsdom.jsdom(this.file.content, {
+      features: {
+        FetchExternalResources: false,
+        ProcessExternalResources: false
+      }
+    });
+    this.dom = $(vdom);
     this.selector_parts = this.event.selector.split(' > ');
   }
 

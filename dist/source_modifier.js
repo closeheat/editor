@@ -13,20 +13,17 @@ module.exports = SourceModifier = (function() {
     this.source = Filesystem.read(this.analysis.file).content;
   }
 
+  SourceModifier.prototype.replaceAtCoords = function(string, insertion, start, end) {
+    return string.substr(0, start) + insertion + string.substr(end);
+  };
+
+  SourceModifier.prototype.modifiedFileContent = function() {
+    return this.replaceAtCoords(this.source, this.new_text, this.analysis.position.startTag.end, this.analysis.position.endTag.start);
+  };
+
   SourceModifier.prototype.apply = function() {
-    var new_source;
-    new_source = (function() {
-      switch (this.analysis.winner_type) {
-        case 'html':
-          return new HTMLModifier(this.analysis, this.source, this.new_text).modifiedSource();
-        case 'front_matter':
-          return console.log('FRONT MATTER NOT IMPLEMENTED YET');
-        default:
-          return console.log('NOT IMPLEMENTED');
-      }
-    }).call(this);
-    Filesystem.write(this.analysis.file, new_source);
-    return console.log(new_source);
+    Filesystem.write(this.analysis.file, this.modifiedFileContent());
+    return console.log(this.modifiedFileContent());
   };
 
   return SourceModifier;

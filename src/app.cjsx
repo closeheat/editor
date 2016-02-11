@@ -1,7 +1,6 @@
 React = require 'react'
 flatten = require('flat')
 _ = require 'lodash'
-$ = window.jQuery = window.$ = require 'jquery'
 request = require 'request'
 Promise = require 'bluebird'
 cookies = require 'browser-cookies'

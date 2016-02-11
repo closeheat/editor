@@ -1,4 +1,4 @@
-var ContentEditable, React, ReactDOM;
+var ContentEditable, Draggabilly, React, ReactDOM;
 
 React = require('react');
 
@@ -6,7 +6,7 @@ ReactDOM = require('react-dom');
 
 ContentEditable = require('react-wysiwyg');
 
-require('jquery-ui/draggable');
+Draggabilly = require('draggabilly');
 
 module.exports = React.createClass({
   getInitialState: function() {
@@ -31,7 +31,7 @@ module.exports = React.createClass({
     });
   },
   componentDidMount: function() {
-    return $(ReactDOM.findDOMNode(this)).draggable({
+    return new Draggabilly(ReactDOM.findDOMNode(this), {
       handle: '.prompt-header'
     });
   },

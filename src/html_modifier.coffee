@@ -37,22 +37,22 @@ class HTMLModifier
   flatEndColumnNumber: ->
     @flatStartColumnNumber() + @analysis.text.length
 
-  replaceAtCoords: (string, insertion, start, end) ->
-    string.substr(0, start) + insertion + string.substr(end)
-
   target: ->
     @source.substr(@flatStartColumnNumber(), @analysis.text.length)
 
   ensureTargetTextMatches: ->
     unless @target() == @analysis.text
       # maybe fallback to regular match?
-      console.log 'NO MATCH'
       console.log @target()
       console.log @analysis.text
+      throw new Error('NO MATCH ^^^^')
 
   targetCoords: ->
-    [@flatStartColumnNumber(), @flatEndColumnNumber()]
+    {
+      flat_start_column_number: @flatStartColumnNumber()
+      flat_end_column_number: @flatEndColumnNumber()
+    }
 
   modifiedSource: ->
     @ensureTargetTextMatches()
-    @replaceAtCoords(@source, @new_text, @targetCoords()...)
+    @targetCoords()

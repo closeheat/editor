@@ -1,12 +1,10 @@
-var $, ChangeDistDirToast, Filesystem, Header, Navigation, NewApp, Promise, React, RouteHandler, Router, _, cookies, flatten, request;
+var ChangeDistDirToast, Filesystem, Header, Navigation, NewApp, Promise, React, RouteHandler, Router, _, cookies, flatten, request;
 
 React = require('react');
 
 flatten = require('flat');
 
 _ = require('lodash');
-
-$ = window.jQuery = window.$ = require('jquery');
 
 request = require('request');
 
