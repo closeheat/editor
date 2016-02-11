@@ -55,6 +55,7 @@ visualInject = function() {
         height: e.target.offsetHeight,
         width: e.target.offsetWidth,
         old_outline: e.target.outline,
+        pathname: window.location.pathname,
         text: text(e),
         style: JSON.stringify(window.getComputedStyle(e.target))
       }, 'SERVER_URL_PLACEHOLDER');

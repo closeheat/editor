@@ -13,7 +13,6 @@ class HTMLAnalizer
         ProcessExternalResources: false
 
     @dom = $(vdom)
-
     @selector_parts = @event.selector.split(' > ')
 
   analize: ->
@@ -22,6 +21,16 @@ class HTMLAnalizer
     return { score: 0 } unless strongest_combination
 
     strongest_combination
+
+  urlFileMatchScore: ->
+    max_selector_scale = 12
+    @pathname().score(@file.path) * max_selector_scale
+
+  pathname: ->
+    return 'index.html' if @event.pathname == '/'
+
+    FIRST_SLASH_REGEX = /^\//
+    @event.pathname.replace(FIRST_SLASH_REGEX, '')
 
   supportedFile: ->
     SUPPORTED_EXTENSION_REGEX = /(\.|\/)(html|htm)$/
@@ -35,7 +44,8 @@ class HTMLAnalizer
       combination.type = 'html'
       combination.dom = @dom
       combination.string_score = @stringScore(combination)
-      combination.score = combination.string_score * 0.8 + combination.selector_score * 0.2
+      combination.url_file_match_score = @urlFileMatchScore()
+      combination.score = combination.string_score * 0.8 + combination.selector_score * 0.2 + combination.url_file_match_score * 0.2
       # console.log @event.text
       # console.log combination.text
       # console.log "SEL: #{combination.selector_score}, STR: #{combination.string_score}, TO: #{combination.score}"

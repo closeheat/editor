@@ -40,6 +40,21 @@ module.exports = HTMLAnalizer = (function() {
     return strongest_combination;
   };
 
+  HTMLAnalizer.prototype.urlFileMatchScore = function() {
+    var max_selector_scale;
+    max_selector_scale = 12;
+    return this.pathname().score(this.file.path) * max_selector_scale;
+  };
+
+  HTMLAnalizer.prototype.pathname = function() {
+    var FIRST_SLASH_REGEX;
+    if (this.event.pathname === '/') {
+      return 'index.html';
+    }
+    FIRST_SLASH_REGEX = /^\//;
+    return this.event.pathname.replace(FIRST_SLASH_REGEX, '');
+  };
+
   HTMLAnalizer.prototype.supportedFile = function() {
     var SUPPORTED_EXTENSION_REGEX;
     SUPPORTED_EXTENSION_REGEX = /(\.|\/)(html|htm)$/;
@@ -57,7 +72,8 @@ module.exports = HTMLAnalizer = (function() {
         combination.type = 'html';
         combination.dom = _this.dom;
         combination.string_score = _this.stringScore(combination);
-        combination.score = combination.string_score * 0.8 + combination.selector_score * 0.2;
+        combination.url_file_match_score = _this.urlFileMatchScore();
+        combination.score = combination.string_score * 0.8 + combination.selector_score * 0.2 + combination.url_file_match_score * 0.2;
         return combination;
       };
     })(this));
