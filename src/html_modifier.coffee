@@ -4,11 +4,19 @@ module.exports =
 class HTMLModifier
   constructor: (@analysis, @source, @new_text) ->
     @element = @analysis.html.element
-    # count \r\n too (as 2 chars)
-    @all_source_lines = @source.split('\n')
+    NEWLINE_REGEX = /(?:\r\n?|\n)/gi
+
+    @newlines_data = []
+    while (matches = NEWLINE_REGEX.exec(@source)) && matches != null
+      @newlines_data.push
+        index: matches.index
+        last_index: NEWLINE_REGEX.lastIndex
+        after_line_number: @newlines_data.length + 1
+
+    @all_source_lines = @source.split(NEWLINE_REGEX)
 
   emptySourceLineCountBeforeTarget: ->
-    _.countBy(@all_source_lines[..@element.lineNumber], _.isEmpty).true
+    _.countBy(@all_source_lines[0...(@element.lineNumber - 1)], _.isEmpty).true || 0
 
   lineNumber: ->
     @element.lineNumber + @emptySourceLineCountBeforeTarget()
@@ -17,9 +25,14 @@ class HTMLModifier
     line_length_before = _.sumBy @all_source_lines[0...(@lineNumber() - 1)], (line) ->
       line.length
 
-    newline_char_before_length_sum = @lineNumber() - 1
+    line_length_before + @newlineCharBeforeSum() + @element.columnNumber
 
-    line_length_before + newline_char_before_length_sum + @element.columnNumber
+  newlineCharBeforeSum: ->
+    newline_seperators_before = _.filter @newlines_data, (newline_seperator) =>
+      newline_seperator.after_line_number < @lineNumber()
+
+    _.sumBy newline_seperators_before, (newline_seperator) ->
+      newline_seperator.last_index - newline_seperator.index
 
   flatEndColumnNumber: ->
     @flatStartColumnNumber() + @analysis.text.length
