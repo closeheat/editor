@@ -57,7 +57,7 @@ visualInject = function() {
         old_outline: e.target.outline,
         text: text(e.target),
         style: JSON.stringify(window.getComputedStyle(e.target))
-      }, SERVER_URL);
+      }, 'SERVER_URL_PLACEHOLDER');
     };
   };
   text = function(target) {
@@ -124,7 +124,7 @@ module.exports = React.createClass({
   },
   inject: function() {
     console.log('inkecting');
-    return this.evalInIframe(visualInject.toString());
+    return this.evalInIframe(visualInject.toString().replace('SERVER_URL_PLACEHOLDER', window.SERVER_URL));
   },
   evalInIframe: function(code) {
     return this.iframe().contentWindow.postMessage(this.wrapEvalFunction(code), this.props.browser_url);

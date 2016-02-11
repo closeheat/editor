@@ -10,17 +10,6 @@ SourceModifier = require('./source_modifier')
 AfterApplyToast = require('./after_apply_toast')
 ReviewModal = require('./review_modal')
 
-editingPrompt = ->
-  parent.postMessage(action: 'prompt', new_content: prompt('', 'CONTENT_VALUE'), SERVER_URL)
-
-mouseoverCode = ->
-  element = document.querySelector('SELECTOR')
-  element.style.outline = '1px solid hsla(225, 7%, 55%, .4)'
-
-mouseoutCode = ->
-  element = document.querySelector('SELECTOR')
-  element.style.outline = ''
-
 module.exports =
 React.createClass
   getInitialState: ->
@@ -49,30 +38,7 @@ React.createClass
   onMessage: (e) ->
     if e.data.action == 'edit'
       @onEdit(e.data)
-    # else if e.data.action == 'prompt'
-    #   @state.editing_location.element.html(e.data.new_content)
-    # else if e.data.action == 'mouseover'
-    #   # @onMouseover(e.data)
-    # else if e.data.action == 'mouseout'
-    #   # @onMouseout(e.data)
-    # else if e.data.action == 'scroll'
-    #   @onScroll(e.data)
-    # else
-    #   debugger
 
-  onMouseover: (event) ->
-    element_data = @editableElement(event)
-    return unless element_data
-
-    @setState(old_outline: event.old_outline)
-    code = mouseoverCode.toString().replace('SELECTOR', element_data.selector)
-    @refs.browser.evalInIframe(code)
-  onMouseout: (event) ->
-    element_data = @editableElement(event)
-    return unless element_data
-
-    code = mouseoutCode.toString().replace('SELECTOR', element_data.selector)
-    @refs.browser.evalInIframe(code)
   onEdit: (event) ->
     element_data = @editableElement(event)
 

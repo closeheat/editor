@@ -1,4 +1,4 @@
-var AfterApplyToast, Filesystem, FilesystemHistory, Loader, Prompt, React, ReviewModal, SourceFinder, SourceModifier, VisualBrowser, _, editingPrompt, mouseoutCode, mouseoverCode;
+var AfterApplyToast, Filesystem, FilesystemHistory, Loader, Prompt, React, ReviewModal, SourceFinder, SourceModifier, VisualBrowser, _;
 
 React = require('react');
 
@@ -21,25 +21,6 @@ SourceModifier = require('./source_modifier');
 AfterApplyToast = require('./after_apply_toast');
 
 ReviewModal = require('./review_modal');
-
-editingPrompt = function() {
-  return parent.postMessage({
-    action: 'prompt',
-    new_content: prompt('', 'CONTENT_VALUE')
-  }, SERVER_URL);
-};
-
-mouseoverCode = function() {
-  var element;
-  element = document.querySelector('SELECTOR');
-  return element.style.outline = '1px solid hsla(225, 7%, 55%, .4)';
-};
-
-mouseoutCode = function() {
-  var element;
-  element = document.querySelector('SELECTOR');
-  return element.style.outline = '';
-};
 
 module.exports = React.createClass({
   getInitialState: function() {
@@ -80,27 +61,6 @@ module.exports = React.createClass({
     if (e.data.action === 'edit') {
       return this.onEdit(e.data);
     }
-  },
-  onMouseover: function(event) {
-    var code, element_data;
-    element_data = this.editableElement(event);
-    if (!element_data) {
-      return;
-    }
-    this.setState({
-      old_outline: event.old_outline
-    });
-    code = mouseoverCode.toString().replace('SELECTOR', element_data.selector);
-    return this.refs.browser.evalInIframe(code);
-  },
-  onMouseout: function(event) {
-    var code, element_data;
-    element_data = this.editableElement(event);
-    if (!element_data) {
-      return;
-    }
-    code = mouseoutCode.toString().replace('SELECTOR', element_data.selector);
-    return this.refs.browser.evalInIframe(code);
   },
   onEdit: function(event) {
     var element_data;

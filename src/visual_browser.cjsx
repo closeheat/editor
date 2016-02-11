@@ -47,7 +47,7 @@ visualInject = ->
         old_outline: e.target.outline
         text: text(e.target)
         style: JSON.stringify(window.getComputedStyle(e.target))
-      , SERVER_URL
+      , 'SERVER_URL_PLACEHOLDER'
 
   text = (target) ->
     WHITESPACE_REGEX = /^\s*$/
@@ -118,7 +118,7 @@ React.createClass
     "evalFunction = #{code}; evalFunction()"
   inject: ->
     console.log 'inkecting'
-    @evalInIframe(visualInject.toString())
+    @evalInIframe(visualInject.toString().replace('SERVER_URL_PLACEHOLDER', window.SERVER_URL))
   evalInIframe: (code) ->
     @iframe().contentWindow.postMessage(@wrapEvalFunction(code), @props.browser_url)
   render: ->
