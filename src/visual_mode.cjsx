@@ -91,6 +91,12 @@ React.createClass
     @removePrompt()
     @rebuild()
 
+  onNavigate: ->
+    @refs.browser.refs.iframe.contentWindow.postMessage
+      action: 'navigate'
+    , '*'
+    @removePrompt()
+
   removeAfterApplyToast: ->
     @setState
       show_after_apply_toast: true
@@ -138,6 +144,7 @@ React.createClass
         element_data={@state.current_element_data}
         onApply={@onApply}
         onClose={@removePrompt}
+        onNavigate={@onNavigate}
       />}
       {@afterApplyToast()}
     </div>

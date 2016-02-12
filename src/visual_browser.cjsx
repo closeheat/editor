@@ -2,6 +2,8 @@ React = require 'react'
 window._ = require 'lodash'
 
 visualInject = ->
+  window.CLOSEHEAT_EDITOR = {}
+
   positionInDom = (el, count = 1) ->
     if new_el = el.previousElementSibling
       positionInDom(new_el, count + 1)
@@ -30,6 +32,8 @@ visualInject = ->
     names.join ' > '
 
   edit = (e) ->
+    return if window.CLOSEHEAT_EDITOR.navigating
+
     node_text = text(e)
     return unless node_text
 
@@ -37,6 +41,7 @@ visualInject = ->
     e.preventDefault()
     selector = getSelector(e.target)
 
+    window.CLOSEHEAT_EDITOR.last_target = e.target
     parent.postMessage
       action: 'edit'
       selector: selector
@@ -52,15 +57,6 @@ visualInject = ->
 
     false
 
-  # hold = (e) ->
-  #   console.log 'sendin'
-  #   console.log e
-  #   parent.postMessage
-  #     action: 'hold'
-  #     top: e.clientX
-  #     left: e.clientY
-  #   , 'SERVER_URL_PLACEHOLDER'
-
   text = (event) ->
     getTextNode(event).nodeValue
 
@@ -68,8 +64,18 @@ visualInject = ->
     # fallback for links
     document.getSelection().baseNode || event.target.childNodes[0]
 
+  onMessage = (e) ->
+    if e.data.action == 'navigate'
+      navigate()
+
+  navigate = () ->
+    window.CLOSEHEAT_EDITOR.navigating = true
+    window.CLOSEHEAT_EDITOR.last_target.click()
+    window.CLOSEHEAT_EDITOR.navigating = false
+
   bindEvents = ->
     window.addEventListener 'click', edit, true
+    window.addEventListener('message', onMessage, false)
 
   getElementOffset = (element) ->
     de = document.documentElement
@@ -120,5 +126,5 @@ React.createClass
     @iframe().contentWindow.postMessage(@wrapEvalFunction(code), @props.browser_url)
   render: ->
     <div className='browser'>
-      <iframe id='browser' name='browser-frame' src={@props.browser_url}></iframe>
+      <iframe ref='iframe' id='browser' name='browser-frame' src={@props.browser_url}></iframe>
     </div>

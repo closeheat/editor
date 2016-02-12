@@ -26,10 +26,30 @@ React.createClass
   componentDidMount: ->
     new Draggabilly(ReactDOM.findDOMNode(@), handle: '.prompt-header')
 
+  isLink: ->
+    @props.element_data.html.node.parentNode.tagName == 'A'
+
+  type: ->
+    if @isLink()
+      'Link'
+    else
+      'Text'
+
+  navigate: ->
+    return <div/> unless @isLink()
+
+    <div className='prompt-header-navigate' onClick={@props.onNavigate}>
+      Navigate
+    </div>
   render: ->
     <div className='prompt'>
-      <div className='prompt-header'>
-        Text
+      <div className='prompt-header row'>
+        <div className='col s8'>
+          {@type()}
+        </div>
+        <div className='col s4'>
+          {@navigate()}
+        </div>
       </div>
       <div className='prompt-content'>
         <textarea className='prompt-input' onChange={@onChange} value={@state.value}/>

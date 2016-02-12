@@ -5,7 +5,8 @@ React = require('react');
 window._ = require('lodash');
 
 visualInject = function() {
-  var bindEvents, edit, getElementOffset, getSelector, getTextNode, positionInDom, text;
+  var bindEvents, edit, getElementOffset, getSelector, getTextNode, navigate, onMessage, positionInDom, text;
+  window.CLOSEHEAT_EDITOR = {};
   positionInDom = function(el, count) {
     var new_el;
     if (count == null) {
@@ -43,6 +44,9 @@ visualInject = function() {
   };
   edit = function(e) {
     var node_text, selector;
+    if (window.CLOSEHEAT_EDITOR.navigating) {
+      return;
+    }
     node_text = text(e);
     if (!node_text) {
       return;
@@ -50,6 +54,7 @@ visualInject = function() {
     e.stopPropagation();
     e.preventDefault();
     selector = getSelector(e.target);
+    window.CLOSEHEAT_EDITOR.last_target = e.target;
     parent.postMessage({
       action: 'edit',
       selector: selector,
@@ -70,8 +75,19 @@ visualInject = function() {
   getTextNode = function(event) {
     return document.getSelection().baseNode || event.target.childNodes[0];
   };
+  onMessage = function(e) {
+    if (e.data.action === 'navigate') {
+      return navigate();
+    }
+  };
+  navigate = function() {
+    window.CLOSEHEAT_EDITOR.navigating = true;
+    window.CLOSEHEAT_EDITOR.last_target.click();
+    return window.CLOSEHEAT_EDITOR.navigating = false;
+  };
   bindEvents = function() {
-    return window.addEventListener('click', edit, true);
+    window.addEventListener('click', edit, true);
+    return window.addEventListener('message', onMessage, false);
   };
   getElementOffset = function(element) {
     var box, de, left, top;
@@ -120,6 +136,7 @@ module.exports = React.createClass({
     return React.createElement("div", {
       "className": 'browser'
     }, React.createElement("iframe", {
+      "ref": 'iframe',
       "id": 'browser',
       "name": 'browser-frame',
       "src": this.props.browser_url

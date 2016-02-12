@@ -118,6 +118,12 @@ module.exports = React.createClass({
     this.removePrompt();
     return this.rebuild();
   },
+  onNavigate: function() {
+    this.refs.browser.refs.iframe.contentWindow.postMessage({
+      action: 'navigate'
+    }, '*');
+    return this.removePrompt();
+  },
   removeAfterApplyToast: function() {
     return this.setState({
       show_after_apply_toast: true
@@ -171,7 +177,8 @@ module.exports = React.createClass({
     }))), this.state.show_prompt && React.createElement(Prompt, {
       "element_data": this.state.current_element_data,
       "onApply": this.onApply,
-      "onClose": this.removePrompt
+      "onClose": this.removePrompt,
+      "onNavigate": this.onNavigate
     }), this.afterApplyToast());
   },
   render: function() {

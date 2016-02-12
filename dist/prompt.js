@@ -35,12 +35,35 @@ module.exports = React.createClass({
       handle: '.prompt-header'
     });
   },
+  isLink: function() {
+    return this.props.element_data.html.node.parentNode.tagName === 'A';
+  },
+  type: function() {
+    if (this.isLink()) {
+      return 'Link';
+    } else {
+      return 'Text';
+    }
+  },
+  navigate: function() {
+    if (!this.isLink()) {
+      return React.createElement("div", null);
+    }
+    return React.createElement("div", {
+      "className": 'prompt-header-navigate',
+      "onClick": this.props.onNavigate
+    }, "Navigate");
+  },
   render: function() {
     return React.createElement("div", {
       "className": 'prompt'
     }, React.createElement("div", {
-      "className": 'prompt-header'
-    }, "Text"), React.createElement("div", {
+      "className": 'prompt-header row'
+    }, React.createElement("div", {
+      "className": 'col s8'
+    }, this.type()), React.createElement("div", {
+      "className": 'col s4'
+    }, this.navigate())), React.createElement("div", {
       "className": 'prompt-content'
     }, React.createElement("textarea", {
       "className": 'prompt-input',

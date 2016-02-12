@@ -62,12 +62,16 @@ module.exports = HTMLAnalizer = (function() {
   };
 
   HTMLAnalizer.prototype.strongestCombination = function() {
-    var all_combinations, scored_combinations;
+    var all_combinations;
     all_combinations = this.allCombinations();
     if (!all_combinations.length) {
       return;
     }
-    scored_combinations = _.map(all_combinations, (function(_this) {
+    return _.maxBy(this.scoredCombinations(all_combinations), 'score');
+  };
+
+  HTMLAnalizer.prototype.scoredCombinations = function(all_combinations) {
+    return _.map(all_combinations, (function(_this) {
       return function(combination) {
         combination.type = 'html';
         combination.dom = _this.dom;
@@ -77,7 +81,6 @@ module.exports = HTMLAnalizer = (function() {
         return combination;
       };
     })(this));
-    return _.maxBy(scored_combinations, 'score');
   };
 
   HTMLAnalizer.prototype.stringScore = function(combination) {

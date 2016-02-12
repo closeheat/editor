@@ -40,18 +40,16 @@ class HTMLAnalizer
     all_combinations = @allCombinations()
     return unless all_combinations.length
 
-    scored_combinations = _.map all_combinations, (combination) =>
+    _.maxBy @scoredCombinations(all_combinations), 'score'
+
+  scoredCombinations: (all_combinations) ->
+    _.map all_combinations, (combination) =>
       combination.type = 'html'
       combination.dom = @dom
       combination.string_score = @stringScore(combination)
       combination.url_file_match_score = @urlFileMatchScore()
       combination.score = combination.string_score * 0.8 + combination.selector_score * 0.2 + combination.url_file_match_score * 0.2
-      # console.log @event.text
-      # console.log combination.text
-      # console.log "SEL: #{combination.selector_score}, STR: #{combination.string_score}, TO: #{combination.score}"
       combination
-
-    _.maxBy scored_combinations, 'score'
 
   stringScore: (combination) ->
     max_selector_scale = 12
