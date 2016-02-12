@@ -24,20 +24,11 @@ module.exports = HTMLAnalizer = (function() {
     this.selector_parts = this.event.selector.split(' > ');
   }
 
-  HTMLAnalizer.prototype.analize = function() {
-    var strongest_combination;
+  HTMLAnalizer.prototype.combinations = function() {
     if (!this.supportedFile()) {
-      return {
-        score: 0
-      };
+      return [];
     }
-    strongest_combination = this.strongestCombination();
-    if (!strongest_combination) {
-      return {
-        score: 0
-      };
-    }
-    return strongest_combination;
+    return this.scoredCombinations();
   };
 
   HTMLAnalizer.prototype.urlFileMatchScore = function() {
@@ -61,23 +52,16 @@ module.exports = HTMLAnalizer = (function() {
     return this.file.path.match(SUPPORTED_EXTENSION_REGEX);
   };
 
-  HTMLAnalizer.prototype.strongestCombination = function() {
-    var all_combinations;
-    all_combinations = this.allCombinations();
-    if (!all_combinations.length) {
-      return;
-    }
-    return _.maxBy(this.scoredCombinations(all_combinations), 'score');
-  };
-
   HTMLAnalizer.prototype.scoredCombinations = function(all_combinations) {
-    return _.map(all_combinations, (function(_this) {
+    return _.map(this.allCombinations(), (function(_this) {
       return function(combination) {
         combination.type = 'html';
         combination.dom = _this.dom;
         combination.string_score = _this.stringScore(combination);
         combination.url_file_match_score = _this.urlFileMatchScore();
         combination.score = combination.string_score * 0.8 + combination.selector_score * 0.2 + combination.url_file_match_score * 0.2;
+        combination.file_path = _this.file.path;
+        combination.original_text = _this.event.text;
         return combination;
       };
     })(this));

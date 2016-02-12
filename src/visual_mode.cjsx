@@ -59,8 +59,6 @@ React.createClass
       show_prompt: false
 
   editableElement: (event) ->
-    locations = []
-
     final = new SourceFinder(event, @editableFiles()).source()
     console.log final
     final
@@ -119,7 +117,7 @@ React.createClass
     return <div></div> unless @state.show_after_apply_toast
 
     <AfterApplyToast
-      file_path={@state.last_element_data.file}
+      file_path={@state.last_element_data.file_path}
       onUndo={@undoApplied}
       onReview={@reviewApplied}
       onClose={@removeAfterApplyToast}
@@ -133,7 +131,7 @@ React.createClass
         show={@state.show_review}
         onUndo={@undoApplied}
         onClose={@hideReview}
-        file_path={@state.last_element_data.file}
+        file_path={@state.last_element_data.file_path}
       />
       <div className='row'>
         <div className='col browser-col full m12'>

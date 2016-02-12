@@ -1,60 +1,23 @@
 _ = require 'lodash'
-jsdom = require 'jsdom'
 
 HTMLAnalizer = require('./html_analizer')
-HTMLModifier = require('./html_modifier')
-Filesystem = require('./filesystem')
-FrontMatterAnalizer = require('./front_matter_analizer')
-
-class NodeLocationExtender
-  constructor: (@event, @analysis) ->
-
-  extend: ->
-    _.merge(@analysis, @coords())
-
-  coords: ->
-    switch @analysis.winner_type
-      when 'html'
-        position = jsdom.nodeLocation(@analysis.html.node)
-
-        {
-          position: position
-        }
-      when 'front_matter'
-        console.log 'FRONT MATTER NOT IMPLEMENTED YET'
-      else
-        console.log 'NOT IMPLEMENTED'
+NodeLocationExtender = require('./node_location_extender')
+# FrontMatterAnalizer = require('./front_matter_analizer')
 
 module.exports =
 class SourceFinder
   constructor: (@event, @files) ->
 
   source: ->
-    console.log 'RUNNER UP'
-    console.log _.first(_.takeRight(_.sortBy(@scores(), 'winner_score'), 2))
-    winner = _.maxBy(@scores(), 'winner_score')
-    new NodeLocationExtender(@event, winner).extend()
+    sorted_combinations = _.takeRight(@sortedCombinatins(), 3)
+    console.log(sorted_combinations)
+    new NodeLocationExtender(@event, _.last(sorted_combinations)).extend()
 
-  scores: ->
-    _.map @analizedFiles(), (file_analysis) =>
-      winner = @chooseWinner(file_analysis)
+  sortedCombinatins: ->
+    _.sortBy(@combinations(), 'score')
 
-      _.merge {
-        winner_type: winner.type
-        winner_score: winner.score
-      }, file_analysis
+  combinations: ->
+    result = _.map @files, (file) =>
+      new HTMLAnalizer(file, @event).combinations()
 
-  chooseWinner: (file_analysis) ->
-    _.maxBy([file_analysis.html, file_analysis.front_matter], 'score')
-
-  calculateCombinedScore: (file_analysis) ->
-    _.max([file_analysis.html.score, file_analysis.front_matter.score])
-
-  analizedFiles: ->
-    _.map @files, (file) =>
-      {
-        front_matter: new FrontMatterAnalizer(file, @event).analize()
-        html: new HTMLAnalizer(file, @event).analize()
-        text: @event.text
-        file: file.path
-      }
+    _.flatten(result)

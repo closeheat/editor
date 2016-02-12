@@ -15,12 +15,10 @@ class HTMLAnalizer
     @dom = $(vdom)
     @selector_parts = @event.selector.split(' > ')
 
-  analize: ->
-    return { score: 0 } unless @supportedFile()
-    strongest_combination = @strongestCombination()
-    return { score: 0 } unless strongest_combination
+  combinations: ->
+    return [] unless @supportedFile()
 
-    strongest_combination
+    @scoredCombinations()
 
   urlFileMatchScore: ->
     max_selector_scale = 12
@@ -36,19 +34,15 @@ class HTMLAnalizer
     SUPPORTED_EXTENSION_REGEX = /(\.|\/)(html|htm)$/
     @file.path.match(SUPPORTED_EXTENSION_REGEX)
 
-  strongestCombination: ->
-    all_combinations = @allCombinations()
-    return unless all_combinations.length
-
-    _.maxBy @scoredCombinations(all_combinations), 'score'
-
   scoredCombinations: (all_combinations) ->
-    _.map all_combinations, (combination) =>
+    _.map @allCombinations(), (combination) =>
       combination.type = 'html'
       combination.dom = @dom
       combination.string_score = @stringScore(combination)
       combination.url_file_match_score = @urlFileMatchScore()
       combination.score = combination.string_score * 0.8 + combination.selector_score * 0.2 + combination.url_file_match_score * 0.2
+      combination.file_path = @file.path
+      combination.original_text = @event.text
       combination
 
   stringScore: (combination) ->

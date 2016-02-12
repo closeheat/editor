@@ -11,7 +11,7 @@ React.createClass
     }
 
   originalValue: (props) ->
-    props.element_data[props.element_data.winner_type].text
+    props.element_data.text
 
   onChange: (e) ->
     @setState(value: e.target.value)
@@ -27,7 +27,7 @@ React.createClass
     new Draggabilly(ReactDOM.findDOMNode(@), handle: '.prompt-header')
 
   isLink: ->
-    @props.element_data.html.node.parentNode.tagName == 'A'
+    @props.element_data.node.parentNode.tagName == 'A'
 
   type: ->
     if @isLink()

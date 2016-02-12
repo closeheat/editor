@@ -1,16 +1,14 @@
-var Filesystem, HTMLModifier, SourceModifier, _;
+var Filesystem, SourceModifier, _;
 
 Filesystem = require('./filesystem');
-
-HTMLModifier = require('./html_modifier');
 
 _ = require('lodash');
 
 module.exports = SourceModifier = (function() {
-  function SourceModifier(analysis, new_text) {
-    this.analysis = analysis;
+  function SourceModifier(combination, new_text) {
+    this.combination = combination;
     this.new_text = new_text;
-    this.source = Filesystem.read(this.analysis.file).content;
+    this.source = Filesystem.read(this.combination.file_path).content;
   }
 
   SourceModifier.prototype.replaceAtCoords = function(string, insertion, start, end) {
@@ -18,11 +16,11 @@ module.exports = SourceModifier = (function() {
   };
 
   SourceModifier.prototype.modifiedFileContent = function() {
-    return this.replaceAtCoords(this.source, this.new_text, this.analysis.position.start, this.analysis.position.end);
+    return this.replaceAtCoords(this.source, this.new_text, this.combination.position.start, this.combination.position.end);
   };
 
   SourceModifier.prototype.apply = function() {
-    Filesystem.write(this.analysis.file, this.modifiedFileContent());
+    Filesystem.write(this.combination.file_path, this.modifiedFileContent());
     return console.log(this.modifiedFileContent());
   };
 

@@ -15,7 +15,7 @@ module.exports = React.createClass({
     };
   },
   originalValue: function(props) {
-    return props.element_data[props.element_data.winner_type].text;
+    return props.element_data.text;
   },
   onChange: function(e) {
     return this.setState({
@@ -36,7 +36,7 @@ module.exports = React.createClass({
     });
   },
   isLink: function() {
-    return this.props.element_data.html.node.parentNode.tagName === 'A';
+    return this.props.element_data.node.parentNode.tagName === 'A';
   },
   type: function() {
     if (this.isLink()) {

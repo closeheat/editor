@@ -52,17 +52,38 @@ visualInject = ->
       old_outline: e.target.outline
       pathname: window.location.pathname
       text: node_text
-      style: JSON.stringify(window.getComputedStyle(e.target))
     , 'SERVER_URL_PLACEHOLDER'
 
     false
 
   text = (event) ->
-    getTextNode(event).nodeValue
+    textNode(event).nodeValue
 
-  getTextNode = (event) ->
-    # fallback for links
-    document.getSelection().baseNode || event.target.childNodes[0]
+  textNode = (event) ->
+    nodeFromPoint(event.clientX, event.clientY)
+
+  nodeFromPoint = (x, y) ->
+    el = document.elementFromPoint(x, y)
+    nodes = el.childNodes
+
+    i = 0
+    while n = nodes[i++]
+      if n.nodeType == 3
+        r = document.createRange()
+        r.selectNode n
+        rects = r.getClientRects()
+
+        j = 0
+        while rect = rects[j++]
+          if x > rect.left and x < rect.right and y > rect.top and y < rect.bottom
+            return n
+    el
+
+  # getTextNode = (event) ->
+  #
+  #   # fallback for links
+  #   debugger
+  #   document.getSelection().baseNode || event.target.childNodes[0]
 
   onMessage = (e) ->
     if e.data.action == 'navigate'

@@ -5,7 +5,7 @@ React = require('react');
 window._ = require('lodash');
 
 visualInject = function() {
-  var bindEvents, edit, getElementOffset, getSelector, getTextNode, navigate, onMessage, positionInDom, text;
+  var bindEvents, edit, getElementOffset, getSelector, navigate, nodeFromPoint, onMessage, positionInDom, text, textNode;
   window.CLOSEHEAT_EDITOR = {};
   positionInDom = function(el, count) {
     var new_el;
@@ -64,16 +64,35 @@ visualInject = function() {
       width: e.target.offsetWidth,
       old_outline: e.target.outline,
       pathname: window.location.pathname,
-      text: node_text,
-      style: JSON.stringify(window.getComputedStyle(e.target))
+      text: node_text
     }, 'SERVER_URL_PLACEHOLDER');
     return false;
   };
   text = function(event) {
-    return getTextNode(event).nodeValue;
+    return textNode(event).nodeValue;
   };
-  getTextNode = function(event) {
-    return document.getSelection().baseNode || event.target.childNodes[0];
+  textNode = function(event) {
+    return nodeFromPoint(event.clientX, event.clientY);
+  };
+  nodeFromPoint = function(x, y) {
+    var el, i, j, n, nodes, r, rect, rects;
+    el = document.elementFromPoint(x, y);
+    nodes = el.childNodes;
+    i = 0;
+    while (n = nodes[i++]) {
+      if (n.nodeType === 3) {
+        r = document.createRange();
+        r.selectNode(n);
+        rects = r.getClientRects();
+        j = 0;
+        while (rect = rects[j++]) {
+          if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom) {
+            return n;
+          }
+        }
+      }
+    }
+    return el;
   };
   onMessage = function(e) {
     if (e.data.action === 'navigate') {

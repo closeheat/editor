@@ -79,8 +79,7 @@ module.exports = React.createClass({
     });
   },
   editableElement: function(event) {
-    var final, locations;
-    locations = [];
+    var final;
     final = new SourceFinder(event, this.editableFiles()).source();
     console.log(final);
     return final;
@@ -149,7 +148,7 @@ module.exports = React.createClass({
       return React.createElement("div", null);
     }
     return React.createElement(AfterApplyToast, {
-      "file_path": this.state.last_element_data.file,
+      "file_path": this.state.last_element_data.file_path,
       "onUndo": this.undoApplied,
       "onReview": this.reviewApplied,
       "onClose": this.removeAfterApplyToast
@@ -165,7 +164,7 @@ module.exports = React.createClass({
       "show": this.state.show_review,
       "onUndo": this.undoApplied,
       "onClose": this.hideReview,
-      "file_path": this.state.last_element_data.file
+      "file_path": this.state.last_element_data.file_path
     }), React.createElement("div", {
       "className": 'row'
     }, React.createElement("div", {
