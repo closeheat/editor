@@ -496,11 +496,12 @@ body {
 
   .prompt-header {
     height: 50px;
-    padding: 15px 30px;
+    padding: 15px 30px 0;
     text-transform: uppercase;
     font-weight: 600;
     border-bottom: 1px solid HSLA(227, 27%, 14%, .1);
     cursor: move;
+    margin-bottom: 0;
 
     .prompt-header-navigate {
       font-size: 10px;
@@ -520,6 +521,8 @@ body {
 
   .prompt-content {
     padding: 40px 30px;
+    max-height: 350px;
+    overflow: scroll;
   }
 
   .prompt-input {
@@ -528,6 +531,13 @@ body {
     outline: 0;
     padding: 10px;
     background-color: $pretty-white;
+  }
+
+  .prompt-attribute-label {
+    text-transform: uppercase;
+    padding-top: 15px;
+    padding-bottom: 5px;
+    display: block;
   }
 
   .prompt-actions {

@@ -13,6 +13,7 @@
     "url": "git://github.com/closeheat/editor.git"
   },
   "dependencies": {
+    "autosize": "^3.0.15",
     "bluebird": "^2.9.20",
     "brace": "0.7.0",
     "browser-cookies": "^1.0.8",

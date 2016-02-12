@@ -1,4 +1,4 @@
-var ContentEditable, Draggabilly, React, ReactDOM;
+var ContentEditable, Draggabilly, React, ReactDOM, autosize;
 
 React = require('react');
 
@@ -8,10 +8,13 @@ ContentEditable = require('react-wysiwyg');
 
 Draggabilly = require('draggabilly');
 
+autosize = require('autosize');
+
 module.exports = React.createClass({
   getInitialState: function() {
     return {
-      value: this.originalValue(this.props)
+      value: this.originalValue(this.props),
+      attributes: this.attributes()
     };
   },
   originalValue: function(props) {
@@ -31,9 +34,10 @@ module.exports = React.createClass({
     });
   },
   componentDidMount: function() {
-    return new Draggabilly(ReactDOM.findDOMNode(this), {
+    new Draggabilly(ReactDOM.findDOMNode(this), {
       handle: '.prompt-header'
     });
+    return autosize(this.refs.content);
   },
   isLink: function() {
     return this.props.element_data.node.parentNode.tagName === 'A';
@@ -54,6 +58,49 @@ module.exports = React.createClass({
       "onClick": this.props.onNavigate
     }, "Navigate");
   },
+  attributes: function() {
+    return _.map(this.attributeArray(), function(attribute) {
+      return _.pick(attribute, ['name', 'value']);
+    });
+  },
+  attributeArray: function() {
+    return Array.prototype.slice.call(this.props.element_data.selector_element.attributes);
+  },
+  changeAttribute: function(name, new_value) {
+    var attribute, result;
+    result = _.cloneDeep(this.state.attributes);
+    attribute = _.find(result, {
+      name: name
+    });
+    attribute.value = new_value;
+    return this.setState({
+      attributes: result
+    });
+  },
+  attributeFields: function() {
+    return React.createElement("div", {
+      "className": 'prompt-attributes'
+    }, _.map(this.state.attributes, (function(_this) {
+      return function(attribute) {
+        var dom_id;
+        dom_id = "attribute-" + attribute.name;
+        return React.createElement("div", {
+          "key": attribute.name,
+          "className": 'prompt-attribute'
+        }, React.createElement("label", {
+          "className": 'prompt-attribute-label',
+          "htmlFor": dom_id
+        }, attribute.name), React.createElement("input", {
+          "id": dom_id,
+          "className": 'prompt-input',
+          "value": attribute.value,
+          "onChange": (function(e) {
+            return _this.changeAttribute(attribute.name, e.target.value);
+          })
+        }));
+      };
+    })(this)));
+  },
   render: function() {
     return React.createElement("div", {
       "className": 'prompt'
@@ -66,10 +113,12 @@ module.exports = React.createClass({
     }, this.navigate())), React.createElement("div", {
       "className": 'prompt-content'
     }, React.createElement("textarea", {
+      "rows": 1.,
+      "ref": 'content',
       "className": 'prompt-input',
       "onChange": this.onChange,
       "value": this.state.value
-    })), React.createElement("div", {
+    }), !!this.state.attributes.length && this.attributeFields()), React.createElement("div", {
       "className": 'prompt-actions row'
     }, React.createElement("div", {
       "className": 'prompt-action col s6 blue-text',
