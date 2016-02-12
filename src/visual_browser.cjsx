@@ -30,11 +30,12 @@ visualInject = ->
     names.join ' > '
 
   edit = (e) ->
+    node_text = text(e)
+    return unless node_text
+
+    e.stopPropagation()
     e.preventDefault()
     selector = getSelector(e.target)
-
-    # offsets = getElementOffset(e.target)
-    # debugger if event == 'click'
 
     parent.postMessage
       action: 'edit'
@@ -45,9 +46,11 @@ visualInject = ->
       width: e.target.offsetWidth
       old_outline: e.target.outline
       pathname: window.location.pathname
-      text: text(e)
+      text: node_text
       style: JSON.stringify(window.getComputedStyle(e.target))
     , 'SERVER_URL_PLACEHOLDER'
+
+    false
 
   # hold = (e) ->
   #   console.log 'sendin'
@@ -66,7 +69,7 @@ visualInject = ->
     document.getSelection().baseNode || event.target.childNodes[0]
 
   bindEvents = ->
-    window.addEventListener 'click', edit
+    window.addEventListener 'click', edit, true
 
   getElementOffset = (element) ->
     de = document.documentElement

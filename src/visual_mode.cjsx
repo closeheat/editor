@@ -24,6 +24,7 @@ React.createClass
       last_element_data: {}
     }
   componentDidMount: ->
+    Materialize.toast("Click on any text to change it.", 4000)
     @build()
 
   build: ->

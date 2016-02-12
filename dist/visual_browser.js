@@ -42,10 +42,15 @@ visualInject = function() {
     return names.join(' > ');
   };
   edit = function(e) {
-    var selector;
+    var node_text, selector;
+    node_text = text(e);
+    if (!node_text) {
+      return;
+    }
+    e.stopPropagation();
     e.preventDefault();
     selector = getSelector(e.target);
-    return parent.postMessage({
+    parent.postMessage({
       action: 'edit',
       selector: selector,
       top: e.clientX,
@@ -54,9 +59,10 @@ visualInject = function() {
       width: e.target.offsetWidth,
       old_outline: e.target.outline,
       pathname: window.location.pathname,
-      text: text(e),
+      text: node_text,
       style: JSON.stringify(window.getComputedStyle(e.target))
     }, 'SERVER_URL_PLACEHOLDER');
+    return false;
   };
   text = function(event) {
     return getTextNode(event).nodeValue;
@@ -65,7 +71,7 @@ visualInject = function() {
     return document.getSelection().baseNode || event.target.childNodes[0];
   };
   bindEvents = function() {
-    return window.addEventListener('click', edit);
+    return window.addEventListener('click', edit, true);
   };
   getElementOffset = function(element) {
     var box, de, left, top;

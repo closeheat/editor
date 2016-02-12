@@ -36,6 +36,7 @@ module.exports = React.createClass({
     };
   },
   componentDidMount: function() {
+    Materialize.toast("Click on any text to change it.", 4000);
     return this.build();
   },
   build: function() {
