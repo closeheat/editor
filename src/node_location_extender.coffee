@@ -11,12 +11,13 @@ class NodeLocationExtender
   noContentPositions: ->
     start_tag_position = jsdom.nodeLocation(@combination.node)
 
-    parent_start_tag = jsdom.nodeLocation(@combination.node.parentElement).startTag
-    offset = parent_start_tag.end - parent_start_tag.start
+    # parent_start_tag = jsdom.nodeLocation(@combination.node.parentElement).startTag
+    # offset = parent_start_tag.end - parent_start_tag.start
+    # debugger
 
     fixed_positions =
-      start: start_tag_position.start + offset
-      end: start_tag_position.end + offset
+      start: start_tag_position.start
+      end: start_tag_position.end
 
     {
       content_position: {}
