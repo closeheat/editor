@@ -19,7 +19,7 @@ React.createClass
     @setState(value: e.target.value)
 
   onApply: ->
-    @props.onApply(@state.value)
+    @props.onApply(@state.value, @state.attributes)
 
   componentWillReceiveProps: (next_props) ->
     @setState

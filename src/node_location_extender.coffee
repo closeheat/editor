@@ -11,10 +11,12 @@ class NodeLocationExtender
   coords: ->
     switch @combination.type
       when 'html'
-        position = jsdom.nodeLocation(@combination.node)
+        content_position = jsdom.nodeLocation(@combination.node)
+        start_tag_position = jsdom.nodeLocation(@combination.node.parentElement).startTag
 
         {
-          position: position
+          content_position: content_position
+          start_tag_position: start_tag_position
         }
       when 'front_matter'
         console.log 'FRONT MATTER NOT IMPLEMENTED YET'

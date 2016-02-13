@@ -107,8 +107,8 @@ module.exports = React.createClass({
       iframe_scroll_left: data.left
     });
   },
-  onApply: function(new_text) {
-    new SourceModifier(this.state.current_element_data, new_text).apply();
+  onApply: function(new_text, new_attributes) {
+    new SourceModifier(this.state.current_element_data, new_text, new_attributes).apply();
     this.setState({
       current_element_data: {},
       last_element_data: this.state.current_element_data,

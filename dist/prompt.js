@@ -26,7 +26,7 @@ module.exports = React.createClass({
     });
   },
   onApply: function() {
-    return this.props.onApply(this.state.value);
+    return this.props.onApply(this.state.value, this.state.attributes);
   },
   componentWillReceiveProps: function(next_props) {
     return this.setState({

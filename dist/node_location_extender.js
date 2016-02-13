@@ -15,12 +15,14 @@ module.exports = NodeLocationExtender = (function() {
   };
 
   NodeLocationExtender.prototype.coords = function() {
-    var position;
+    var content_position, start_tag_position;
     switch (this.combination.type) {
       case 'html':
-        position = jsdom.nodeLocation(this.combination.node);
+        content_position = jsdom.nodeLocation(this.combination.node);
+        start_tag_position = jsdom.nodeLocation(this.combination.node.parentElement).startTag;
         return {
-          position: position
+          content_position: content_position,
+          start_tag_position: start_tag_position
         };
       case 'front_matter':
         console.log('FRONT MATTER NOT IMPLEMENTED YET');

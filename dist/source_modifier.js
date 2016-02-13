@@ -1,27 +1,80 @@
-var Filesystem, SourceModifier, _;
+var AttributeReplacer, Filesystem, SourceModifier, TextReplacer, _;
 
 Filesystem = require('./filesystem');
 
 _ = require('lodash');
 
-module.exports = SourceModifier = (function() {
-  function SourceModifier(combination, new_text) {
+TextReplacer = (function() {
+  function TextReplacer(combination, new_text, source) {
     this.combination = combination;
     this.new_text = new_text;
-    this.source = Filesystem.read(this.combination.file_path).content;
+    this.source = source;
   }
 
-  SourceModifier.prototype.replaceAtCoords = function(string, insertion, start, end) {
+  TextReplacer.prototype.replace = function() {
+    return this.replaceAtCoords(this.source, this.new_text, this.combination.content_position.start, this.combination.content_position.end);
+  };
+
+  TextReplacer.prototype.replaceAtCoords = function(string, insertion, start, end) {
     return string.substr(0, start) + insertion + string.substr(end);
   };
 
-  SourceModifier.prototype.modifiedFileContent = function() {
-    return this.replaceAtCoords(this.source, this.new_text, this.combination.position.start, this.combination.position.end);
+  return TextReplacer;
+
+})();
+
+AttributeReplacer = (function() {
+  function AttributeReplacer(combination, new_attributes, source) {
+    this.combination = combination;
+    this.new_attributes = new_attributes;
+    this.source = source;
+  }
+
+  AttributeReplacer.prototype.getAtCoords = function(string, start, end) {
+    return string.substr(start, end - start);
   };
 
+  AttributeReplacer.prototype.regex = function(attribute) {
+    return new RegExp(new RegExp("(\\s*(?:\\s+" + attribute.name + ")\\s*)").source + /(=\s*")([^"]*)("\s*)/.source);
+  };
+
+  AttributeReplacer.prototype.replaceAttribute = function(string, attribute) {
+    return string.replace(this.regex(attribute), "$1$2" + attribute.value + "$4");
+  };
+
+  AttributeReplacer.prototype.replace = function() {
+    var tag;
+    tag = this.getAtCoords(this.source, this.combination.start_tag_position.start, this.combination.start_tag_position.end);
+    _.each(this.new_attributes, (function(_this) {
+      return function(attribute) {
+        return tag = _this.replaceAttribute(tag, attribute);
+      };
+    })(this));
+    return this.replaceAtCoords(this.source, tag, this.combination.start_tag_position.start, this.combination.start_tag_position.end);
+  };
+
+  AttributeReplacer.prototype.replaceAtCoords = function(string, insertion, start, end) {
+    return string.substr(0, start) + insertion + string.substr(end);
+  };
+
+  return AttributeReplacer;
+
+})();
+
+module.exports = SourceModifier = (function() {
+  function SourceModifier(combination, new_text, new_attributes) {
+    this.combination = combination;
+    this.new_text = new_text;
+    this.new_attributes = new_attributes;
+    this.source = Filesystem.read(this.combination.file_path).content;
+  }
+
   SourceModifier.prototype.apply = function() {
-    Filesystem.write(this.combination.file_path, this.modifiedFileContent());
-    return console.log(this.modifiedFileContent());
+    var replaced_attributes, replaced_text;
+    replaced_text = new TextReplacer(this.combination, this.new_text, this.source).replace();
+    replaced_attributes = new AttributeReplacer(this.combination, this.new_attributes, replaced_text).replace();
+    Filesystem.write(this.combination.file_path, replaced_attributes);
+    return console.log(replaced_attributes);
   };
 
   return SourceModifier;

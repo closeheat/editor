@@ -78,8 +78,8 @@ React.createClass
   onScroll: (data) ->
     @setState(iframe_scroll_top: data.top, iframe_scroll_left: data.left)
 
-  onApply: (new_text) ->
-    new SourceModifier(@state.current_element_data, new_text).apply()
+  onApply: (new_text, new_attributes) ->
+    new SourceModifier(@state.current_element_data, new_text, new_attributes).apply()
 
     @setState
       current_element_data: {}
