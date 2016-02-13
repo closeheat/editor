@@ -18,10 +18,11 @@ React.createClass
       show_prompt: false
       show_review: false
       show_after_apply_toast: false
-      iframe_scroll_top: 0
-      iframe_scroll_left: 0
+      scroll_x: 0
+      scroll_y: 0
       current_element_data: {}
       last_element_data: {}
+      browser_url: @props.browser_url
     }
   componentDidMount: ->
     Materialize.toast("Click on any text to change it.", 4000)
@@ -54,12 +55,9 @@ React.createClass
       show_after_apply_toast: false
       current_element_data: element_data
       last_element_data: {}
-    # if element_data
-    #   @setState
-    #     show_prompt: true
-    #     current_element_data: element_data
-    # else
-    #   @removePrompt()
+      browser_url: event.url
+      scroll_x: event.scrollX
+      scroll_y: event.scrollY
 
   removePrompt: ->
     @setState
@@ -100,6 +98,10 @@ React.createClass
     @refs.browser.refs.iframe.contentWindow.postMessage
       action: 'navigate'
     , '*'
+
+    @setState
+      scroll_x: 0
+      scroll_y: 0
     @removePrompt()
 
   removeAfterApplyToast: ->
@@ -142,7 +144,13 @@ React.createClass
       />
       <div className='row'>
         <div className='col browser-col full m12'>
-          <VisualBrowser ref='browser' browser_url={@props.browser_url} onMessage={@onMessage}/>
+          <VisualBrowser
+            ref='browser'
+            browser_url={@state.browser_url}
+            onMessage={@onMessage}
+            scroll_x={@state.scroll_x}
+            scroll_y={@state.scroll_y}
+          />
         </div>
       </div>
       {@state.show_prompt && <Prompt

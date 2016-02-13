@@ -29,10 +29,11 @@ module.exports = React.createClass({
       show_prompt: false,
       show_review: false,
       show_after_apply_toast: false,
-      iframe_scroll_top: 0,
-      iframe_scroll_left: 0,
+      scroll_x: 0,
+      scroll_y: 0,
       current_element_data: {},
-      last_element_data: {}
+      last_element_data: {},
+      browser_url: this.props.browser_url
     };
   },
   componentDidMount: function() {
@@ -80,7 +81,10 @@ module.exports = React.createClass({
       show_prompt: true,
       show_after_apply_toast: false,
       current_element_data: element_data,
-      last_element_data: {}
+      last_element_data: {},
+      browser_url: event.url,
+      scroll_x: event.scrollX,
+      scroll_y: event.scrollY
     });
   },
   removePrompt: function() {
@@ -131,6 +135,10 @@ module.exports = React.createClass({
     this.refs.browser.refs.iframe.contentWindow.postMessage({
       action: 'navigate'
     }, '*');
+    this.setState({
+      scroll_x: 0,
+      scroll_y: 0
+    });
     return this.removePrompt();
   },
   removeAfterApplyToast: function() {
@@ -181,8 +189,10 @@ module.exports = React.createClass({
       "className": 'col browser-col full m12'
     }, React.createElement(VisualBrowser, {
       "ref": 'browser',
-      "browser_url": this.props.browser_url,
-      "onMessage": this.onMessage
+      "browser_url": this.state.browser_url,
+      "onMessage": this.onMessage,
+      "scroll_x": this.state.scroll_x,
+      "scroll_y": this.state.scroll_y
     }))), this.state.show_prompt && React.createElement(Prompt, {
       "element_data": this.state.current_element_data,
       "onApply": this.onApply,

@@ -53,6 +53,9 @@ visualInject = ->
       old_outline: e.target.outline
       pathname: window.location.pathname
       text: node.nodeValue
+      scrollY: window.scrollY
+      scrollX: window.scrollX
+      url: window.location.href
     , 'SERVER_URL_PLACEHOLDER'
 
     false
@@ -113,6 +116,13 @@ visualInject = ->
     left = box.left + window.pageXOffset - de.clientLeft
     { top: top, left: left }
 
+  scrollToRecentPosition = ->
+    scroll_x = SCROLL_X_PLACEHOLDER
+    scroll_y = SCROLL_Y_PLACEHOLDER
+    return unless scroll_x > 0 || scroll_y > 0
+
+    window.scrollTo(scroll_x, scroll_y)
+
   #
   # events = [
   #   'click'
@@ -121,6 +131,7 @@ visualInject = ->
   # ]
 
   bindEvents()
+  scrollToRecentPosition()
   # bindEvent(event) for event in events
   # bindScrollEvent()
   console.log('injected her')
@@ -146,11 +157,20 @@ React.createClass
   componentDidMount: ->
     $(@iframe()).load =>
       @inject()
+
+  shouldComponentUpdate: (next_props, next_state) ->
+    # dont rerender cause it causes iframe to refresh
+    false
   wrapEvalFunction: (code) ->
     "evalFunction = #{code}; evalFunction()"
+  injectionCode: ->
+    visualInject.toString()
+      .replace(/SERVER_URL_PLACEHOLDER/g, window.SERVER_URL)
+      .replace(/SCROLL_X_PLACEHOLDER/g, @props.scroll_x)
+      .replace(/SCROLL_Y_PLACEHOLDER/g, @props.scroll_y)
   inject: ->
     console.log 'inkecting'
-    @evalInIframe(visualInject.toString().replace(/SERVER_URL_PLACEHOLDER/g, window.SERVER_URL))
+    @evalInIframe(@injectionCode())
   evalInIframe: (code) ->
     @iframe().contentWindow.postMessage(@wrapEvalFunction(code), @props.browser_url)
   render: ->

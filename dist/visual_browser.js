@@ -5,7 +5,7 @@ React = require('react');
 window._ = require('lodash');
 
 visualInject = function() {
-  var bindEvents, edit, getElementOffset, getNode, getSelector, inTagWhitelist, isEditable, navigate, nodeFromPoint, onMessage, positionInDom;
+  var bindEvents, edit, getElementOffset, getNode, getSelector, inTagWhitelist, isEditable, navigate, nodeFromPoint, onMessage, positionInDom, scrollToRecentPosition;
   window.CLOSEHEAT_EDITOR = {};
   positionInDom = function(el, count) {
     var new_el;
@@ -64,7 +64,10 @@ visualInject = function() {
       width: e.target.offsetWidth,
       old_outline: e.target.outline,
       pathname: window.location.pathname,
-      text: node.nodeValue
+      text: node.nodeValue,
+      scrollY: window.scrollY,
+      scrollX: window.scrollX,
+      url: window.location.href
     }, 'SERVER_URL_PLACEHOLDER');
     return false;
   };
@@ -130,7 +133,17 @@ visualInject = function() {
       left: left
     };
   };
+  scrollToRecentPosition = function() {
+    var scroll_x, scroll_y;
+    scroll_x = SCROLL_X_PLACEHOLDER;
+    scroll_y = SCROLL_Y_PLACEHOLDER;
+    if (!(scroll_x > 0 || scroll_y > 0)) {
+      return;
+    }
+    return window.scrollTo(scroll_x, scroll_y);
+  };
   bindEvents();
+  scrollToRecentPosition();
   return console.log('injected her');
 };
 
@@ -152,12 +165,18 @@ module.exports = React.createClass({
       };
     })(this));
   },
+  shouldComponentUpdate: function(next_props, next_state) {
+    return false;
+  },
   wrapEvalFunction: function(code) {
     return "evalFunction = " + code + "; evalFunction()";
   },
+  injectionCode: function() {
+    return visualInject.toString().replace(/SERVER_URL_PLACEHOLDER/g, window.SERVER_URL).replace(/SCROLL_X_PLACEHOLDER/g, this.props.scroll_x).replace(/SCROLL_Y_PLACEHOLDER/g, this.props.scroll_y);
+  },
   inject: function() {
     console.log('inkecting');
-    return this.evalInIframe(visualInject.toString().replace(/SERVER_URL_PLACEHOLDER/g, window.SERVER_URL));
+    return this.evalInIframe(this.injectionCode());
   },
   evalInIframe: function(code) {
     return this.iframe().contentWindow.postMessage(this.wrapEvalFunction(code), this.props.browser_url);
