@@ -5,6 +5,8 @@ class TextReplacer
   constructor: (@combination, @new_text, @source) ->
 
   replace: ->
+    return @source if _.isEmpty(@combination.content_position)
+
     @replaceAtCoords(@source, @new_text, @combination.content_position.start,
       @combination.content_position.end)
 

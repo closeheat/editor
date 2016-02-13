@@ -15,6 +15,9 @@ module.exports = SourceFinder = (function() {
   SourceFinder.prototype.source = function() {
     var sorted_combinations;
     sorted_combinations = _.takeRight(this.sortedCombinatins(), 3);
+    if (!sorted_combinations.length) {
+      return {};
+    }
     console.log(sorted_combinations);
     return new NodeLocationExtender(this.event, _.last(sorted_combinations)).extend();
   };

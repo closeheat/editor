@@ -77,10 +77,17 @@ module.exports = React.createClass({
       attributes: result
     });
   },
+  sortedAttributes: function() {
+    var PRIORITY_ATTRIBUTES;
+    PRIORITY_ATTRIBUTES = ['href', 'value', 'src', 'placeholder'];
+    return _.orderBy(this.state.attributes, function(attribute) {
+      return _.includes(PRIORITY_ATTRIBUTES, attribute.name);
+    }, 'desc');
+  },
   attributeFields: function() {
     return React.createElement("div", {
       "className": 'prompt-attributes'
-    }, _.map(this.state.attributes, (function(_this) {
+    }, _.map(this.sortedAttributes(), (function(_this) {
       return function(attribute) {
         var dom_id;
         dom_id = "attribute-" + attribute.name;
@@ -101,6 +108,23 @@ module.exports = React.createClass({
       };
     })(this)));
   },
+  hasContent: function() {
+    var NO_CONTENT_TAGS;
+    NO_CONTENT_TAGS = ['INPUT', 'BUTTON', 'IMG'];
+    if (_.includes(NO_CONTENT_TAGS, this.props.element_data.node.tagName)) {
+      return false;
+    }
+    return true;
+  },
+  contentField: function() {
+    return React.createElement("textarea", {
+      "rows": 1.,
+      "ref": 'content',
+      "className": 'prompt-input',
+      "onChange": this.onChange,
+      "value": this.state.value
+    });
+  },
   render: function() {
     return React.createElement("div", {
       "className": 'prompt'
@@ -112,13 +136,7 @@ module.exports = React.createClass({
       "className": 'col s4'
     }, this.navigate())), React.createElement("div", {
       "className": 'prompt-content'
-    }, React.createElement("textarea", {
-      "rows": 1.,
-      "ref": 'content',
-      "className": 'prompt-input',
-      "onChange": this.onChange,
-      "value": this.state.value
-    }), !!this.state.attributes.length && this.attributeFields()), React.createElement("div", {
+    }, this.hasContent() && this.contentField(), !!this.state.attributes.length && this.attributeFields()), React.createElement("div", {
       "className": 'prompt-actions row'
     }, React.createElement("div", {
       "className": 'prompt-action col s6 blue-text',

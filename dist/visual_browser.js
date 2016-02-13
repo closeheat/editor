@@ -5,7 +5,7 @@ React = require('react');
 window._ = require('lodash');
 
 visualInject = function() {
-  var bindEvents, edit, getElementOffset, getSelector, navigate, nodeFromPoint, onMessage, positionInDom, text, textNode;
+  var bindEvents, edit, getElementOffset, getNode, getSelector, inTagWhitelist, isEditable, navigate, nodeFromPoint, onMessage, positionInDom;
   window.CLOSEHEAT_EDITOR = {};
   positionInDom = function(el, count) {
     var new_el;
@@ -43,12 +43,12 @@ visualInject = function() {
     return names.join(' > ');
   };
   edit = function(e) {
-    var node_text, selector;
+    var node, selector;
     if (window.CLOSEHEAT_EDITOR.navigating) {
       return;
     }
-    node_text = text(e);
-    if (!node_text) {
+    node = getNode(e);
+    if (!isEditable(node)) {
       return;
     }
     e.stopPropagation();
@@ -64,14 +64,25 @@ visualInject = function() {
       width: e.target.offsetWidth,
       old_outline: e.target.outline,
       pathname: window.location.pathname,
-      text: node_text
+      text: node.nodeValue
     }, 'SERVER_URL_PLACEHOLDER');
     return false;
   };
-  text = function(event) {
-    return textNode(event).nodeValue;
+  isEditable = function(node) {
+    if (inTagWhitelist(node)) {
+      return true;
+    }
+    if (node.nodeValue) {
+      return true;
+    }
+    return false;
   };
-  textNode = function(event) {
+  inTagWhitelist = function(node) {
+    var NO_CONTENT_TAGS;
+    NO_CONTENT_TAGS = ['INPUT', 'BUTTON', 'IMG'];
+    return NO_CONTENT_TAGS.indexOf(node.tagName) !== -1;
+  };
+  getNode = function(event) {
     return nodeFromPoint(event.clientX, event.clientY);
   };
   nodeFromPoint = function(x, y) {

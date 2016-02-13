@@ -12,6 +12,9 @@ TextReplacer = (function() {
   }
 
   TextReplacer.prototype.replace = function() {
+    if (_.isEmpty(this.combination.content_position)) {
+      return this.source;
+    }
     return this.replaceAtCoords(this.source, this.new_text, this.combination.content_position.start, this.combination.content_position.end);
   };
 

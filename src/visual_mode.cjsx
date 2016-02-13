@@ -39,8 +39,15 @@ React.createClass
   onMessage: (e) ->
     if e.data.action == 'edit'
       @onEdit(e.data)
+  cantEdit: ->
+    Materialize.toast("Element not editable. But we logged that you wanted to and we'll improve it.", 4000)
+
+    @setState
+      show_prompt: false
+      current_element_data: {}
   onEdit: (event) ->
     element_data = @editableElement(event)
+    return @cantEdit() if _.isEmpty(element_data)
 
     @setState
       show_prompt: true

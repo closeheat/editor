@@ -114,7 +114,7 @@ module.exports = HTMLAnalizer = (function() {
   };
 
   HTMLAnalizer.prototype.nodes = function(target) {
-    var WHITESPACE_REGEX, j, len, node, ref, result;
+    var NO_CONTENT_TAGS, WHITESPACE_REGEX, j, len, node, ref, result;
     WHITESPACE_REGEX = /^\s*$/;
     result = [];
     ref = target.childNodes;
@@ -123,6 +123,10 @@ module.exports = HTMLAnalizer = (function() {
       if (node.nodeName === "#text" && !(WHITESPACE_REGEX.test(node.nodeValue))) {
         result.push(node);
       }
+    }
+    NO_CONTENT_TAGS = ['INPUT', 'BUTTON', 'IMG'];
+    if (_.includes(NO_CONTENT_TAGS, target.nodeName) && !target.childNodes.length) {
+      result.push(target);
     }
     return result;
   };

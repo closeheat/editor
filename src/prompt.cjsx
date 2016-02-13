@@ -59,9 +59,16 @@ React.createClass
     @setState
       attributes: result
 
+  sortedAttributes: ->
+    PRIORITY_ATTRIBUTES = ['href', 'value', 'src', 'placeholder']
+
+    _.orderBy @state.attributes, (attribute) ->
+      _.includes(PRIORITY_ATTRIBUTES, attribute.name)
+    , 'desc'
+
   attributeFields: ->
     <div className='prompt-attributes'>
-      {_.map @state.attributes, (attribute) =>
+      {_.map @sortedAttributes(), (attribute) =>
         dom_id = "attribute-#{attribute.name}"
 
         <div key={attribute.name} className='prompt-attribute'>
@@ -77,6 +84,14 @@ React.createClass
         </div>
       }
     </div>
+  hasContent: ->
+    NO_CONTENT_TAGS = ['INPUT', 'BUTTON', 'IMG']
+    return false if _.includes(NO_CONTENT_TAGS, @props.element_data.node.tagName)
+
+    true
+
+  contentField: ->
+    <textarea rows={1} ref='content' className='prompt-input' onChange={@onChange} value={@state.value}/>
   render: ->
     <div className='prompt'>
       <div className='prompt-header row'>
@@ -88,7 +103,7 @@ React.createClass
         </div>
       </div>
       <div className='prompt-content'>
-        <textarea rows={1} ref='content' className='prompt-input' onChange={@onChange} value={@state.value}/>
+        {@hasContent() && @contentField()}
         {!!@state.attributes.length && @attributeFields()}
       </div>
 

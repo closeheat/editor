@@ -63,9 +63,19 @@ module.exports = React.createClass({
       return this.onEdit(e.data);
     }
   },
+  cantEdit: function() {
+    Materialize.toast("Element not editable. But we logged that you wanted to and we'll improve it.", 4000);
+    return this.setState({
+      show_prompt: false,
+      current_element_data: {}
+    });
+  },
   onEdit: function(event) {
     var element_data;
     element_data = this.editableElement(event);
+    if (_.isEmpty(element_data)) {
+      return this.cantEdit();
+    }
     return this.setState({
       show_prompt: true,
       show_after_apply_toast: false,

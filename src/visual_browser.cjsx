@@ -26,6 +26,7 @@ visualInject = ->
           while e.previousElementSibling
             e = e.previousElementSibling
             c++
+
           names.unshift el.tagName.toLowerCase() + ':nth-child(' + c + ')'
         el = el.parentNode
 
@@ -34,8 +35,8 @@ visualInject = ->
   edit = (e) ->
     return if window.CLOSEHEAT_EDITOR.navigating
 
-    node_text = text(e)
-    return unless node_text
+    node = getNode(e)
+    return unless isEditable(node)
 
     e.stopPropagation()
     e.preventDefault()
@@ -51,15 +52,22 @@ visualInject = ->
       width: e.target.offsetWidth
       old_outline: e.target.outline
       pathname: window.location.pathname
-      text: node_text
+      text: node.nodeValue
     , 'SERVER_URL_PLACEHOLDER'
 
     false
 
-  text = (event) ->
-    textNode(event).nodeValue
+  isEditable = (node) ->
+    return true if inTagWhitelist(node)
+    return true if node.nodeValue
 
-  textNode = (event) ->
+    false
+
+  inTagWhitelist = (node) ->
+    NO_CONTENT_TAGS = ['INPUT', 'BUTTON', 'IMG']
+    NO_CONTENT_TAGS.indexOf(node.tagName) != -1
+
+  getNode = (event) ->
     nodeFromPoint(event.clientX, event.clientY)
 
   nodeFromPoint = (x, y) ->

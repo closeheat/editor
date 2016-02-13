@@ -88,6 +88,10 @@ class HTMLAnalizer
       if node.nodeName == "#text" && !(WHITESPACE_REGEX.test(node.nodeValue))
         result.push node
 
+    NO_CONTENT_TAGS = ['INPUT', 'BUTTON', 'IMG']
+    if _.includes(NO_CONTENT_TAGS, target.nodeName) && !target.childNodes.length
+      result.push target
+
     result
     # TODO: handle "hello<a>some</a> super" editing super
 
