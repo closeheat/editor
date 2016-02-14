@@ -1,5 +1,8 @@
 @import 'variables';
 @import 'fonts';
+$prompt-action-color: HSLA(226, 7%, 37%, 1);
+$prompt-action-color-darker: HSLA(226, 7%, 30%, 1);
+$prompt-action-color-transparent: HSLA(226, 7%, 30%, .08);
 
 html {
   height: 100%;
@@ -481,9 +484,161 @@ body {
   padding: 0;
 }
 
+.prompt {
+  font-family: 'Source Sans Pro', sans-serif;
+  min-width: 300px;
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  background-color: #F2F2F2;
+  color: $primary-color;
+  font-size: 14px;
+  box-shadow: 3px 3px 30px 0px HSLA(227, 27%, 14%, .2);
+  border-radius: 3px;
+  border: 1px solid HSLA(227, 27%, 14%, .1);
+
+  .prompt-header {
+    height: 50px;
+    padding: 15px 30px 0;
+    text-transform: uppercase;
+    font-weight: 600;
+    border-bottom: 1px solid HSLA(227, 27%, 14%, .1);
+    cursor: move;
+    margin-bottom: 0;
+
+    .prompt-header-actions {
+      text-align: right;
+    }
+
+    .prompt-header-action {
+      font-size: 10px;
+      text-align: center;
+      font-weight: 400;
+      font-family: 'Open Sans', sans-serif;
+      background-color: $prompt-action-color;
+      border-radius: 2px;
+      height: 20px;
+      color: white;
+      line-height: 20px;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      width: 65px;
+
+      &:hover {
+        background-color: $prompt-action-color-darker;
+      }
+    }
+  }
+
+  .prompt-extra {
+    padding-top: 30px;
+    text-align: center;
+
+    .prompt-extra-action {
+      font-size: 10px;
+      text-align: center;
+      font-weight: 400;
+      font-family: 'Open Sans', sans-serif;
+      border-radius: 2px;
+      height: 20px;
+      color: $prompt-action-color;
+      border: 1px solid $prompt-action-color;
+      line-height: 18px;
+      padding: 0;
+      margin: 0 auto;
+      cursor: pointer;
+      width: 65px;
+      text-transform: uppercase;
+
+      &:hover {
+        color: $prompt-action-color-darker;
+        border: 1px solid $prompt-action-color-darker;
+        background-color: $prompt-action-color-transparent;
+      }
+    }
+  }
+
+  .prompt-content {
+    padding: 40px 30px 30px;
+    max-height: 350px;
+    overflow: scroll;
+  }
+
+  .prompt-input {
+    border: 0;
+    width: 100%;
+    outline: 0;
+    padding: 10px;
+    background-color: $pretty-white;
+  }
+
+  .prompt-attribute-label {
+    text-transform: uppercase;
+    padding-top: 15px;
+    padding-bottom: 5px;
+    display: block;
+  }
+
+  .prompt-actions {
+    border-top: 1px solid HSLA(227, 27%, 14%, .1);
+    margin-bottom: 0;
+
+    .prompt-action {
+      &:first-child {
+        border-right: 1px solid HSLA(227, 27%, 14%, .1);
+      }
+
+      &:hover {
+        background-color: HSLA(227, 27%, 14%, 0.05);
+      }
+
+      cursor: pointer;
+      text-align: center;
+      height: 50px;
+      text-transform: uppercase;
+      line-height: 50px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+  }
+}
+
 .guide-button {
   font-weight: 600;
   text-transform: uppercase;
   font-family: 'Source Code Pro', 'Open Sans', sans-serif;
   padding: 0 5px;
+}
+
+$light-green: hsla(143, 43%, 51%, .3);
+$light-red: hsla(1, 84%, 59%, .3);
+
+.review-modal {
+  min-width: 90vw;
+  min-height: 85vh;
+
+  .review-modal-code {
+    font-size: 13px;
+    font-family: 'Source Code Pro', sans-serif;
+
+    .review-diff-line-added {
+      background-color: $light-green;
+    }
+
+    .review-diff-line-removed {
+      background-color: $light-red;
+    }
+  }
+
+  .review-modal-file-path {
+    line-height: 50px;
+    padding-left: 20px;
+    font-size: 13px;
+    font-family: 'Source Sans Pro';
+  }
+}
+
+.col-no-padding {
+  padding: 0;
 }

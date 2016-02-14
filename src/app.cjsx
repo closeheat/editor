@@ -1,7 +1,6 @@
 React = require 'react'
 flatten = require('flat')
 _ = require 'lodash'
-$ = window.jQuery = window.$ = require 'jquery'
 request = require 'request'
 Promise = require 'bluebird'
 cookies = require 'browser-cookies'
@@ -27,7 +26,8 @@ React.createClass
       action_in_progress: false
       first_build_done: false
       show_free_hosting: false
-      show_change_dist_dir: !@props.is_demo_app && @props.first_build
+      show_change_dist_dir: false
+      # show_change_dist_dir: !@props.is_demo_app && @props.first_build
       dist_dir: @props.dist_dir
     }
 
@@ -70,6 +70,15 @@ React.createClass
       @buildOrRefresh()
     else
       @transitionWithCodeModeHistory('preview', 'preview-with-history')
+
+  visualClick: ->
+    track('visual_clicked')
+    return if @state.action_in_progress
+
+    if @context.router.getCurrentPath().match(/^\/visual/)
+      @buildOrRefresh()
+    else
+      @transitionWithCodeModeHistory('visual', 'visual-with-history')
 
   transitionWithCodeModeHistory: (route, with_history_route) ->
     track('transitioned_to', route: route)
@@ -230,6 +239,7 @@ React.createClass
         active_mode={@activeMode()}
         onCodeClick={@codeClick}
         onPreviewClick={@previewClick}
+        onVisualClick={@visualClick}
         onPublishClick={@publishClick}
         onSettingsClick={@settingsClick}
         onNewWebsiteClick={@showFreeHosting}

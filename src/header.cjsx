@@ -6,8 +6,6 @@ _ = require 'lodash'
 PublishStatus = require './publish_status'
 Tour = require './tour'
 
-$ = window.jQuery = window.$ = require 'jquery'
-
 module.exports =
 Header = React.createClass
   getInitialState: ->
@@ -47,7 +45,7 @@ Header = React.createClass
     $(@refs.dropdown_button).dropdown(hover: true, belowOrigin: true, gutter: 20, constrain_width: false)
 
   addTooltips: ->
-    elements = _.map ['code', 'preview', 'publish', 'website_url'], (name) =>
+    elements = _.map ['code', 'visual', 'publish', 'website_url'], (name) =>
       ReactDOM.findDOMNode(@refs[name])
 
     $(elements).tooltip
@@ -66,9 +64,9 @@ Header = React.createClass
           <i className='material-icons'>code</i>
           Code
         </div>
-        <div className={@activeModeClass('preview', 'label-with-icon s2')} onClick={@props.onPreviewClick} data-tooltip='Ctrl+S' ref='preview'>
+        <div className={@activeModeClass('visual', 'label-with-icon s2')} onClick={@props.onVisualClick} data-tooltip='Ctrl+S' ref='visual'>
           <i className='material-icons'>navigation</i>
-          Preview
+          Visual
         </div>
         <div className='header-website-url col s4 center-align label-with-icon' ref='website_url' data-tooltip='This is your public page URL'>
           <a href={@props.website_url} target='_blank' className='truncate'>

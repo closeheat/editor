@@ -327,8 +327,118 @@ body {
 .row .col.full {
   padding: 0; }
 
+.prompt {
+  font-family: 'Source Sans Pro', sans-serif;
+  min-width: 300px;
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  background-color: #F2F2F2;
+  color: #1A1E2D;
+  font-size: 14px;
+  box-shadow: 3px 3px 30px 0px HSLA(227, 27%, 14%, 0.2);
+  border-radius: 3px;
+  border: 1px solid HSLA(227, 27%, 14%, 0.1); }
+  .prompt .prompt-header {
+    height: 50px;
+    padding: 15px 30px 0;
+    text-transform: uppercase;
+    font-weight: 600;
+    border-bottom: 1px solid HSLA(227, 27%, 14%, 0.1);
+    cursor: move;
+    margin-bottom: 0; }
+    .prompt .prompt-header .prompt-header-actions {
+      text-align: right; }
+    .prompt .prompt-header .prompt-header-action {
+      font-size: 10px;
+      text-align: center;
+      font-weight: 400;
+      font-family: 'Open Sans', sans-serif;
+      background-color: HSLA(226, 7%, 37%, 1);
+      border-radius: 2px;
+      height: 20px;
+      color: white;
+      line-height: 20px;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      width: 65px; }
+      .prompt .prompt-header .prompt-header-action:hover {
+        background-color: HSLA(226, 7%, 30%, 1); }
+  .prompt .prompt-extra {
+    padding-top: 30px;
+    text-align: center; }
+    .prompt .prompt-extra .prompt-extra-action {
+      font-size: 10px;
+      text-align: center;
+      font-weight: 400;
+      font-family: 'Open Sans', sans-serif;
+      border-radius: 2px;
+      height: 20px;
+      color: HSLA(226, 7%, 37%, 1);
+      border: 1px solid HSLA(226, 7%, 37%, 1);
+      line-height: 18px;
+      padding: 0;
+      margin: 0 auto;
+      cursor: pointer;
+      width: 65px;
+      text-transform: uppercase; }
+      .prompt .prompt-extra .prompt-extra-action:hover {
+        color: HSLA(226, 7%, 30%, 1);
+        border: 1px solid HSLA(226, 7%, 30%, 1);
+        background-color: HSLA(226, 7%, 30%, 0.08); }
+  .prompt .prompt-content {
+    padding: 40px 30px 30px;
+    max-height: 350px;
+    overflow: scroll; }
+  .prompt .prompt-input {
+    border: 0;
+    width: 100%;
+    outline: 0;
+    padding: 10px;
+    background-color: #fff; }
+  .prompt .prompt-attribute-label {
+    text-transform: uppercase;
+    padding-top: 15px;
+    padding-bottom: 5px;
+    display: block; }
+  .prompt .prompt-actions {
+    border-top: 1px solid HSLA(227, 27%, 14%, 0.1);
+    margin-bottom: 0; }
+    .prompt .prompt-actions .prompt-action {
+      cursor: pointer;
+      text-align: center;
+      height: 50px;
+      text-transform: uppercase;
+      line-height: 50px;
+      font-weight: 600;
+      font-size: 13px; }
+      .prompt .prompt-actions .prompt-action:first-child {
+        border-right: 1px solid HSLA(227, 27%, 14%, 0.1); }
+      .prompt .prompt-actions .prompt-action:hover {
+        background-color: HSLA(227, 27%, 14%, 0.05); }
+
 .guide-button {
   font-weight: 600;
   text-transform: uppercase;
   font-family: 'Source Code Pro', 'Open Sans', sans-serif;
   padding: 0 5px; }
+
+.review-modal {
+  min-width: 90vw;
+  min-height: 85vh; }
+  .review-modal .review-modal-code {
+    font-size: 13px;
+    font-family: 'Source Code Pro', sans-serif; }
+    .review-modal .review-modal-code .review-diff-line-added {
+      background-color: rgba(76, 184, 118, 0.3); }
+    .review-modal .review-modal-code .review-diff-line-removed {
+      background-color: rgba(238, 66, 63, 0.3); }
+  .review-modal .review-modal-file-path {
+    line-height: 50px;
+    padding-left: 20px;
+    font-size: 13px;
+    font-family: 'Source Sans Pro'; }
+
+.col-no-padding {
+  padding: 0; }

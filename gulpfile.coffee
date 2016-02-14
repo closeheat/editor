@@ -7,7 +7,7 @@ browserify = require 'browserify'
 transform = require 'vinyl-transform'
 sass = require('gulp-sass')
 
-gulp.task 'default', ['coffee', 'cjsx', 'browserify', 'sass']
+gulp.task 'default', ['coffee', 'cjsx', 'sass']
 
 gulp.task 'watch', ->
   gulp.watch('./src/**/*.*', ['default'])

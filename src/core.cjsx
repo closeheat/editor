@@ -1,7 +1,7 @@
 md = require 'marked'
-$ = require 'jquery'
 React = require 'react'
 ReactDOM = require 'react-dom'
+$ = window.jQuery = window.$ = require 'jquery'
 
 Router = require 'react-router'
 Route = Router.Route
@@ -11,6 +11,7 @@ InitialLoader = require './initial_loader'
 App = require './app'
 CodeMode = require './code_mode'
 PreviewMode = require './preview_mode'
+VisualMode = require './visual_mode'
 TabManager = require './tab_manager'
 Publish = require './publish'
 ErrorHandler = require './error_handler'
@@ -22,6 +23,8 @@ class Core
     @initial_loader = new InitialLoader()
 
   load: ->
+    window.location.hash = "#/visual/*" unless window.location.hash
+
     @initial_loader.loadFilesAndData().then (data) =>
       @data = data
 
@@ -45,6 +48,9 @@ class Core
       <Route name='preview' path='/preview' handler={PreviewMode} />
       <Route name='preview-with-history' path='/preview/*?' handler={PreviewMode} />
 
+      <Route name='visual' path='/visual' handler={VisualMode} />
+      <Route name='visual-with-history' path='/visual/*?' handler={VisualMode} />
+
       <Route name='publish' path='/publish' handler={Publish} />
       <Route name='publish-with-history' path='/publish/*?' handler={Publish} />
 
@@ -54,8 +60,8 @@ class Core
       <Route name='settings' path='/settings' handler={Settings} />
       <Route name='settings-with-history' path='/settings/*?' handler={Settings} />
 
-      <Redirect from='' to='/code/' />
-      <Redirect from="/code" to="/code/" />
+      <Redirect from='' to='/visual/' />
+      <Redirect from="/code" to="/code/*" />
     </Route>
     # <DefaultRoute handler={Home} />
     # <Route name="about" handler={About} />

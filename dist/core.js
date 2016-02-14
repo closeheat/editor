@@ -1,12 +1,12 @@
-var $, App, CodeMode, Core, ErrorHandler, InitialLoader, PreviewMode, Publish, React, ReactDOM, Redirect, Route, Router, Settings, TabManager, md;
+var $, App, CodeMode, Core, ErrorHandler, InitialLoader, PreviewMode, Publish, React, ReactDOM, Redirect, Route, Router, Settings, TabManager, VisualMode, md;
 
 md = require('marked');
-
-$ = require('jquery');
 
 React = require('react');
 
 ReactDOM = require('react-dom');
+
+$ = window.jQuery = window.$ = require('jquery');
 
 Router = require('react-router');
 
@@ -21,6 +21,8 @@ App = require('./app');
 CodeMode = require('./code_mode');
 
 PreviewMode = require('./preview_mode');
+
+VisualMode = require('./visual_mode');
 
 TabManager = require('./tab_manager');
 
@@ -38,6 +40,9 @@ module.exports = Core = (function() {
   }
 
   Core.prototype.load = function() {
+    if (!window.location.hash) {
+      window.location.hash = "#/visual/*";
+    }
     return this.initial_loader.loadFilesAndData().then((function(_this) {
       return function(data) {
         _this.data = data;
@@ -77,6 +82,14 @@ module.exports = Core = (function() {
       "path": '/preview/*?',
       "handler": PreviewMode
     }), React.createElement(Route, {
+      "name": 'visual',
+      "path": '/visual',
+      "handler": VisualMode
+    }), React.createElement(Route, {
+      "name": 'visual-with-history',
+      "path": '/visual/*?',
+      "handler": VisualMode
+    }), React.createElement(Route, {
       "name": 'publish',
       "path": '/publish',
       "handler": Publish
@@ -102,10 +115,10 @@ module.exports = Core = (function() {
       "handler": Settings
     }), React.createElement(Redirect, {
       "from": '',
-      "to": '/code/'
+      "to": '/visual/'
     }), React.createElement(Redirect, {
       "from": "/code",
-      "to": "/code/"
+      "to": "/code/*"
     }));
   };
 

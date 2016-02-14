@@ -1,12 +1,10 @@
-var $, ChangeDistDirToast, Filesystem, Header, Navigation, NewApp, Promise, React, RouteHandler, Router, _, cookies, flatten, request;
+var ChangeDistDirToast, Filesystem, Header, Navigation, NewApp, Promise, React, RouteHandler, Router, _, cookies, flatten, request;
 
 React = require('react');
 
 flatten = require('flat');
 
 _ = require('lodash');
-
-$ = window.jQuery = window.$ = require('jquery');
 
 request = require('request');
 
@@ -41,7 +39,7 @@ module.exports = React.createClass({
       action_in_progress: false,
       first_build_done: false,
       show_free_hosting: false,
-      show_change_dist_dir: !this.props.is_demo_app && this.props.first_build,
+      show_change_dist_dir: false,
       dist_dir: this.props.dist_dir
     };
   },
@@ -101,6 +99,17 @@ module.exports = React.createClass({
       return this.buildOrRefresh();
     } else {
       return this.transitionWithCodeModeHistory('preview', 'preview-with-history');
+    }
+  },
+  visualClick: function() {
+    track('visual_clicked');
+    if (this.state.action_in_progress) {
+      return;
+    }
+    if (this.context.router.getCurrentPath().match(/^\/visual/)) {
+      return this.buildOrRefresh();
+    } else {
+      return this.transitionWithCodeModeHistory('visual', 'visual-with-history');
     }
   },
   transitionWithCodeModeHistory: function(route, with_history_route) {
@@ -332,6 +341,7 @@ module.exports = React.createClass({
       "active_mode": this.activeMode(),
       "onCodeClick": this.codeClick,
       "onPreviewClick": this.previewClick,
+      "onVisualClick": this.visualClick,
       "onPublishClick": this.publishClick,
       "onSettingsClick": this.settingsClick,
       "onNewWebsiteClick": this.showFreeHosting,
