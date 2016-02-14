@@ -125,7 +125,7 @@ React.createClass
 
   removeAfterApplyToast: ->
     @setState
-      show_after_apply_toast: true
+      show_after_apply_toast: false
 
   reviewApplied: ->
     console.log 'review'

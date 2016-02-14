@@ -166,7 +166,7 @@ module.exports = React.createClass({
   },
   removeAfterApplyToast: function() {
     return this.setState({
-      show_after_apply_toast: true
+      show_after_apply_toast: false
     });
   },
   reviewApplied: function() {
