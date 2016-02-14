@@ -23,6 +23,8 @@ class Core
     @initial_loader = new InitialLoader()
 
   load: ->
+    window.location.hash = "#/visual/*" unless window.location.hash
+
     @initial_loader.loadFilesAndData().then (data) =>
       @data = data
 
@@ -59,7 +61,7 @@ class Core
       <Route name='settings-with-history' path='/settings/*?' handler={Settings} />
 
       <Redirect from='' to='/visual/' />
-      <Redirect from="/code" to="/code/" />
+      <Redirect from="/code" to="/code/*" />
     </Route>
     # <DefaultRoute handler={Home} />
     # <Route name="about" handler={About} />

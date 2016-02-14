@@ -40,6 +40,9 @@ module.exports = Core = (function() {
   }
 
   Core.prototype.load = function() {
+    if (!window.location.hash) {
+      window.location.hash = "#/visual/*";
+    }
     return this.initial_loader.loadFilesAndData().then((function(_this) {
       return function(data) {
         _this.data = data;
@@ -115,7 +118,7 @@ module.exports = Core = (function() {
       "to": '/visual/'
     }), React.createElement(Redirect, {
       "from": "/code",
-      "to": "/code/"
+      "to": "/code/*"
     }));
   };
 
