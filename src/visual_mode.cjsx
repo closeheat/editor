@@ -1,5 +1,6 @@
 React = require 'react'
 _ = require 'lodash'
+jsdiff = require 'diff'
 VisualBrowser = require('./visual_browser')
 Prompt = require('./prompt')
 Loader = require('./loader')
@@ -128,14 +129,13 @@ React.createClass
 
   reviewApplied: ->
     console.log 'review'
-    clearTimeout(@after_apply_timer_id)
 
     @setState
       show_review: true
       show_after_apply_toast: false
 
   undoApplied: ->
-    clearTimeout(@after_apply_timer_id)
+    @trackUndo()
     last_change = FilesystemHistory.last()
     Filesystem.write(last_change.path, last_change.content)
     @rebuild()
@@ -143,6 +143,18 @@ React.createClass
     @setState
       show_review: false
       show_after_apply_toast: false
+
+  trackUndo: ->
+    last_change = FilesystemHistory.last()
+    diff = jsdiff.diffLines(
+      last_change.content,
+      Filesystem.read(last_change.path).content
+    )
+
+    track 'undo', diff: diff, element_data: @serializeElementData(@state.last_element_data)
+
+  serializeElementData: (element_data) ->
+    _.omit(element_data, 'dom', 'node', 'selector_element')
 
   afterApplyToast: ->
     return <div></div> unless @state.show_after_apply_toast

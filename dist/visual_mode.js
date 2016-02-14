@@ -1,8 +1,10 @@
-var AfterApplyToast, Filesystem, FilesystemHistory, Loader, NodeLocationExtender, Prompt, React, ReviewModal, SourceFinder, SourceModifier, VisualBrowser, _;
+var AfterApplyToast, Filesystem, FilesystemHistory, Loader, NodeLocationExtender, Prompt, React, ReviewModal, SourceFinder, SourceModifier, VisualBrowser, _, jsdiff;
 
 React = require('react');
 
 _ = require('lodash');
+
+jsdiff = require('diff');
 
 VisualBrowser = require('./visual_browser');
 
@@ -169,7 +171,6 @@ module.exports = React.createClass({
   },
   reviewApplied: function() {
     console.log('review');
-    clearTimeout(this.after_apply_timer_id);
     return this.setState({
       show_review: true,
       show_after_apply_toast: false
@@ -177,7 +178,7 @@ module.exports = React.createClass({
   },
   undoApplied: function() {
     var last_change;
-    clearTimeout(this.after_apply_timer_id);
+    this.trackUndo();
     last_change = FilesystemHistory.last();
     Filesystem.write(last_change.path, last_change.content);
     this.rebuild();
@@ -185,6 +186,18 @@ module.exports = React.createClass({
       show_review: false,
       show_after_apply_toast: false
     });
+  },
+  trackUndo: function() {
+    var diff, last_change;
+    last_change = FilesystemHistory.last();
+    diff = jsdiff.diffLines(last_change.content, Filesystem.read(last_change.path).content);
+    return track('undo', {
+      diff: diff,
+      element_data: this.serializeElementData(this.state.last_element_data)
+    });
+  },
+  serializeElementData: function(element_data) {
+    return _.omit(element_data, 'dom', 'node', 'selector_element');
   },
   afterApplyToast: function() {
     if (!this.state.show_after_apply_toast) {
