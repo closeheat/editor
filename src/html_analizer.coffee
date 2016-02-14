@@ -77,14 +77,25 @@ class HTMLAnalizer
           text: node.nodeValue
 
     no_selector = "*:contains('#{_.trim(@event.text)}')"
+    no_selector_result = []
     _.each @dom.find(no_selector), (selector_element) =>
       _.each @nodes(selector_element), (node) ->
-        result.push
+        no_selector_result.push
           selector: no_selector
           selector_score: 0
           selector_element: selector_element
           node: node
           text: node.nodeValue
+
+    # would not be able to distiguish between elements without selector
+    # in the same file
+    # in the future maybe js analysis can help
+    # or just allow to edit both (or select from source code)
+    # or record user actions from the last rebuild
+    # then change text, rebuild, see if dom changed in the right place,
+    # then decide
+    if no_selector_result.length == 1
+      result = result.concat(no_selector_result)
 
     result
 
