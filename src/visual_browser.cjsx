@@ -3,6 +3,7 @@ window._ = require 'lodash'
 
 visualInject = ->
   window.CLOSEHEAT_EDITOR = {}
+  NO_CONTENT_TAGS = ['INPUT', 'BUTTON', 'IMG']
 
   positionInDom = (el, count = 1) ->
     if new_el = el.previousElementSibling
@@ -10,7 +11,13 @@ visualInject = ->
     else
       count
 
-  getSelector = (el) ->
+  getSelector = (node, fallback_target) ->
+    if node.nodeName == '#text'
+      calculateSelector(fallback_target)
+    else
+      calculateSelector(node)
+
+  calculateSelector = (el) ->
     names = []
 
     while el.parentNode
@@ -40,7 +47,7 @@ visualInject = ->
 
     e.stopPropagation()
     e.preventDefault()
-    selector = getSelector(e.target)
+    selector = getSelector(node, e.target)
 
     window.CLOSEHEAT_EDITOR.last_target = e.target
     parent.postMessage
@@ -67,11 +74,13 @@ visualInject = ->
     false
 
   inTagWhitelist = (node) ->
-    NO_CONTENT_TAGS = ['INPUT', 'BUTTON', 'IMG']
     NO_CONTENT_TAGS.indexOf(node.tagName) != -1
 
   getNode = (event) ->
     nodeFromPoint(event.clientX, event.clientY)
+
+  editableNodeTypes = ->
+    NO_CONTENT_TAGS.concat('#text')
 
   nodeFromPoint = (x, y) ->
     el = document.elementFromPoint(x, y)
@@ -79,7 +88,7 @@ visualInject = ->
 
     i = 0
     while n = nodes[i++]
-      if n.nodeType == 3
+      if editableNodeTypes().indexOf(n.nodeName)
         r = document.createRange()
         r.selectNode n
         rects = r.getClientRects()

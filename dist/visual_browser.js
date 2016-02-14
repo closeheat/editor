@@ -5,8 +5,9 @@ React = require('react');
 window._ = require('lodash');
 
 visualInject = function() {
-  var bindEvents, edit, getElementOffset, getNode, getSelector, inTagWhitelist, isEditable, navigate, nodeFromPoint, onMessage, positionInDom, scrollToRecentPosition;
+  var NO_CONTENT_TAGS, bindEvents, calculateSelector, edit, editableNodeTypes, getElementOffset, getNode, getSelector, inTagWhitelist, isEditable, navigate, nodeFromPoint, onMessage, positionInDom, scrollToRecentPosition;
   window.CLOSEHEAT_EDITOR = {};
+  NO_CONTENT_TAGS = ['INPUT', 'BUTTON', 'IMG'];
   positionInDom = function(el, count) {
     var new_el;
     if (count == null) {
@@ -18,7 +19,14 @@ visualInject = function() {
       return count;
     }
   };
-  getSelector = function(el) {
+  getSelector = function(node, fallback_target) {
+    if (node.nodeName === '#text') {
+      return calculateSelector(fallback_target);
+    } else {
+      return calculateSelector(node);
+    }
+  };
+  calculateSelector = function(el) {
     var c, e, names;
     names = [];
     while (el.parentNode) {
@@ -53,7 +61,7 @@ visualInject = function() {
     }
     e.stopPropagation();
     e.preventDefault();
-    selector = getSelector(e.target);
+    selector = getSelector(node, e.target);
     window.CLOSEHEAT_EDITOR.last_target = e.target;
     parent.postMessage({
       action: 'edit',
@@ -81,12 +89,13 @@ visualInject = function() {
     return false;
   };
   inTagWhitelist = function(node) {
-    var NO_CONTENT_TAGS;
-    NO_CONTENT_TAGS = ['INPUT', 'BUTTON', 'IMG'];
     return NO_CONTENT_TAGS.indexOf(node.tagName) !== -1;
   };
   getNode = function(event) {
     return nodeFromPoint(event.clientX, event.clientY);
+  };
+  editableNodeTypes = function() {
+    return NO_CONTENT_TAGS.concat('#text');
   };
   nodeFromPoint = function(x, y) {
     var el, i, j, n, nodes, r, rect, rects;
@@ -94,7 +103,7 @@ visualInject = function() {
     nodes = el.childNodes;
     i = 0;
     while (n = nodes[i++]) {
-      if (n.nodeType === 3) {
+      if (editableNodeTypes().indexOf(n.nodeName)) {
         r = document.createRange();
         r.selectNode(n);
         rects = r.getClientRects();
