@@ -3,23 +3,38 @@ ReactDOM = require 'react-dom'
 ContentEditable = require('react-wysiwyg')
 Draggabilly = require 'draggabilly'
 autosize = require 'autosize'
+deepDiff = require('deep-diff').diff
 
 module.exports =
 React.createClass
   getInitialState: ->
+    @buildState(@props.element_data)
+
+  buildState: (element_data) ->
     {
-      value: @originalValue(@props)
-      attributes: @getAttributes(@props)
+      value: @originalValue(element_data)
+      attributes: @getAttributes(element_data)
     }
 
-  originalValue: (props) ->
-    props.element_data.text
+  originalValue: (element_data) ->
+    element_data.text
 
   onChange: (e) ->
     @setState(value: e.target.value)
 
   onApply: ->
+    return @showNoChanges() unless @hasChanges()
+
     @props.onApply(@state.value, @state.attributes)
+
+  showNoChanges: ->
+    Materialize.toast("There are no changes to apply.", 4000)
+
+  hasChanges: ->
+    old_values = @buildState(@props.element_data)
+    current_values = @buildState(text: @state.value, selector_element: { attributes: @state.attributes })
+    diff = deepDiff(old_values, current_values)
+    diff && diff.length
 
   componentWillReceiveProps: (next_props) ->
     @setState
@@ -70,12 +85,12 @@ React.createClass
       {@navigate()}
     </div>
 
-  getAttributes: (props) ->
-    _.map @attributeArray(props), (attribute) ->
+  getAttributes: (element_data) ->
+    _.map @attributeArray(element_data), (attribute) ->
       _.pick(attribute, ['name', 'value'])
 
-  attributeArray: (props) ->
-    Array.prototype.slice.call(props.element_data.selector_element.attributes)
+  attributeArray: (element_data) ->
+    Array.prototype.slice.call(element_data.selector_element.attributes)
 
   changeAttribute: (name, new_value) ->
     result = _.cloneDeep(@state.attributes)

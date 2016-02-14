@@ -1,4 +1,4 @@
-var ContentEditable, Draggabilly, React, ReactDOM, autosize;
+var ContentEditable, Draggabilly, React, ReactDOM, autosize, deepDiff;
 
 React = require('react');
 
@@ -10,15 +10,20 @@ Draggabilly = require('draggabilly');
 
 autosize = require('autosize');
 
+deepDiff = require('deep-diff').diff;
+
 module.exports = React.createClass({
   getInitialState: function() {
+    return this.buildState(this.props.element_data);
+  },
+  buildState: function(element_data) {
     return {
-      value: this.originalValue(this.props),
-      attributes: this.getAttributes(this.props)
+      value: this.originalValue(element_data),
+      attributes: this.getAttributes(element_data)
     };
   },
-  originalValue: function(props) {
-    return props.element_data.text;
+  originalValue: function(element_data) {
+    return element_data.text;
   },
   onChange: function(e) {
     return this.setState({
@@ -26,7 +31,25 @@ module.exports = React.createClass({
     });
   },
   onApply: function() {
+    if (!this.hasChanges()) {
+      return this.showNoChanges();
+    }
     return this.props.onApply(this.state.value, this.state.attributes);
+  },
+  showNoChanges: function() {
+    return Materialize.toast("There are no changes to apply.", 4000);
+  },
+  hasChanges: function() {
+    var current_values, diff, old_values;
+    old_values = this.buildState(this.props.element_data);
+    current_values = this.buildState({
+      text: this.state.value,
+      selector_element: {
+        attributes: this.state.attributes
+      }
+    });
+    diff = deepDiff(old_values, current_values);
+    return diff && diff.length;
   },
   componentWillReceiveProps: function(next_props) {
     this.setState({
@@ -86,13 +109,13 @@ module.exports = React.createClass({
       "className": 'prompt-header-actions'
     }, this.navigate());
   },
-  getAttributes: function(props) {
-    return _.map(this.attributeArray(props), function(attribute) {
+  getAttributes: function(element_data) {
+    return _.map(this.attributeArray(element_data), function(attribute) {
       return _.pick(attribute, ['name', 'value']);
     });
   },
-  attributeArray: function(props) {
-    return Array.prototype.slice.call(props.element_data.selector_element.attributes);
+  attributeArray: function(element_data) {
+    return Array.prototype.slice.call(element_data.selector_element.attributes);
   },
   changeAttribute: function(name, new_value) {
     var attribute, result;

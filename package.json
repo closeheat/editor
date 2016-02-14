@@ -19,6 +19,7 @@
     "browser-cookies": "^1.0.8",
     "classnames": "^2.2.1",
     "coffee-script": "^1.10.0",
+    "deep-diff": "^0.3.3",
     "diff": "^2.2.1",
     "draggabilly": "^2.1.0",
     "flat": "^1.6.0",
