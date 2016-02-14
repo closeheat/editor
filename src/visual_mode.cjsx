@@ -27,7 +27,7 @@ React.createClass
       browser_url: @props.browser_url
     }
   componentDidMount: ->
-    Materialize.toast("Click on any text or image to edit it.", 4000)
+    Materialize.toast("Click on any text or image to edit it.", 8000)
     @build()
 
   build: ->

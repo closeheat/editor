@@ -41,7 +41,7 @@ module.exports = React.createClass({
     };
   },
   componentDidMount: function() {
-    Materialize.toast("Click on any text or image to edit it.", 4000);
+    Materialize.toast("Click on any text or image to edit it.", 8000);
     return this.build();
   },
   build: function() {

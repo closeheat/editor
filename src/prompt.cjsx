@@ -38,8 +38,8 @@ React.createClass
 
   componentWillReceiveProps: (next_props) ->
     @setState
-      value: @originalValue(next_props)
-      attributes: @getAttributes(next_props)
+      value: @originalValue(next_props.element_data)
+      attributes: @getAttributes(next_props.element_data)
     autosize(@refs.content)
 
   componentDidMount: ->

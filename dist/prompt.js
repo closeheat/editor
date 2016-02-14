@@ -53,8 +53,8 @@ module.exports = React.createClass({
   },
   componentWillReceiveProps: function(next_props) {
     this.setState({
-      value: this.originalValue(next_props),
-      attributes: this.getAttributes(next_props)
+      value: this.originalValue(next_props.element_data),
+      attributes: this.getAttributes(next_props.element_data)
     });
     return autosize(this.refs.content);
   },
