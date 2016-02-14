@@ -174,7 +174,7 @@ React.createClass
     "evalFunction = #{code}; evalFunction()"
   injectionCode: ->
     visualInject.toString()
-      .replace(/SERVER_URL_PLACEHOLDER/g, window.BROWSER_URL)
+      .replace(/SERVER_URL_PLACEHOLDER/g, window.EDITOR_URL)
       .replace(/SCROLL_X_PLACEHOLDER/g, @props.scroll_x)
       .replace(/SCROLL_Y_PLACEHOLDER/g, @props.scroll_y)
   inject: ->

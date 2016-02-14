@@ -181,7 +181,7 @@ module.exports = React.createClass({
     return "evalFunction = " + code + "; evalFunction()";
   },
   injectionCode: function() {
-    return visualInject.toString().replace(/SERVER_URL_PLACEHOLDER/g, window.BROWSER_URL).replace(/SCROLL_X_PLACEHOLDER/g, this.props.scroll_x).replace(/SCROLL_Y_PLACEHOLDER/g, this.props.scroll_y);
+    return visualInject.toString().replace(/SERVER_URL_PLACEHOLDER/g, window.EDITOR_URL).replace(/SCROLL_X_PLACEHOLDER/g, this.props.scroll_x).replace(/SCROLL_Y_PLACEHOLDER/g, this.props.scroll_y);
   },
   inject: function() {
     console.log('inkecting');
