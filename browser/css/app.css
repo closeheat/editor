@@ -347,7 +347,9 @@ body {
     border-bottom: 1px solid HSLA(227, 27%, 14%, 0.1);
     cursor: move;
     margin-bottom: 0; }
-    .prompt .prompt-header .prompt-header-navigate {
+    .prompt .prompt-header .prompt-header-actions {
+      text-align: right; }
+    .prompt .prompt-header .prompt-header-action {
       font-size: 10px;
       text-align: center;
       font-weight: 400;

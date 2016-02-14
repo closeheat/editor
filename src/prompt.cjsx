@@ -9,7 +9,7 @@ React.createClass
   getInitialState: ->
     {
       value: @originalValue(@props)
-      attributes: @attributes()
+      attributes: @getAttributes(@props)
     }
 
   originalValue: (props) ->
@@ -24,32 +24,56 @@ React.createClass
   componentWillReceiveProps: (next_props) ->
     @setState
       value: @originalValue(next_props)
+      attributes: @getAttributes(next_props)
+    autosize(@refs.content)
 
   componentDidMount: ->
     new Draggabilly(ReactDOM.findDOMNode(@), handle: '.prompt-header')
     autosize(@refs.content)
 
   isLink: ->
-    @props.element_data.node.parentNode.tagName == 'A'
+    @props.element_data.node.parentNode.tagName == 'A' || @props.element_data.node.tagName == 'A'
+
+  isNestedInALink: ->
+    @props.element_data.node.parentElement.tagName == 'A' && @props.element_data.node.nodeName != '#text'
+
+  nestedType: ->
+    NAMES =
+      IMG: 'Image'
+
+    second_part = NAMES[@props.element_data.node.nodeName] || 'Element'
+    "Linked #{second_part}"
 
   type: ->
-    if @isLink()
+    if @isNestedInALink()
+      @nestedType()
+    else if @isLink()
       'Link'
     else
       'Text'
 
   navigate: ->
-    return <div/> unless @isLink()
-
-    <div className='prompt-header-navigate' onClick={@props.onNavigate}>
+    <div className='prompt-header-action' onClick={@props.onNavigate}>
       Navigate
     </div>
-  attributes: ->
-    _.map @attributeArray(), (attribute) ->
+  editParentLink: ->
+    <div className='prompt-header-action' onClick={@props.onEditParent}>
+      Edit link
+    </div>
+
+  actions: ->
+    return <div/> unless @isLink()
+
+    <div className='prompt-header-actions'>
+      {@navigate()}
+    </div>
+
+  getAttributes: (props) ->
+    _.map @attributeArray(props), (attribute) ->
       _.pick(attribute, ['name', 'value'])
 
-  attributeArray: ->
-    Array.prototype.slice.call(@props.element_data.selector_element.attributes)
+  attributeArray: (props) ->
+    Array.prototype.slice.call(props.element_data.selector_element.attributes)
 
   changeAttribute: (name, new_value) ->
     result = _.cloneDeep(@state.attributes)
@@ -87,6 +111,7 @@ React.createClass
   hasContent: ->
     NO_CONTENT_TAGS = ['INPUT', 'BUTTON', 'IMG']
     return false if _.includes(NO_CONTENT_TAGS, @props.element_data.node.tagName)
+    return false unless @props.element_data.text
 
     true
 
@@ -99,12 +124,13 @@ React.createClass
           {@type()}
         </div>
         <div className='col s4'>
-          {@navigate()}
+          {@actions()}
         </div>
       </div>
       <div className='prompt-content'>
         {@hasContent() && @contentField()}
         {!!@state.attributes.length && @attributeFields()}
+        {@isNestedInALink() && @editParentLink()}
       </div>
 
       <div className='prompt-actions row'>

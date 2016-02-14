@@ -3,7 +3,7 @@ _ = require 'lodash'
 
 module.exports =
 class NodeLocationExtender
-  constructor: (@event, @combination) ->
+  constructor: (@combination) ->
 
   extend: ->
     _.merge(@combination, @coords())
@@ -24,10 +24,18 @@ class NodeLocationExtender
       start_tag_position: fixed_positions
     }
 
+  nestedTagPositions: ->
+    start_tag_position = jsdom.nodeLocation(@combination.node).startTag
+
+    {
+      content_position: {}
+      start_tag_position: start_tag_position
+    }
   coords: ->
     switch @combination.type
       when 'html'
         NO_CONTENT_TAGS = ['INPUT', 'BUTTON', 'IMG']
+        return @nestedTagPositions() if @combination.node.childNodes.length
         return @noContentPositions() if _.includes(NO_CONTENT_TAGS, @combination.node.tagName)
 
         content_position = jsdom.nodeLocation(@combination.node)

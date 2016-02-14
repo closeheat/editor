@@ -1,4 +1,4 @@
-var AfterApplyToast, Filesystem, FilesystemHistory, Loader, Prompt, React, ReviewModal, SourceFinder, SourceModifier, VisualBrowser, _;
+var AfterApplyToast, Filesystem, FilesystemHistory, Loader, NodeLocationExtender, Prompt, React, ReviewModal, SourceFinder, SourceModifier, VisualBrowser, _;
 
 React = require('react');
 
@@ -21,6 +21,8 @@ SourceModifier = require('./source_modifier');
 AfterApplyToast = require('./after_apply_toast');
 
 ReviewModal = require('./review_modal');
+
+NodeLocationExtender = require('./node_location_extender');
 
 module.exports = React.createClass({
   getInitialState: function() {
@@ -131,6 +133,24 @@ module.exports = React.createClass({
     this.removePrompt();
     return this.rebuild();
   },
+  onEditParent: function() {
+    var new_element_data;
+    new_element_data = this.elementDataFromNode(this.state.current_element_data.node.parentNode);
+    return this.setState({
+      current_element_data: new_element_data
+    });
+  },
+  elementDataFromNode: function(node) {
+    var data;
+    data = {
+      node: node,
+      type: 'html',
+      selector_element: node,
+      text: node.nodeValue,
+      file_path: this.state.current_element_data.file_path
+    };
+    return new NodeLocationExtender(data).extend();
+  },
   onNavigate: function() {
     this.refs.browser.refs.iframe.contentWindow.postMessage({
       action: 'navigate'
@@ -197,7 +217,8 @@ module.exports = React.createClass({
       "element_data": this.state.current_element_data,
       "onApply": this.onApply,
       "onClose": this.removePrompt,
-      "onNavigate": this.onNavigate
+      "onNavigate": this.onNavigate,
+      "onEditParent": this.onEditParent
     }), this.afterApplyToast());
   },
   render: function() {

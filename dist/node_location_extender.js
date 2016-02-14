@@ -5,8 +5,7 @@ jsdom = require('jsdom');
 _ = require('lodash');
 
 module.exports = NodeLocationExtender = (function() {
-  function NodeLocationExtender(event, combination) {
-    this.event = event;
+  function NodeLocationExtender(combination) {
     this.combination = combination;
   }
 
@@ -27,11 +26,23 @@ module.exports = NodeLocationExtender = (function() {
     };
   };
 
+  NodeLocationExtender.prototype.nestedTagPositions = function() {
+    var start_tag_position;
+    start_tag_position = jsdom.nodeLocation(this.combination.node).startTag;
+    return {
+      content_position: {},
+      start_tag_position: start_tag_position
+    };
+  };
+
   NodeLocationExtender.prototype.coords = function() {
     var NO_CONTENT_TAGS, content_position, start_tag_position;
     switch (this.combination.type) {
       case 'html':
         NO_CONTENT_TAGS = ['INPUT', 'BUTTON', 'IMG'];
+        if (this.combination.node.childNodes.length) {
+          return this.nestedTagPositions();
+        }
         if (_.includes(NO_CONTENT_TAGS, this.combination.node.tagName)) {
           return this.noContentPositions();
         }

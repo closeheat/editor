@@ -503,7 +503,11 @@ body {
     cursor: move;
     margin-bottom: 0;
 
-    .prompt-header-navigate {
+    .prompt-header-actions {
+      text-align: right;
+    }
+
+    .prompt-header-action {
       font-size: 10px;
       text-align: center;
       font-weight: 400;

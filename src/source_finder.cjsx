@@ -13,7 +13,7 @@ class SourceFinder
     return {} unless sorted_combinations.length
 
     console.log(sorted_combinations)
-    new NodeLocationExtender(@event, _.last(sorted_combinations)).extend()
+    new NodeLocationExtender(_.last(sorted_combinations)).extend()
 
   sortedCombinatins: ->
     _.sortBy(@combinations(), 'score')

@@ -9,6 +9,7 @@ SourceFinder = require('./source_finder')
 SourceModifier = require('./source_modifier')
 AfterApplyToast = require('./after_apply_toast')
 ReviewModal = require('./review_modal')
+NodeLocationExtender = require('./node_location_extender')
 
 module.exports =
 React.createClass
@@ -94,6 +95,22 @@ React.createClass
     @removePrompt()
     @rebuild()
 
+  onEditParent: ->
+    new_element_data = @elementDataFromNode(@state.current_element_data.node.parentNode)
+
+    @setState
+      current_element_data: new_element_data
+
+  elementDataFromNode: (node) ->
+    data =
+      node: node
+      type: 'html'
+      selector_element: node
+      text: node.nodeValue
+      file_path: @state.current_element_data.file_path
+
+    new NodeLocationExtender(data).extend()
+
   onNavigate: ->
     @refs.browser.refs.iframe.contentWindow.postMessage
       action: 'navigate'
@@ -158,6 +175,7 @@ React.createClass
         onApply={@onApply}
         onClose={@removePrompt}
         onNavigate={@onNavigate}
+        onEditParent={@onEditParent}
       />}
       {@afterApplyToast()}
     </div>

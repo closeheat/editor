@@ -14,7 +14,7 @@ module.exports = React.createClass({
   getInitialState: function() {
     return {
       value: this.originalValue(this.props),
-      attributes: this.attributes()
+      attributes: this.getAttributes(this.props)
     };
   },
   originalValue: function(props) {
@@ -29,9 +29,11 @@ module.exports = React.createClass({
     return this.props.onApply(this.state.value, this.state.attributes);
   },
   componentWillReceiveProps: function(next_props) {
-    return this.setState({
-      value: this.originalValue(next_props)
+    this.setState({
+      value: this.originalValue(next_props),
+      attributes: this.getAttributes(next_props)
     });
+    return autosize(this.refs.content);
   },
   componentDidMount: function() {
     new Draggabilly(ReactDOM.findDOMNode(this), {
@@ -40,31 +42,55 @@ module.exports = React.createClass({
     return autosize(this.refs.content);
   },
   isLink: function() {
-    return this.props.element_data.node.parentNode.tagName === 'A';
+    return this.props.element_data.node.parentNode.tagName === 'A' || this.props.element_data.node.tagName === 'A';
+  },
+  isNestedInALink: function() {
+    return this.props.element_data.node.parentElement.tagName === 'A' && this.props.element_data.node.nodeName !== '#text';
+  },
+  nestedType: function() {
+    var NAMES, second_part;
+    NAMES = {
+      IMG: 'Image'
+    };
+    second_part = NAMES[this.props.element_data.node.nodeName] || 'Element';
+    return "Linked " + second_part;
   },
   type: function() {
-    if (this.isLink()) {
+    if (this.isNestedInALink()) {
+      return this.nestedType();
+    } else if (this.isLink()) {
       return 'Link';
     } else {
       return 'Text';
     }
   },
   navigate: function() {
+    return React.createElement("div", {
+      "className": 'prompt-header-action',
+      "onClick": this.props.onNavigate
+    }, "Navigate");
+  },
+  editParentLink: function() {
+    return React.createElement("div", {
+      "className": 'prompt-header-action',
+      "onClick": this.props.onEditParent
+    }, "Edit link");
+  },
+  actions: function() {
     if (!this.isLink()) {
       return React.createElement("div", null);
     }
     return React.createElement("div", {
-      "className": 'prompt-header-navigate',
-      "onClick": this.props.onNavigate
-    }, "Navigate");
+      "className": 'prompt-header-actions'
+    }, this.navigate());
   },
-  attributes: function() {
-    return _.map(this.attributeArray(), function(attribute) {
+  getAttributes: function(props) {
+    return _.map(this.attributeArray(props), function(attribute) {
       return _.pick(attribute, ['name', 'value']);
     });
   },
-  attributeArray: function() {
-    return Array.prototype.slice.call(this.props.element_data.selector_element.attributes);
+  attributeArray: function(props) {
+    return Array.prototype.slice.call(props.element_data.selector_element.attributes);
   },
   changeAttribute: function(name, new_value) {
     var attribute, result;
@@ -114,6 +140,9 @@ module.exports = React.createClass({
     if (_.includes(NO_CONTENT_TAGS, this.props.element_data.node.tagName)) {
       return false;
     }
+    if (!this.props.element_data.text) {
+      return false;
+    }
     return true;
   },
   contentField: function() {
@@ -134,9 +163,9 @@ module.exports = React.createClass({
       "className": 'col s8'
     }, this.type()), React.createElement("div", {
       "className": 'col s4'
-    }, this.navigate())), React.createElement("div", {
+    }, this.actions())), React.createElement("div", {
       "className": 'prompt-content'
-    }, this.hasContent() && this.contentField(), !!this.state.attributes.length && this.attributeFields()), React.createElement("div", {
+    }, this.hasContent() && this.contentField(), !!this.state.attributes.length && this.attributeFields(), this.isNestedInALink() && this.editParentLink()), React.createElement("div", {
       "className": 'prompt-actions row'
     }, React.createElement("div", {
       "className": 'prompt-action col s6 blue-text',
