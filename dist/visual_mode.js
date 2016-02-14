@@ -39,7 +39,7 @@ module.exports = React.createClass({
     };
   },
   componentDidMount: function() {
-    Materialize.toast("Click on any text to change it.", 4000);
+    Materialize.toast("Click on any text or image to edit it.", 4000);
     return this.build();
   },
   build: function() {
@@ -66,7 +66,8 @@ module.exports = React.createClass({
       return this.onEdit(e.data);
     }
   },
-  cantEdit: function() {
+  cantEdit: function(event) {
+    track('cant_autoedit', _.omit(event, 'action'));
     Materialize.toast("Element not editable. But we logged that you wanted to and we'll improve it.", 4000);
     return this.setState({
       show_prompt: false,
@@ -77,7 +78,7 @@ module.exports = React.createClass({
     var element_data;
     element_data = this.editableElement(event);
     if (_.isEmpty(element_data)) {
-      return this.cantEdit();
+      return this.cantEdit(event);
     }
     return this.setState({
       show_prompt: true,

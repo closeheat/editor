@@ -26,7 +26,7 @@ React.createClass
       browser_url: @props.browser_url
     }
   componentDidMount: ->
-    Materialize.toast("Click on any text to change it.", 4000)
+    Materialize.toast("Click on any text or image to edit it.", 4000)
     @build()
 
   build: ->
@@ -41,7 +41,8 @@ React.createClass
   onMessage: (e) ->
     if e.data.action == 'edit'
       @onEdit(e.data)
-  cantEdit: ->
+  cantEdit: (event) ->
+    track 'cant_autoedit', _.omit(event, 'action')
     Materialize.toast("Element not editable. But we logged that you wanted to and we'll improve it.", 4000)
 
     @setState
@@ -49,7 +50,7 @@ React.createClass
       current_element_data: {}
   onEdit: (event) ->
     element_data = @editableElement(event)
-    return @cantEdit() if _.isEmpty(element_data)
+    return @cantEdit(event) if _.isEmpty(element_data)
 
     @setState
       show_prompt: true
