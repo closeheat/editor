@@ -72,9 +72,11 @@ module.exports = React.createClass({
   },
   editParentLink: function() {
     return React.createElement("div", {
-      "className": 'prompt-header-action',
+      "className": 'prompt-extra'
+    }, React.createElement("div", {
+      "className": 'prompt-extra-action',
       "onClick": this.props.onEditParent
-    }, "Edit link");
+    }, "Edit link"));
   },
   actions: function() {
     if (!this.isLink()) {
@@ -160,9 +162,9 @@ module.exports = React.createClass({
     }, React.createElement("div", {
       "className": 'prompt-header row'
     }, React.createElement("div", {
-      "className": 'col s8'
+      "className": 'col col-no-padding s8'
     }, this.type()), React.createElement("div", {
-      "className": 'col s4'
+      "className": 'col col-no-padding s4'
     }, this.actions())), React.createElement("div", {
       "className": 'prompt-content'
     }, this.hasContent() && this.contentField(), !!this.state.attributes.length && this.attributeFields(), this.isNestedInALink() && this.editParentLink()), React.createElement("div", {

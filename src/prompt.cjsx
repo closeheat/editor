@@ -57,8 +57,10 @@ React.createClass
       Navigate
     </div>
   editParentLink: ->
-    <div className='prompt-header-action' onClick={@props.onEditParent}>
-      Edit link
+    <div className='prompt-extra'>
+      <div className='prompt-extra-action' onClick={@props.onEditParent}>
+        Edit link
+      </div>
     </div>
 
   actions: ->
@@ -120,10 +122,10 @@ React.createClass
   render: ->
     <div className='prompt'>
       <div className='prompt-header row'>
-        <div className='col s8'>
+        <div className='col col-no-padding s8'>
           {@type()}
         </div>
-        <div className='col s4'>
+        <div className='col col-no-padding s4'>
           {@actions()}
         </div>
       </div>
