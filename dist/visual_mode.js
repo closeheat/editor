@@ -180,7 +180,11 @@ module.exports = React.createClass({
     clearTimeout(this.after_apply_timer_id);
     last_change = FilesystemHistory.last();
     Filesystem.write(last_change.path, last_change.content);
-    return this.rebuild();
+    this.rebuild();
+    return this.setState({
+      show_review: false,
+      show_after_apply_toast: false
+    });
   },
   afterApplyToast: function() {
     if (!this.state.show_after_apply_toast) {

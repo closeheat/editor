@@ -140,6 +140,10 @@ React.createClass
     Filesystem.write(last_change.path, last_change.content)
     @rebuild()
 
+    @setState
+      show_review: false
+      show_after_apply_toast: false
+
   afterApplyToast: ->
     return <div></div> unless @state.show_after_apply_toast
 
