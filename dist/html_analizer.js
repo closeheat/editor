@@ -74,7 +74,7 @@ module.exports = HTMLAnalizer = (function() {
   };
 
   HTMLAnalizer.prototype.allCombinations = function() {
-    var NTH_CHILD_REGEX, bare_selector, result;
+    var NTH_CHILD_REGEX, bare_selector, no_selector, result;
     result = [];
     NTH_CHILD_REGEX = /:nth\-child\(\d\)/;
     _.times(this.selector_parts.length + 1, (function(_this) {
@@ -103,6 +103,20 @@ module.exports = HTMLAnalizer = (function() {
           return result.push({
             selector: bare_selector,
             selector_score: 0.1,
+            selector_element: selector_element,
+            node: node,
+            text: node.nodeValue
+          });
+        });
+      };
+    })(this));
+    no_selector = "*:contains('" + (_.trim(this.event.text)) + "')";
+    _.each(this.dom.find(no_selector), (function(_this) {
+      return function(selector_element) {
+        return _.each(_this.nodes(selector_element), function(node) {
+          return result.push({
+            selector: no_selector,
+            selector_score: 0,
             selector_element: selector_element,
             node: node,
             text: node.nodeValue

@@ -76,6 +76,16 @@ class HTMLAnalizer
           node: node
           text: node.nodeValue
 
+    no_selector = "*:contains('#{_.trim(@event.text)}')"
+    _.each @dom.find(no_selector), (selector_element) =>
+      _.each @nodes(selector_element), (node) ->
+        result.push
+          selector: no_selector
+          selector_score: 0
+          selector_element: selector_element
+          node: node
+          text: node.nodeValue
+
     result
 
   # matching with inject script
